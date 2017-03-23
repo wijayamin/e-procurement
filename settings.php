@@ -10,7 +10,7 @@ return [
             "pass" => ""
         ],
         "server" => "192.168.100.8",
-        "views"=>"../views",
+        "views"=>"views",
         'debug' => true,
         'whoops.editor' => 'sublime'
     ],

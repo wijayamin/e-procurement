@@ -18,13 +18,24 @@ $app->add(new \Slim\Middleware\Session([
 
 $container = $app->getContainer();
 require 'container.php';
+require 'main.php';
+
+$app->add(new \ryan\main($container));
 
 spl_autoload_register(function ($classname) {
-    require ("models/" . $classname . ".php");
+	$parts = explode('\\', $classname);
+	$classes = "models/" . end($parts);
+	if (file_exists($classes . '.php')) {
+		require $classes . '.php';
+	}
 });
 
 spl_autoload_register(function ($classname) {
-    require ("controllers/" . $classname . ".php");
+	$parts = explode('\\', $classname);
+	$classes = "controllers/" . end($parts);
+	if (file_exists($classes . '.php')) {
+		require $classes . '.php';
+	}
 });
 
 require 'route.php';

@@ -13,3 +13,11 @@ $container['view'] = function ($container) {
 	$view = new Slim\Views\PhpRenderer($settings);
 	return $view;
 };
+
+$container['session'] = function ($c) {
+	return new \SlimSession\Helper;
+};
+
+$container['flash'] = function () {
+	return new \Slim\Flash\Messages();
+};

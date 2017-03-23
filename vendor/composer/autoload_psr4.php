@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),
     'Slim\\Views\\' => array($vendorDir . '/slim/php-view/src'),
+    'Slim\\Flash\\' => array($vendorDir . '/slim/flash/src'),
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
