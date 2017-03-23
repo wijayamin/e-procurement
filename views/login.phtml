@@ -33,11 +33,6 @@
 				<div class="col-sm-8 col-sm-offset-2 text">
 					<img src="public/assetslogin/img/logo-TEI-putih.png" class="center-block img-rounded" height="80" width="200" alt="Brand"></a>
 					<h1><strong>Admin E-Tender</strong> Login Form</h1>
-					<div class="description">
-						<p>
-							Harap Isi Terlebih Dahulu
-						</p>
-					</div>
 				</div>
 			</div>
 			<div class="row">
@@ -45,21 +40,18 @@
 					<div class="form-top">
 						<div class="form-top-left">
 							<h3>Login to our site</h3>
-							<p>Enter your username and password to log on:</p>
-						</div>
-						<div class="form-top-right">
-							<i class="fa fa-lock"></i>
+							<p>Masukkan <abbr>Username</abbr> dan <abbr>Password</abbr> untuk login</p>
 						</div>
 					</div>
 
 					<div class="form-bottom">
 						<form role="form" action="<?= $router->pathFor('doLogin') ?>" method="post" class="login-form">
-							<?= if($authError){ ?>
+							<?php if($authError){ ?>
 							<div class="alert alert-dismissible alert-danger">
 								<button type="button" class="close" data-dismiss="alert">&times;</button>
-								<strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
+								<b>Username</b> atau <b>Password</b> tidak tercatat dalam aplikasi
 							</div>
-							<?= } ?>
+							<?php } ?>
 							<div class="form-group">
 								<label class="sr-only" for="form-username">username</label>
 								<input type="text" name="username" placeholder="Username" class="form-username form-control" id="form-username">
