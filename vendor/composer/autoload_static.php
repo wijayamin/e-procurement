@@ -26,6 +26,11 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'Projek\\Slim\\' => 12,
+        ),
+        'L' => 
+        array (
+            'League\\Plates\\' => 14,
         ),
         'I' => 
         array (
@@ -65,6 +70,14 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Projek\\Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/projek-xyz/slim-plates/src',
+        ),
+        'League\\Plates\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/plates/src',
         ),
         'Interop\\Container\\' => 
         array (

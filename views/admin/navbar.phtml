@@ -1,0 +1,57 @@
+<section class="menu-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="navbar-collapse collapse ">
+                    <ul id="menu-top" class="nav navbar-nav navbar-right">
+                        <li><a class="menu-top-active" href="index.html">Dashboard</a></li>
+                        <li><a href="createuser.html">Create User</a></li>
+                        <li><a href="datatender.html">Data Tender</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> Input Data <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="<?=$this->pathFor('adminBeritaTenderPage')?>" style="color:black">Berita Tender</a></li>
+                                <li class="divider"></li>
+                                <li><a href="input-rks.html"style="color:black">Rencana Kerja dan Syarat (RKS) dan Berita Acara</a></li>
+                                <li class="divider"></li>
+                                <li><a href="kelengkapan-dokumen.html"style="color:black">Dokumen Kelengkapan</a></li>
+                                <li class="divider"></li>
+                                <li><a href="kelengkapan-dokumen-master.html"style="color:black">Dokumen Master Administrasi</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-globe"></i>
+                                <b class="caret hidden-sm hidden-xs"></b>
+                                <span class="notification hidden-sm hidden-xs">5</span>
+                                <p class="hidden-lg hidden-md">
+                                    5 Notifications
+                                    <b class="caret"></b>
+                                </p>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="<?=$this->pathFor('adminBeritaTenderPage')?>">Berita Tender (2)</a></li>
+                                <li class="divider"></li>
+                                <li><a href="approval.html"style="color:black">Approval Tender (3)</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="profil.html" style="color:black"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#"style="color:black"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                </li>
+                            </ul>
+                            <!-- /.dropdown-user -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
