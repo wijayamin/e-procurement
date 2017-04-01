@@ -1,0 +1,102 @@
+<?php
+    $this->layout ('basev2', ['active_user_data' => $active_user_data]);
+    $this->start ('style');
+?>
+<!--tempat css/style-->
+
+<link rel="stylesheet" type="text/css" href="assets/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+<link rel="stylesheet" type="text/css" href="assets/lib/select2/css/select2.min.css"/>
+<?php
+    $this->stop ();
+    $this->start ('navbar');
+    $this->insert ('adminv2/navbar');
+    $this->stop ();
+    $this->start ('page-title');
+?>
+<!--Title Halaman-->
+Tambah Berita Tender
+<?php
+    $this->stop();
+    $this->start ('contents');
+?>
+<!--tempat konten-->
+<div class="content-wrapper">
+    <div class="container">
+
+        <!-- /.row -->
+
+    </div>
+</div>
+
+<div class="modal fade" id="modal-penyelenggara" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <form method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Tambah Penyelenggara</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="form-group">
+                        <label for="inputNama" class="col-lg-2 control-label">Nama</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputNama" placeholder="PT. XYZ" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="textArea" class="col-lg-2 control-label">Alamat</label>
+                        <div class="col-lg-10">
+                            <textarea class="form-control" rows="3" id="textArea" placeholder="Jl. XYZ" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.row -->
+<!--akhir tempat konten-->
+<?php
+    $this->stop ();
+    $this->start ('js');
+?>
+<!--tempat js-->
+<script src="assets/lib/moment.js/min/moment.min.js" type="text/javascript"></script>
+<script src="assets/lib/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+<script src="assets/js/app-form-elements.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+
+        App.formElements();
+        $('.registration-date-time').datepicker({
+            todayBtn:true,
+            autoclose:true,
+            format:"d MM yyyy",
+            zIndexOffset:10000000,
+            todayHighlight:true,
+            language:'id',
+        });
+
+        $('.tags-input').tagsinput();
+        $('.tags-input').on('itemAdded', function(event) {
+            var $field = $(this).siblings('.bootstrap-tagsinput').find('input')
+            setTimeout(function(){
+                $field.val('');
+            }, 1);
+        });
+
+        $('.penyelenggara').selectpicker({
+            liveSearch: true,
+            liveSearchPlaceholder: "Cari Penyelenggara",
+            title: "Pilih Penyelenggara",
+            style: "btn-default"
+        });
+    });
+</script>
+<?php $this->stop () ?>

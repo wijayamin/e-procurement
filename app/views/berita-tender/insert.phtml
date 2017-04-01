@@ -1,0 +1,246 @@
+<?php
+    $parent_data = [
+        'active_user_data' => $active_user_data,
+        'active_notification_list' => $active_notification_list
+    ];
+    $this->layout ('base', $parent_data);
+    $this->start ('style');
+?>
+<!--tempat css/style-->
+
+<link rel="stylesheet" type="text/css" href="public/assets/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+<link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+<?php
+    $this->stop ();
+    $this->start ('page-title');
+?>
+<!--Title Halaman-->
+Tambah Berita Tender
+<?php
+    $this->stop();
+    $this->start ('contents');
+?>
+<!--tempat konten-->
+<div class="main-content container-fluid">
+    <div class="panel panel-default panel-border-color panel-border-color-primary">
+        <div class="panel-heading panel-heading-divider">
+            Formulir Tambah Berita Tender
+            <span class="panel-subtitle">Lengkapi formulir dibawah untuk menambahkan berita tender baru</span>
+        </div>
+        <div class="panel-body">
+            <form method="post" class="berita-tender" action="" data-toggle="validator" role="form">
+                <div class="col-xs-6 no-l-gutter">
+                    <div class="form-group xs-pt-10 has-feedback">
+                        <label>Judul Tender</label>
+                        <textarea rows="3" placeholder="Judul Tender" class="form-control" name="judul_tender" data-error="Wajib di isi" required></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback" data-toggle="tooltip" data-placement="top" title="Pilih Penyelenggara dari daftar yang ada. anda juga dapat menmbahkan penyelenggara baru menggunakan tombol tambah (+) di samping">
+                        <label class="control-label">Penyelenggara</label>
+                        <div class="input-group xs-mb-15">
+                            <select class="select2 penyelenggara" name="id_penyelenggara" data-placeholder="Pilih"  data-error="Wajib Memilih" required>
+                                <option></option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button type="button" data-modal="tambah-penyelenggara" class="btn btn-default md-trigger">
+                                    <i class="mdi mdi-plus-circle text-primary"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label>Tanggal Mulai</label>
+                        <div data-min-view="2" data-date-format="dd MM yyyy" class="input-group date datetimepicker tanggal-mulai">
+                            <span class="input-group-addon btn btn-default"><i class="icon-th mdi mdi-calendar-alt text-primary"></i></span>
+                            <input size="16" type="text" value="" class="form-control"  data-error="Wajib di isi" required>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                        <input type="hidden" name="tgl_mulai" id="tanggal-mulai">
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label>Tanggal Selesai</label>
+                        <div data-min-view="2" data-date-format="dd MM yyyy" class="input-group date datetimepicker tanggal-selesai">
+                            <span class="input-group-addon btn btn-default"><i class="icon-th mdi mdi-calendar text-primary"></i></span>
+                            <input size="16" type="text" value="" class="form-control"  data-error="Wajib di isi" required>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                        <input type="hidden" name="tgl_selesai" id="tanggal-selesai">
+                    </div>
+                </div>
+                <div class="col-xs-6 no-r-gutter">
+                    <div class="form-group xs-pt-10  has-feedback">
+                        <label>Lokasi Tender</label>
+                        <textarea class="form-control" name="wilayah" rows="3" id="textArea" placeholder="Lokasi / Wilayah Tender Dilakukan"  data-error="Wajib di isi" required></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label>Link Website</label>
+                        <input type="text" placeholder="http://www.example.com" name="link_website" class="form-control"  data-error="Wajib di isi" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group xs-pt-10 has-feedback">
+                        <label>Dokumen Persyaratan</label>
+                        <select multiple="" class="tags" name="upload[]"  data-error="Wajib di isi" required></select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="row xs-pt-15">
+                    <div class="col-xs-12">
+                        <p class="text-right">
+                            <button type="submit" class="btn btn-space btn-primary">Simpan</button>
+                            <button type="reset" class="btn btn-space btn-default">Batal</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+<!--Modals-->
+<div id="tambah-penyelenggara" class="modal-container colored-header colored-header-primary custom-width modal-effect-9">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+            <h3 class="modal-title">Tambah Penyelenggara</h3>
+        </div>
+        <form method="post" action="<?=$this->pathFor('apiAddPenyelenggara')?>" class="tambah-penyelenggara" data-toggle="validator" role="form">
+            <div class="modal-body form">
+                    <div class="form-group  has-feedback">
+                        <label>Nama Penyelenggara</label>
+                        <input type="text" placeholder="PT. XYZ" class="form-control" name="nama" data-error="Wajib diisi" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback">
+                        <label>Alamat</label>
+                        <textarea class="form-control" rows="3" id="textArea" placeholder="Alamat Penyelenggara" name="alamat"  data-error="Wajib diisi" required></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-dismiss="modal" class="btn btn-primary btn-simpan">Simpan</button>
+                <button type="button" data-dismiss="modal" class="btn btn-default btn-batal">Batal</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!--akhir tempat konten-->
+<?php
+    $this->stop ();
+    $this->start ('js');
+?>
+<!--tempat js-->
+<script src="public/assets/lib/moment.js/min/moment.min.js" type="text/javascript"></script>
+<script src="public/assets/lib/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="public/assets/lib/datetimepicker/js/locales/bootstrap-datetimepicker.id.js" type="text/javascript" charset="UTF-8"></script>
+<script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+<script src="public/assets/lib/jquery.niftymodals/dist/jquery.niftymodals.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        $('.berita-tender').validator()
+        populatePenyelenggara();
+        populateDokumen();
+        $.fn.niftyModal('setDefaults',{
+            overlaySelector: '.modal-overlay',
+            closeSelector: '.modal-close',
+            classAddAfterOpen: 'modal-show',
+        });
+
+        $('form.tambah-penyelenggara').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+
+            } else {
+                $('form.tambah-penyelenggara').ajaxSubmit({
+                    dataType: 'json',
+                    resetForm: true,
+                    clearForm: true,
+                    success:function (data, status) {
+                        if(data.status == 'success'){
+                            $('#tambah-penyelenggara').niftyModal('hide');
+                            populatePenyelenggara();
+                        }
+                    }
+                })
+            }
+        })
+
+        $('form.tambah-penyelenggara').submit(function () {
+//            $(this).validator('validate');
+//            $(this).ajaxSubmit({
+//
+//            })
+            return false;
+        })
+
+        $(".tanggal-mulai").datetimepicker({
+            autoclose: true,
+            componentIcon: '.mdi.mdi-calendar-alt',
+            navIcons:{
+                rightIcon: 'mdi mdi-chevron-right',
+                leftIcon: 'mdi mdi-chevron-left'
+            },
+            language:'id',
+            linkField: "tanggal-mulai",
+            linkFormat: "yyyy-mm-dd"
+        });
+
+        $(".tanggal-selesai").datetimepicker({
+            autoclose: true,
+            componentIcon: '.mdi.mdi-calendar',
+            navIcons:{
+                rightIcon: 'mdi mdi-chevron-right',
+                leftIcon: 'mdi mdi-chevron-left'
+            },
+            language:'id',
+            linkField: "tanggal-selesai",
+            linkFormat: "yyyy-mm-dd"
+        });
+
+        //Select2
+
+
+        //Select2 tags
+    });
+
+    function populatePenyelenggara(){
+        $.getJSON('<?=$this->pathFor('apiGetPenyelenggara')?>', function (data) {
+            $(".penyelenggara").html('<option></option>')
+            $.each(data, function (i, item) {
+                $(".penyelenggara").append('<option value="'+item.id_penyelenggara+'">'+item.nama_penyelenggara+'</option>');
+            })
+        });
+        $(".penyelenggara").select2({
+            placeholder: "Select a state",
+            allowClear: true,
+            width: '100%'
+        });
+    }
+    
+    function populateDokumen() {
+        $.getJSON('<?=$this->pathFor('apiGetDokumenTender')?>', function (data) {
+            var array_doc = [];
+            $.getJSON('<?=$this->pathFor('apiGetDokumenMaster')?>', function (data) {
+                $.each(data, function (i, item) {
+                    array_doc.push(item.nama_dokumen);
+                })
+            });
+            $.each(data, function (i, item) {
+                var array_dokumen = item.upload;
+                array_dokumen = array_dokumen.split('|');
+                $.each(array_dokumen, function(x, dok){
+                    if($.inArray(dok, array_doc) == -1){
+                        array_doc.push(dok)
+                    }
+                })
+            })
+            $.each(array_doc, function (i, data) {
+                $(".tags").append('<option value="'+data+'">'+data+'</option>');
+            })
+        });
+
+
+        $(".tags").select2({tags: true, width: '100%'});
+    }
+</script>
+<?php $this->stop () ?>

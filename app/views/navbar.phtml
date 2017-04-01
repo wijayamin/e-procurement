@@ -1,0 +1,63 @@
+<div class="be-left-sidebar">
+    <div class="left-sidebar-wrapper"><a href="#" class="left-sidebar-toggle">Fixed Sidebar</a>
+        <div class="left-sidebar-spacer">
+            <div class="left-sidebar-scroll">
+                <div class="left-sidebar-content">
+                    <ul class="sidebar-elements">
+                        <li class="divider">Menu</li>
+                        <li class="<?= $this->uri ('dashboard', 'active') ?>">
+                            <a href="<?= $this->pathFor ('DashboardPage') ?>"><i class="icon mdi mdi-home"></i><span>Dashboard</span></a>
+                        </li>
+                        <li class="parent <?= $this->uri (0, 'berita-tender', 'active open') ?>">
+                            <a href="#"><i class="icon mdi mdi-assignment"></i><span>Berita Tender</span></a>
+                            <ul class="sub-menu">
+                                <li class="<?= $this->uri ('berita-tender', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Daftar Tender</a>
+                                </li>
+                                <li class="<?= $this->uri (1, 'detail', 'active', 'hidden') ?>">
+                                    <a role="button">Detail Tender</a>
+                                </li>
+                                <li class="<?= $this->uri ('berita-tender/tambah', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('tambahBeritaTender') ?>">Tambah</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="index.html"><i class="icon mdi mdi-collection-text"></i><span>RKS dan Berita Acara</span></a>
+                        </li>
+                        <li><a href="index.html"><i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span></a>
+                        </li>
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['2', '3'])) { ?>
+                            <li class="parent <?= $this->uri (0, 'approval', 'active open') ?>">
+                                <a href="#"><i class="icon mdi mdi-assignment-check"></i><span>Approval Tender</span></a>
+                                <ul class="sub-menu">
+                                    <li class="<?= $this->uri ('approval/tender/berita', 'active') ?>">
+                                        <a href="<?= $this->pathFor ('daftarApprovalBeritaTender') ?>">Berita Tender</a>
+                                    </li>
+                                    <li class="<?= $this->uri ('approval-tender/rks', 'active') ?>">
+                                        <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">RKS</a>
+                                    </li>
+                                    <li class="<?= $this->uri ('approval-tender/dokumen-kelengkapan', 'active') ?>">
+                                        <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Dokumen</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="index.html"><i class="icon mdi mdi-assignment-account"></i><span>Penenturan Unit Kerja</span></a>
+                            </li>
+                        <?php } ?>
+                        <li class="divider"></li>
+                        <li class="parent">
+                            <a href="#"><i class="icon mdi mdi-assignment"></i><span>Pengaturan</span></a>
+                            <ul class="sub-menu">
+                                <li><a href="ui-alerts.html">Dokumen Master Administrasi</a></li>
+                            </ul>
+                        </li>
+<!--                        <li class="divider">Status Tender Terbaru</li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
