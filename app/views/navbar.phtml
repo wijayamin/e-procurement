@@ -22,8 +22,19 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="index.html"><i class="icon mdi mdi-collection-text"></i><span>RKS dan Berita Acara</span></a>
+                        <li class="parent <?= $this->uri (0, 'acara-RKS', 'active open') ?>">
+                            <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
+                            <ul class="sub-menu">
+                                <li class="<?= $this->uri ('acara-RKS/RKS', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('daftarBeritaTenderRKS') ?>">Daftar Tender RKS</a>
+                                </li>
+                                <li class="<?= $this->uri (1, 'detail', 'active', 'hidden') ?>">
+                                    <a role="button">Detail Tender</a>
+                                </li>
+                                <li class="<?= $this->uri ('berita-tender/tambah', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('tambahBeritaTender') ?>">Tambah</a>
+                                </li>
+                            </ul>
                         </li>
                         <li><a href="index.html"><i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span></a>
                         </li>

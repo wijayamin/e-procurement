@@ -20,6 +20,12 @@
                 $this->map(['GET', 'POST'], '/detail/{id_tender}[/{status}]', \ryan\controllers\approval::class . ':approvalBeritaTender')->setName ('approvalBeritaTender');
             });
         });
+
+        $this->group('/acara-RKS', function(){
+            $this->group('/RKS', function(){
+                $this->map(['GET', 'POST'], '', \ryan\controllers\acaraRKS::class . ':beritaTenderRKS')->setName ('daftarBeritaTenderRKS');
+            });
+        });
     })->add( new \ryan\controllers\login($container));
 
     $app->group('/api', function(){
