@@ -78,4 +78,16 @@
                 return $res->write($args['status']);
             }
         }
+
+        public function beritaTenderRKS(Req $req, Res $res, $args){
+            if($req->isGet()){
+                $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
+                    return $penyelenggara['nama_penyelenggara'];
+                });
+                $beritaTender = $this->tenderModels->getBeritaTender();
+                $req = $req->withAttribute('beritaTender', $beritaTender);
+                return $this->view->render ("approval/berita-tender/daftar-berita", $req->getAttributes ());
+            }
+        }
     }

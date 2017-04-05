@@ -42,22 +42,37 @@ $this->start ('contents');
                 <tbody>
                 <?php $i=1; ?>
                 <?php foreach(array_reverse($beritaTender) as $tender){ ?>
-                    <tr class="<?= ($this->dateAboveNow($tender['tgl_selesai']) ? null : 'text-muted') ?>">
-                        <td><?= $i ?></td>
-                        <td onclick="document.location = '<?= $this->pathFor('detailBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>'" style="cursor: pointer;">
-                            <?= $tender['judul_tender'] ?>
-                        </td>
-                        <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
-                        <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
-                        <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
-                        <td class="text-center">
-                            <div class="btn-group btn-space">
-                                <button type="button" class="btn btn-color btn-social btn-default btn-sm"><i class="icon mdi mdi-circle-o"></i></button>
-                                <button type="button" class="btn btn-default btn-sm">Tambah RKS</button>
-                            </div>
-                        </td>
-                    </tr>
                     <?php
+                        $approval_direktur = json_decode ($tender[ 'direktur_approval' ], true);
+                        $approval_manager = json_decode ($tender[ 'manajer_approval' ], true);
+                        if($approval_direktur != null && $approval_manager != null && $approval_direktur['status'] == 'diterima' && $approval_manager['status'] == 'diterima'){
+                    ?>
+                        <tr class="<?= ($this->dateAboveNow($tender['tgl_selesai']) ? null : 'text-muted') ?>">
+                            <td><?= $i ?></td>
+                            <td onclick="document.location = '<?= $this->pathFor('detailBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>'" style="cursor: pointer;">
+                                <?= $tender['judul_tender'] ?>
+                            </td>
+                            <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
+                            <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
+                            <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
+                            <td class="text-center">
+                                <div class="btn-group btn-space">
+                                    <?php
+                                        $dok_rks = json_decode($tender['rks'], true);
+                                        if($dok_rks != null){
+                                    ?>
+                                        <button type="button" class="btn btn-color btn-social btn-success btn-sm"><i class="icon mdi mdi-check-circle"></i></button>
+                                        <a href="<?= $this->pathFor('detailBeritaTenderRKS', ['id_tender'=>$tender['id_tender']]) ?>" type="button" class="btn btn-success btn-sm">Ganti RKS</a>
+                                    <?php }else{ ?>
+                                        <button type="button" class="btn btn-color btn-social btn-default btn-sm"><i class="icon mdi mdi-circle-o"></i></button>
+                                        <a href="<?= $this->pathFor('detailBeritaTenderRKS', ['id_tender'=>$tender['id_tender']]) ?>" type="button" class="btn btn-default btn-sm">Tambah RKS</a>
+                                    <?php } ?>
+
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                <?php
                     $i++;
                 }
                 ?>

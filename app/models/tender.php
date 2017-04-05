@@ -75,4 +75,11 @@
             return $update->execute();
         }
 
+        public function setRKSBeritaTender($id_tender, $rks){
+            $update = $this->db->prepare('update tender set RKS=:rks where ID_TENDER=:id_tender');
+            $update->bindParam(':rks', $rks);
+            $update->bindParam(':id_tender', $id_tender);
+            return $update->execute();
+        }
+
     }

@@ -24,6 +24,7 @@
         $this->group('/acara-RKS', function(){
             $this->group('/RKS', function(){
                 $this->map(['GET', 'POST'], '', \ryan\controllers\acaraRKS::class . ':beritaTenderRKS')->setName ('daftarBeritaTenderRKS');
+                $this->map(['GET', 'POST'], '/detail/{id_tender}', \ryan\controllers\acaraRKS::class . ':detailBeritaTenderRKS')->setName ('detailBeritaTenderRKS');
             });
         });
     })->add( new \ryan\controllers\login($container));

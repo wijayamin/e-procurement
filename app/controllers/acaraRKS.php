@@ -55,7 +55,28 @@ class acaraRKS extends \ryan\main {
             });
             $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
             $req = $req->withAttribute('tender', $beritaTender);
+            $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
+            $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
             return $this->view->render ("rks-acara/rks/detail-berita", $req->getAttributes ());
+        }else{
+            $files = $req->getUploadedFiles();
+            if($files['rks']->getClientFilename() != null){
+                $fileinfo = pathinfo($files['rks']->getClientFilename());
+                $filename = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
+                $files['rks']->moveTo("public/content/rks/".$filename);
+                $rks = [
+                    'file' => $filename,
+                    'time' => date ("Y-m-d H:i:s"),
+                    'who' => $this->session->id_user
+                ];
+                if($this->tenderModels->setRKSBeritaTender($args['id_tender'], json_encode($rks))){
+                    $this->flash->addMessage ('file_saved', true);
+                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('detailBeritaTenderRKS', ['id_tender'=>$args['id_tender']]));
+                }
+            }else{
+                $this->flash->addMessage ('no_file', true);
+                return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('detailBeritaTenderRKS', ['id_tender'=>$args['id_tender']]));
+            }
         }
     }
 }
