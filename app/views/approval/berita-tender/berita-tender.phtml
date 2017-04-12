@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                     <?php $i=1; ?>
-                    <?php foreach($beritaTender as $tender){ ?>
+                    <?php foreach($beritaTender as $tender): ?>
                         <tr>
                             <td><?= $i ?></td>
                             <td><?= $tender['judul_tender'] ?></td>
@@ -40,7 +40,7 @@
                         </tr>
                         <?php
                         $i++;
-                    }
+                    endforeach;
                     ?>
                 </tbody>
             </table>

@@ -22,17 +22,14 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="parent <?= $this->uri (0, 'acara-RKS', 'active open') ?>">
+                        <li class="parent <?= $this->uri (0, 'acara-rks', 'active open') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
                             <ul class="sub-menu">
-                                <li class="<?= $this->uri ('acara-RKS/RKS', 'active') ?>">
-                                    <a href="<?= $this->pathFor ('daftarBeritaTenderRKS') ?>">Daftar Tender RKS</a>
+                                <li class="<?= $this->uri (1, 'rks', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('daftarBeritaTenderRKS') ?>">Daftar RKS Tender</a>
                                 </li>
-                                <li class="<?= $this->uri (1, 'detail', 'active', 'hidden') ?>">
-                                    <a role="button">Detail Tender</a>
-                                </li>
-                                <li class="<?= $this->uri ('berita-tender/tambah', 'active') ?>">
-                                    <a href="<?= $this->pathFor ('tambahBeritaTender') ?>">Tambah</a>
+                                <li class="<?= $this->uri (1, 'acara', 'active') ?>">
+                                    <a href="<?= $this->pathFor ('daftarBeritaTenderAcara') ?>">Daftar Berita Acara Tender</a>
                                 </li>
                             </ul>
                         </li>
@@ -45,8 +42,8 @@
                                     <li class="<?= $this->uri ('approval/tender/berita', 'active') ?>">
                                         <a href="<?= $this->pathFor ('daftarApprovalBeritaTender') ?>">Berita Tender</a>
                                     </li>
-                                    <li class="<?= $this->uri ('approval-tender/rks', 'active') ?>">
-                                        <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">RKS</a>
+                                    <li class="<?= $this->uri ('approval/acara-rks/berita', 'active') ?>">
+                                        <a href="<?= $this->pathFor ('daftarApprovalRKSTender') ?>">RKS</a>
                                     </li>
                                     <li class="<?= $this->uri ('approval-tender/dokumen-kelengkapan', 'active') ?>">
                                         <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Dokumen</a>

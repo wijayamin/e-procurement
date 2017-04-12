@@ -223,15 +223,18 @@ $this->start('contents');
                                             </div >
                                             <table class="table" >
                                                 <tr >
+                                                    <td width="20%">
+                                                       Diupload oleh
+                                                    </td >
                                                     <td class="user-avatar" >
                                                         <img src="public/assets/img/<?= $this->getUserUpload($dok_rks['who'])['image'] ?>" alt="Avatar" >
-                                                <span class="label label-primary" >
-                                                    <?= $this->getUserUpload($dok_rks['who'])['nama'] ?>
-                                                </span >
-                                                        Pada
-                                                <span class="label label-default" >
-                                                    <?= $this->indDateTime($dok_rks['time']) ?>
-                                                </span >
+                                                        <span class="label label-primary" >
+                                                            <?= $this->getUserUpload($dok_rks['who'])['nama'] ?>
+                                                        </span >
+                                                                Pada
+                                                        <span class="label label-default" >
+                                                            <?= $this->indDateTime($dok_rks['time']) ?>
+                                                        </span >
                                                     </td >
                                                 </tr >
                                             </table >

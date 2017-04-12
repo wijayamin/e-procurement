@@ -87,7 +87,44 @@
                 });
                 $beritaTender = $this->tenderModels->getBeritaTender();
                 $req = $req->withAttribute('beritaTender', $beritaTender);
-                return $this->view->render ("approval/berita-tender/daftar-berita", $req->getAttributes ());
+                return $this->view->render ("approval/rks-acara/daftar-berita", $req->getAttributes ());
+            }
+        }
+
+        public function approvalBeritaTenderRKS(Req $req, Res $res, $args){
+            if(!isset($args['status'])){
+                $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
+                    return $penyelenggara['nama_penyelenggara'];
+                });
+                $this->view->registerFunction('getUserUpload', function($id_user){
+                    $user = $this->userModels->getUserDetail($id_user);
+                    return $user;
+                });
+                $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
+                $req = $req->withAttribute('tender', $beritaTender);
+                return $this->view->render ("approval/rks-acara/detail-berita", $req->getAttributes ());
+            }elseif(isset($args['status'])){
+                if($this->tenderModels->setApprovalRKSBeritaTender($args['id_tender'], $this->session->previledge, $args['status'])){
+                    if($args['status'] == 'diterima'){
+                        $this->notifikasiModels->addNotification ([
+                            "id_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                            "tentang" => 'Telah Melakukan Approve Dokumen RKS dari Berita Tender "' . $this->tenderModels->getBeritaTender($args['id_tender'])[ 'judul_tender' ] . '"',
+                            "waktu" => date ("Y-m-d H:i:s"),
+                            "meta" => $this->router->pathFor ('detailBeritaTender', ['id_tender'=>$args['id_tender']])
+                        ]);
+                    }elseif($args['status'] == 'ditolak'){
+                        $this->notifikasiModels->addNotification ([
+                            "id_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                            "tentang" => 'Telah Menolak Dokumen RKS dari Berita Tender "' . $this->tenderModels->getBeritaTender($args['id_tender'])[ 'judul_tender' ] . '"',
+                            "waktu" => date ("Y-m-d H:i:s"),
+                            "meta" => $this->router->pathFor ('detailBeritaTender', ['id_tender'=>$args['id_tender']])
+                        ]);
+                    }
+                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('approvalRKSTender', ['id_tender'=>$args['id_tender']]));
+                }
+            }else{
+                return $res->write($args['status']);
             }
         }
     }

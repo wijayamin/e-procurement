@@ -82,4 +82,31 @@
             return $update->execute();
         }
 
+        public function setApprovalRKSBeritaTender($id_tender, $who, $status){
+            $tender = $this->getBeritaTender($id_tender);
+            $rks = json_decode($tender['rks'], true);
+            if($who == '2'){
+                $rks['approval']['direktur'] = [
+                    'status' => $status,
+                    'waktur' => date ("Y-m-d H:i:s")
+                ];
+            }elseif($who == '3'){
+                $rks['approval']['manajer'] = [
+                    'status' => $status,
+                    'waktur' => date ("Y-m-d H:i:s")
+                ];
+            }
+            $rks = json_encode($rks);
+            $update = $this->db->prepare('update tender set rks=:rks where id_tender=:id_tender');
+            $update->bindParam(':rks', $rks);
+            $update->bindParam(':id_tender', $id_tender);
+            return $update->execute();
+        }
+
+        public function setAcaraBeritaTender($id_tender, $acara){
+            $update = $this->db->prepare('update tender set berita_acara=:acara where ID_TENDER=:id_tender');
+            $update->bindParam(':acara', $acara);
+            $update->bindParam(':id_tender', $id_tender);
+            return $update->execute();
+        }
     }

@@ -1,21 +1,21 @@
 <?php
-    $parent_data = [
-        'active_user_data' => $active_user_data,
-        'active_notification_list' => $active_notification_list
-    ];
-    $this->layout ('base', $parent_data);
-    $this->start ('style');
+$parent_data = [
+    'active_user_data' => $active_user_data,
+    'active_notification_list' => $active_notification_list
+];
+$this->layout ('base', $parent_data);
+$this->start ('style');
 ?>
 <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
 <!--tempat css/style-->
 <?php
-    $this->stop ();
-    $this->start ('page-title');
+$this->stop ();
+$this->start ('page-title');
 ?>
-Daftar Approval Berita Tender
+Daftar Approval Dokumen RKS Berita Tender
 <?php
-    $this->stop();
-    $this->start ('contents');
+$this->stop();
+$this->start ('contents');
 ?>
 <!--tempat konten-->
 <div class="main-content container-fluid">
@@ -42,19 +42,21 @@ Daftar Approval Berita Tender
         <div class="panel-body">
             <table id="table-berita-tender" class="table table-hover table-fw-widget" style="border-top: 0px !important;">
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th width="50%">Judul</th>
-                        <th width="10%">Mulai</th>
-                        <th width="10%">Selesai</th>
-                        <th width="10%">Penyelenggara</th>
-                        <th width="10%">Status</th>
-                        <th width="10%" class="text-center">Approval Anda</th>
-                    </tr>
+                <tr>
+                    <th></th>
+                    <th width="50%">Judul</th>
+                    <th width="10%">Mulai</th>
+                    <th width="10%">Selesai</th>
+                    <th width="10%">Penyelenggara</th>
+                    <th width="10%">Status</th>
+                    <th width="10%" class="text-center">Approval Anda</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <?php $i=1; ?>
-                    <?php foreach(array_reverse($beritaTender) as $tender){ ?>
+                <?php $i=1; ?>
+                <?php foreach(array_reverse($beritaTender) as $tender): ?>
+                    <?php $RKS = json_decode ($tender[ 'rks' ], true); ?>
+                    <?php if(is_array($RKS)): ?>
                         <tr class="<?= ($this->dateAboveNow($tender['tgl_selesai']) ? null : 'text-muted') ?>">
                             <td><?= $i ?></td>
                             <td onclick="document.location = '<?= $this->pathFor('detailBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>'" style="cursor: pointer;">
@@ -63,55 +65,49 @@ Daftar Approval Berita Tender
                             <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
                             <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
                             <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
-                            <?php
-                                $approval_direktur = json_decode ($tender[ 'direktur_approval' ], true);
-                                $approval_manager = json_decode ($tender[ 'manajer_approval' ], true);
-                            ?>
                             <td class="milestone text-center">
                                 <span class="completed">
                                     Direktur<br>
-                                    <?php if ($approval_direktur == null) { ?>
+                                    <?php if ($RKS['approval']['direktur']['status'] == ''): ?>
                                         <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
-                                    <?php } elseif ($approval_direktur[ 'status' ] == 'diterima') { ?>
+                                    <?php elseif ($RKS['approval']['direktur']['status'] == 'diterima'): ?>
                                         <button type="button" class="btn btn-success btn-xs"><i class="icon mdi mdi-check-circle"></i></button>
-                                    <?php } else { ?>
+                                    <?php else: ?>
                                         <button type="button" class="btn btn-danger btn-xs"><i class="icon mdi mdi-close-circle-o"></i></button>
-                                    <?php } ?>
+                                    <?php endif; ?>
                                 </span>
                                 <span class="version">
                                     Manajer<br>
-                                    <?php if ($approval_manager == null) { ?>
+                                    <?php if ($RKS['approval']['manajer']['status'] == ''): ?>
                                         <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
-                                    <?php } elseif ($approval_manager[ 'status' ] == 'diterima') { ?>
+                                    <?php elseif ($RKS['approval']['manajer']['status'] == 'diterima'): ?>
                                         <button type="button" class="btn btn-success btn-xs"><i class="icon mdi mdi-check-circle"></i></button>
-                                    <?php } else { ?>
+                                    <?php else: ?>
                                         <button type="button" class="btn btn-danger btn-xs"><i class="icon mdi mdi-close-circle-o"></i></button>
-                                    <?php } ?>
+                                    <?php endif; ?>
                                 </span>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group btn-space">
-                                    <?php if($active_user_data['previledge'] == '2') { ?>
-                                        <?php if ($approval_direktur == null) { ?>
-                                            <a href="<?= $this->pathFor('approvalBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>"  class="btn btn-primary  btn-sm">Approve</a>
-                                        <?php }else{ ?>
-                                            <a href="<?= $this->pathFor('approvalBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-default  btn-sm">Lihat</a>
-                                        <?php } ?>
-                                    <?php } elseif ($active_user_data['previledge'] == '3') { ?>
-                                        <?php if ($approval_manager == null) { ?>
-                                            <a href="<?= $this->pathFor('approvalBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-primary  btn-sm">Approve</a>
-                                        <?php }else{ ?>
-                                            <a href="<?= $this->pathFor('approvalBeritaTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-default  btn-sm">Lihat</a>
-                                        <?php } ?>
-                                    <?php } ?>
+                                    <?php if($active_user_data['previledge'] == '2'): ?>
+                                        <?php if ($RKS['approval']['direktur']['status'] == ''): ?>
+                                            <a href="<?= $this->pathFor('approvalRKSTender' , ['id_tender'=>$tender['id_tender']]) ?>"  class="btn btn-primary  btn-sm">Approve</a>
+                                        <?php else: ?>
+                                            <a href="<?= $this->pathFor('approvalRKSTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-default  btn-sm">Lihat</a>
+                                        <?php endif; ?>
+                                    <?php elseif ($active_user_data['previledge'] == '3'): ?>
+                                        <?php if ($RKS['approval']['manajer']['status'] == ''): ?>
+                                            <a href="<?= $this->pathFor('approvalRKSTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-primary  btn-sm">Approve</a>
+                                        <?php else: ?>
+                                            <a href="<?= $this->pathFor('approvalRKSTender' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-default  btn-sm">Lihat</a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </div>
-                                
                             </td>
                         </tr>
-                        <?php
-                        $i++;
-                    }
-                    ?>
+                        <?php $i++; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -119,8 +115,8 @@ Daftar Approval Berita Tender
 </div>
 <!--akhir tempat konten-->
 <?php
-    $this->stop ();
-    $this->start ('js');
+$this->stop ();
+$this->start ('js');
 ?>
 <!--tempat js-->
 
