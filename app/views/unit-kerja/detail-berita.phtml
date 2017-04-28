@@ -1,0 +1,343 @@
+<?php
+$parent_data = [
+    'active_user_data' => $active_user_data,
+    'active_notification_list' => $active_notification_list,
+    'aside' => true
+];
+$this->layout('base', $parent_data);
+$this->start('style');
+?>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+    <!--tempat css/style-->
+<?php
+$this->stop();
+$this->start('page-title');
+?>
+    Daftar Unit Kerja Tender
+<?php
+$this->stop();
+$this->start('contents');
+?>
+    <!--tempat konten-->
+    <aside class="page-aside">
+        <div class="be-scroller">
+            <div class="nano-content">
+                <div class="content">
+                    <h3>Detail Tender</h3><br>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Tanggal Pelaksanaan</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_mulai']) ?></span>
+                            &nbsp; s/d &nbsp;
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_selesai']) ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Nama Penyelenggara</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Judul Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['judul_tender'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Link Website</label>
+                        <div class="well well-sm aside-well">
+                            <a href="<?= $tender['link_website'] ?>" target="_blank">
+                                <strong><i class="icon mdi mdi-link"></i> <?= $tender['link_website'] ?></strong>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Lokasi Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['wilayah'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Dokumen Persyaratan</label>
+                        <div class="well well-sm aside-well">
+                            <?php foreach (explode('|', $tender['upload']) as $dokumen) { ?>
+                                <span class="label label-default"><?= $dokumen ?></span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Tanggal Upload</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-primary"><?= $this->getUserUpload($tender['id_user'])['nama'] ?></span>
+                            <span class="label label-default"><?= $this->indDateTime($tender['tgl_upload']) ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Status Approval</label>
+                        <div class="well well-sm aside-well">
+                            <?php $approval_direktur = json_decode($tender['direktur_approval'], true); ?>
+                            <div class="btn-group btn-group-xs btn-space">
+                                <button type="button" class="btn btn-color btn-success">
+                                    <i class="icon mdi mdi-check-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    Direktur
+                                </button>
+                                <button type="button" class="btn btn-default"><?= $this->indDateTime($approval_direktur['waktu']) ?></button>
+                            </div>
+                            <?php $approval_manager = json_decode($tender['manajer_approval'], true); ?>
+                            <div class="btn-group btn-group-xs btn-space">
+                                <button type="button" class="btn btn-color btn-success">
+                                    <i class="icon mdi mdi-check-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    Manajer
+                                </button>
+                                <button type="button" class="btn btn-default"><?= $this->indDateTime($approval_manager['waktu']) ?></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Dokumen RKS</label>
+                        <div class="well well-sm aside-well">
+                            <?php $dok_rks = json_decode($tender['rks'], true); ?>
+                            <div class="btn-group btn-group-xs btn-space">
+                                <a href="public/content/rks/<?= $dok_rks['file'] ?>" target="_blank" class="btn btn-default">
+                                    <?= substr($dok_rks['file'], 0, 20) ?>...<?= substr($dok_rks['file'], -4) ?>
+                                </a>
+                                <a href="public/content/rks/<?= $dok_rks['file'] ?>" target="_blank" class="btn btn-color btn-social btn-primary">
+                                    <i class="icon mdi mdi-eye"></i> Lihat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Dokumen RKS</label>
+                        <div class="well well-sm aside-well">
+                            <?php $dok_rks = json_decode($tender['berita_acara'], true); ?>
+                            <div class="btn-group btn-group-xs btn-space">
+                                <a href="public/content/berita-acara/<?= $dok_rks['file'] ?>" target="_blank" class="btn btn-default">
+                                    <?= substr($dok_rks['file'], 0, 20) ?>...<?= substr($dok_rks['file'], -4) ?>
+                                </a>
+                                <a href="public/content/berita-acara/<?= $dok_rks['file'] ?>" target="_blank" class="btn btn-color btn-social btn-primary">
+                                    <i class="icon mdi mdi-eye"></i> Lihat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+    </aside>
+    <div class="main-content container-fluid">
+        <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
+            <div class="panel-heading">Daftar Unit Kerja
+                <div class="tools">
+                    <button class="btn btn-rounded btn-space btn-primary btn-sm" data-toggle="modal" data-target="#form-unitkerja">
+                        <i class="mdi mdi-account-add"></i>
+                        &nbsp; Tambah Unit Kerja
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table id="unit-kerja" class="table table-striped table-hover table-fw-widget">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Nama Pegawai</th>
+                            <th>Penugasan</th>
+                            <th class="text-right" width="20%">Diajukan Oleh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="form-unitkerja" tabindex="-1" role="dialog" class="modal fade colored-header colored-header-primary">
+        <div class="modal-dialog custom-width">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
+                    <h3 class="modal-title">Form Penentuan Unit Kerja</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Pengawai</label>
+                        <select multiple="" id="modal-pegawai">
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Penugasan</label>
+                        <input type="text" placeholder="Penugasan" id="modal-penugasan" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary form-unitkerja-simpan">Tambahkan</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-default md-close">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--akhir tempat konten-->
+<?php
+$this->stop();
+$this->start('js');
+?>
+    <!--tempat js-->
+    <script src="public/assets/lib/jquery.niftymodals/dist/jquery.niftymodals.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/dataTables.buttons.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.html5.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.flash.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.print.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
+    <script src="public/assets/js/app-tables-datatables.js" type="text/javascript"></script>
+    <script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+            $.fn.niftyModal('setDefaults', {
+                overlaySelector: '.modal-overlay',
+                closeSelector: '.modal-close',
+                classAddAfterOpen: 'modal-show',
+            });
+
+            //We use this to apply style to certain elements
+            $.extend(true, $.fn.dataTable.defaults, {
+                dom: "<'row be-datatable-header'<'col-sm-6'l><'col-sm-6'f>>" +
+                "<'row be-datatable-body'<'col-sm-12'tr>>" +
+                "<'row be-datatable-footer'<'col-sm-5'i><'col-sm-7'p>>",
+                language: {
+
+                    emptyTable: '<h4>Belum ada unit kerja</h4>' +
+                    '<button class="btn btn-rounded btn-space btn-primary btn-sm" data-toggle="modal" data-target="#form-unitkerja"><i class="mdi mdi-account-add"></i>&nbsp; Tambah Unit Kerja </button>',
+                    lengthMenu: "_MENU_ &nbsp; data per halaman",
+                    "zeroRecords": "Tidak ada data yang cocok dengan pencarian anda",
+                    "info": "Hal _PAGE_ dari _PAGES_ halaman",
+                    "infoEmpty": "Tidak ada data tersedia",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "first": '<i class="mdi mdi-caret-left-circle"></i>',
+                        "last": '<i class="mdi mdi-caret-right-circle"></i>',
+                        "next": '<i class="mdi mdi-caret-right-circle"></i>',
+                        "previous": '<i class="mdi mdi-caret-left-circle"></i>'
+                    },
+                    "search": '<i class="mdi mdi-search" style="padding-right:5px; font-size:20px"></i>',
+                    "searchPlaceholder": 'Cari',
+                },
+            });
+
+            var unitKerja = $('#unit-kerja').DataTable({
+                ajax:"<?= $this->pathFor('getUnitKerjaTender', ['id_tender'=>$tender['id_tender']]) ?>",
+                columns:[
+                    {
+                        data: "id_unitkerja",
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data:'pegawai',
+                        className: 'user-avatar',
+                        render: function (data, type, row, meta) {
+                            return '<img src="public/profile/'+data.image+'" alt="Avatar">'+data.nama;
+                        }
+                    },
+                    {data:'penugasan'},
+                    {
+                        data:'metadata',
+                        className:'text-right',
+                        render: function (data, type, row, meta) {
+                            return '<span class="label label-primary">'+data.who+'</span>';
+                        }
+                    },
+                ],
+                order: [[ 2, 'asc' ]],
+                "drawCallback": function ( settings ) {
+                    var api = this.api();
+                    var rows = api.rows( {page:'current'} ).nodes();
+                    var last=null;
+                    api.column(2, {page:'current'} ).data().each( function ( group, i ) {
+                        if ( last !== group ) {
+                            $(rows).eq( i ).before(
+                                '<tr class="active"><td></td><td colspan="3" style="padding-top:5px;padding-bottom: 5px;"><span class="label label-primary"> '+group+' </span></td></tr>'
+                            );
+
+                            last = group;
+                        }
+                    } );
+                }
+            });
+
+            $('#form-unitkerja').on('show.bs.modal', function (event) {
+                var mBtn = $(event.relatedTarget) // Button that triggered the modal
+                var mData = mBtn.data() // Extract info from data-* attributes
+                var modal = $(this)
+
+                function formatState (state) {
+                    if (!state.id) { return state.text; }
+                    console.log(state);
+                    var $state = $(
+                        '<span><img class="img-circle" style="height:30px;" src="public/profile/' + state.element.dataset.image + '" class="img-flag" /> ' + state.text + '</span>'
+                    );
+                    return $state;
+                }
+
+                $.getJSON('<?= $this->pathFor('isUnitKerjaAvailable', ['id_tender'=>$tender['id_tender']]) ?>', function (jData) {
+                    modal.find("#modal-pegawai").html('<option></option>')
+                    $.each(jData, function (i, val) {
+                        var opt = $('<option></option>');
+                        opt.attr('data-image', val.image)
+                        opt.val(val.id_user)
+                        if(val.available == false){
+                            opt.attr('disabled', 'disabled')
+                            opt.text(val.nama+' (sudah terdaftar)')
+                        }else{
+                            opt.text(val.nama)
+                        }
+                        modal.find("#modal-pegawai").append(opt)
+                    })
+                    modal.find("#modal-pegawai").select2({
+                        placeholder: 'Pilih Pegawai',
+                        templateResult: formatState,
+                        templateSelection: formatState,
+                        width: '100%',
+                    });
+                    modal.find('.form-unitkerja-simpan').on('click', function () {
+                        var pegawai = modal.find('#modal-pegawai').val()
+                        var penugasan = modal.find('#modal-penugasan').val()
+                        $.ajax({
+                            type: "POST",
+                            url: '<?= $this->pathFor('setUnitKerja', ['id_tender'=>$tender['id_tender']]) ?>',
+                            data: {
+                                pegawai:pegawai,
+                                penugasan:penugasan
+                            },
+                            success: function (result) {
+                                if(result.status == 'success'){
+                                    unitKerja.ajax.reload();
+                                    modal.find('#modal-pegawai').val('');
+                                    modal.find('#modal-penugasan').val('');
+                                    $('#form-unitkerja').modal('hide')
+                                }
+                            },
+                            dataType: "JSON"
+                        });
+
+
+                    })
+                })
+            })
+
+        })
+
+    </script>
+<?php $this->stop() ?>

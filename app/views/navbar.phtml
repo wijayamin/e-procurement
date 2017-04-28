@@ -4,10 +4,15 @@
             <div class="left-sidebar-scroll">
                 <div class="left-sidebar-content">
                     <ul class="sidebar-elements">
-                        <li class="divider">Menu</li>
+
+                        <li class="divider">
+                            <span class="label label-primary">Data Tender</span>
+                        </li>
+
                         <li class="<?= $this->uri ('dashboard', 'active') ?>">
                             <a href="<?= $this->pathFor ('DashboardPage') ?>"><i class="icon mdi mdi-home"></i><span>Dashboard</span></a>
                         </li>
+
                         <li class="parent <?= $this->uri (0, 'berita-tender', 'active open') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>Berita Tender</span></a>
                             <ul class="sub-menu">
@@ -22,6 +27,7 @@
                                 </li>
                             </ul>
                         </li>
+
                         <li class="parent <?= $this->uri (0, 'acara-rks', 'active open') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
                             <ul class="sub-menu">
@@ -33,9 +39,31 @@
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="index.html"><i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span></a>
+
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['3'])): ?>
+                        <li class="<?= $this->uri (0, 'unit-kerja', 'active') ?>">
+                            <a href="<?= $this->pathFor ('daftarBeritaTenderUnitKerja') ?>">
+                                <i class="icon mdi mdi-assignment-account"></i><span>Penenturan Unit Kerja</span>
+                            </a>
                         </li>
-                        <?php if (in_array ($active_user_data[ 'previledge' ], ['2', '3'])) { ?>
+                        <?php endif; ?>
+
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['4'])): ?>
+                            <li class="<?= $this->uri (0, 'boq', 'active') ?>">
+                                <a href="<?= $this->pathFor ('daftarBeritaTenderBOQ') ?>">
+                                    <i class="icon mdi mdi-shopping-cart"></i><span>Penenturan BOQ</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
+                        <li>
+                            <a href="<?= $this->pathFor('daftarBeritaTenderDokumen') ?>"><i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span></a>
+                        </li>
+
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['2', '3'])): ?>
+
+                            <li class="divider"><span class="label label-danger">Approval Tender</span></li>
+
                             <li class="parent <?= $this->uri (0, 'approval', 'active open') ?>">
                                 <a href="#"><i class="icon mdi mdi-assignment-check"></i><span>Approval Tender</span></a>
                                 <ul class="sub-menu">
@@ -45,27 +73,29 @@
                                     <li class="<?= $this->uri ('approval/acara-rks/berita', 'active') ?>">
                                         <a href="<?= $this->pathFor ('daftarApprovalRKSTender') ?>">RKS</a>
                                     </li>
+                                    <li class="<?= $this->uri ('approval/boq/berita', 'active') ?>">
+                                        <a href="<?= $this->pathFor ('daftarApprovalBOQTender') ?>">BOQ</a>
+                                    </li>
                                     <li class="<?= $this->uri ('approval-tender/dokumen-kelengkapan', 'active') ?>">
                                         <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Dokumen</a>
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="index.html"><i class="icon mdi mdi-assignment-account"></i><span>Penenturan Unit Kerja</span></a>
-                            </li>
-                        <?php } ?>
-                        <li class="divider"></li>
-                        <li class="parent">
-                            <a href="#"><i class="icon mdi mdi-assignment"></i><span>Pengaturan</span></a>
-                            <ul class="sub-menu">
-                                <li><a href="ui-alerts.html">Dokumen Master Administrasi</a></li>
-                            </ul>
+
+                        <?php endif; ?>
+
+                        <li class="divider"><span class="label label-default">Pengaturan</span></li>
+
+                        <li>
+                            <a href="index.html"><i class="icon mdi mdi-file-text"></i><span>Dokumen Master Adm</span></a>
                         </li>
-<!--                        <li class="divider">Status Tender Terbaru</li>-->
+
+                        <li>
+                            <a href="index.html"><i class="icon mdi mdi-run"></i><span>Pengguna</span></a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

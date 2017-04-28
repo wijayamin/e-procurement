@@ -20,6 +20,7 @@
         protected $tenderModels;
         protected $userModels;
         protected $notifikasiModels;
+        protected $BOQModels;
 
         public function __construct (Container $container) {
             parent::__construct ($container);
@@ -28,6 +29,7 @@
             $this->tenderModels = new \ryan\models\tender($container);
             $this->userModels = new \ryan\models\users($container);
             $this->notifikasiModels = new \ryan\models\notifikasi($container);
+            $this->BOQModels = new \ryan\models\BOQ($container);
         }
 
         public function beritaTender(Req $req, Res $res, $args){
@@ -125,6 +127,41 @@
                 }
             }else{
                 return $res->write($args['status']);
+            }
+        }
+
+        public function beritaTenderBOQ(Req $req, Res $res, $args) {
+            if($req->isGet()){
+                $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
+                    return $penyelenggara['nama_penyelenggara'];
+                });
+                $this->view->registerFunction('countBOQApproval', function($id_tender){
+                    $BOQ = $this->BOQModels->countBOQApproval($id_tender);
+                    return $BOQ;
+                });
+                $beritaTender = $this->tenderModels->getBeritaTender();
+                $req = $req->withAttribute('beritaTender', $beritaTender);
+                return $this->view->render ("approval/boq/daftar-tender", $req->getAttributes ());
+            }
+        }
+
+
+        public function detaiTenderBOQ(Req $req, Res $res, $args){
+            if($req->isGet()){
+                $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
+                    return $penyelenggara['nama_penyelenggara'];
+                });
+                $this->view->registerFunction('getUserUpload', function($id_user){
+                    $user = $this->userModels->getUserDetail($id_user);
+                    return $user;
+                });
+                $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
+                $req = $req->withAttribute('tender', $beritaTender);
+                $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
+                $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
+                return $this->view->render ("approval/boq/detail-boq", $req->getAttributes ());
             }
         }
     }

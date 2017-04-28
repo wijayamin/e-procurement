@@ -12,7 +12,7 @@ $this->start('style');
 $this->stop();
 $this->start('page-title');
 ?>
-Daftar Berita Acara Tender
+Daftar Unit Kerja Berita Tender
 <?php
 $this->stop();
 $this->start('contents');
@@ -24,7 +24,7 @@ $this->start('contents');
             <span aria-hidden="true" class="mdi mdi-close"></span>
         </button>
         <span class="icon mdi mdi-info-outline"></span>
-        <strong>info!</strong> Daftar tender yang tampil adalah tender yang telah terdapat dokumen RKS dan dokumen RKS tersebut yang telah disetujui oleh direktur dan manajer
+        <strong>info!</strong> Daftar tender yang dapat ditentukan unit kerja-nya adalah tender dengan dokumen RKS yang telah disetujui oleh direktur dan manajer
     </div>
     <div class="panel panel-default panel-table">
         <div class="panel-body">
@@ -36,7 +36,7 @@ $this->start('contents');
                         <th width="10%">Mulai</th>
                         <th width="10%">Selesai</th>
                         <th width="10%">Penyelenggara</th>
-                        <th width="20%" class="text-center">Status Berita Acara</th>
+                        <th width="20%" class="text-right">Unit Kerja</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,26 +47,25 @@ $this->start('contents');
                         <?php if ($approvalRKS['direktur']['status'] == 'diterima' && $approvalRKS['manajer']['status'] == 'diterima'): ?>
                             <tr class="<?= ($this->dateAboveNow($tender['tgl_selesai']) ? null : 'text-muted') ?>">
                                 <td><?= $i ?></td>
-                                <td onclick="document.location = '<?= $this->pathFor('detailBeritaTender', ['id_tender' => $tender['id_tender']]) ?>'" style="cursor: pointer;">
+                                <td onclick="document.location = '<?= $this->pathFor('detailTenderBOQ', ['id_tender' => $tender['id_tender']]) ?>'" style="cursor: pointer;">
                                     <?= $tender['judul_tender'] ?>
                                 </td>
                                 <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
                                 <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
                                 <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
-                                <td class="text-center">
+                                <td class="text-right">
                                     <div class="btn-group btn-space">
                                         <?php $dokAcara = json_decode($tender['berita_acara'], true); ?>
-                                        <?php if (is_array($dokAcara)): ?>
+                                        <?php if ($this->countBOQApproval($tender['id_tender']) > 0): ?>
                                             <button type="button" class="btn btn-color btn-social btn-success btn-sm">
-                                                <i class="icon mdi mdi-check-circle"></i>
+                                                <?= $this->countBOQApproval($tender['id_tender']) ?>
                                             </button>
-                                            <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-success btn-sm">Ganti Berita Acara</a>
                                         <?php else: ?>
                                             <button type="button" class="btn btn-color btn-social btn-default btn-sm">
                                                 <i class="icon mdi mdi-circle-o"></i>
                                             </button>
-                                            <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-default btn-sm">Tambah Berita Acara</a>
                                         <?php endif; ?>
+                                        <a href="<?= $this->pathFor('DetailApprovalBOQTender', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-default btn-sm">Approval</a>
                                     </div>
                                 </td>
                             </tr>

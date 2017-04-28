@@ -32,11 +32,12 @@ $this->start('contents');
                 <thead>
                     <tr>
                         <th></th>
-                        <th width="50%">Judul</th>
+                        <th width="40%">Judul</th>
                         <th width="10%">Mulai</th>
                         <th width="10%">Selesai</th>
                         <th width="10%">Penyelenggara</th>
-                        <th width="20%" class="text-center">Status Berita Acara</th>
+                        <th width="10%" class="text-center">Kelengkapan</th>
+                        <th width="10%" class="text-center">Dokumen</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,20 +54,14 @@ $this->start('contents');
                                 <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
                                 <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
                                 <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
+                                <td class="milestone"><span class="completed">8 / 15</span><span class="version">v1.2.0</span>
+                                    <div class="progress">
+                                        <div style="width: 45%" class="progress-bar progress-bar-primary"></div>
+                                    </div>
+                                </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-space">
-                                        <?php $dokAcara = json_decode($tender['berita_acara'], true); ?>
-                                        <?php if (is_array($dokAcara)): ?>
-                                            <button type="button" class="btn btn-color btn-social btn-success btn-sm">
-                                                <i class="icon mdi mdi-check-circle"></i>
-                                            </button>
-                                            <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-success btn-sm">Ganti Berita Acara</a>
-                                        <?php else: ?>
-                                            <button type="button" class="btn btn-color btn-social btn-default btn-sm">
-                                                <i class="icon mdi mdi-circle-o"></i>
-                                            </button>
-                                            <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-default btn-sm">Tambah Berita Acara</a>
-                                        <?php endif; ?>
+                                        <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-primary btn-sm">Tambah Dokumen</a>
                                     </div>
                                 </td>
                             </tr>

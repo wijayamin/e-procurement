@@ -18,6 +18,7 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
         'S' => 
         array (
             'Slim\\Views\\' => 11,
+            'Slim\\PDO\\' => 9,
             'Slim\\Flash\\' => 11,
             'Slim\\' => 5,
         ),
@@ -50,6 +51,10 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
         'Slim\\Views\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/php-view/src',
+        ),
+        'Slim\\PDO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/pdo/src/PDO',
         ),
         'Slim\\Flash\\' => 
         array (

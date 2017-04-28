@@ -19,7 +19,7 @@ class dokumenTender extends \ryan\main {
     protected $userModels;
     protected $notifikasiModels;
 
-    public function __construct(Container $container) {
+    public function __construct($container) {
         parent::__construct($container);
         $this->container = $container;
         $this->userModels = new \ryan\models\users($container);
@@ -39,6 +39,12 @@ class dokumenTender extends \ryan\main {
             $req = $req->withAttribute ('beritaTender', $beritaTender);
 
             return $this->view->render ("dokumen/daftar-berita", $req->getAttributes ());
+        }
+    }
+
+    public function setDokumenTender(Request $req, Response $res, $args){
+        if($req->isGet()){
+            
         }
     }
 
