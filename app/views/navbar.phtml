@@ -13,29 +13,35 @@
                             <a href="<?= $this->pathFor ('DashboardPage') ?>"><i class="icon mdi mdi-home"></i><span>Dashboard</span></a>
                         </li>
 
-                        <li class="parent <?= $this->uri (0, 'berita-tender', 'active open') ?>">
+                        <li class="parent <?= $this->uri (0, 'tender', 'active open') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>Berita Tender</span></a>
                             <ul class="sub-menu">
-                                <li class="<?= $this->uri ('berita-tender', 'active') ?>">
+                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'daftar') ? 'active':'') ?>">
                                     <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Daftar Tender</a>
                                 </li>
-                                <li class="<?= $this->uri (1, 'detail', 'active', 'hidden') ?>">
+                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
                                     <a role="button">Detail Tender</a>
                                 </li>
-                                <li class="<?= $this->uri ('berita-tender/tambah', 'active') ?>">
+                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'tambah') ? 'active':'') ?>">
                                     <a href="<?= $this->pathFor ('tambahBeritaTender') ?>">Tambah</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li class="parent <?= $this->uri (0, 'acara-rks', 'active open') ?>">
+                        <li class="parent <?= ($this->uri(0, 'rks') || $this->uri(0, 'acara') ? 'active open':'') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
                             <ul class="sub-menu">
-                                <li class="<?= $this->uri (1, 'rks', 'active') ?>">
+                                <li class="<?= ($this->uri(0, 'rks') && $this->uri(1, 'daftar') ? 'active':'') ?>">
                                     <a href="<?= $this->pathFor ('daftarBeritaTenderRKS') ?>">Daftar RKS Tender</a>
                                 </li>
-                                <li class="<?= $this->uri (1, 'acara', 'active') ?>">
+                                <li class="<?= ($this->uri(0, 'rks') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
+                                    <a role="button">Detail RKS Tender</a>
+                                </li>
+                                <li class="<?= ($this->uri(0, 'acara') && $this->uri(1, 'daftar') ? 'active':'') ?>">
                                     <a href="<?= $this->pathFor ('daftarBeritaTenderAcara') ?>">Daftar Berita Acara Tender</a>
+                                </li>
+                                <li class="<?= ($this->uri(0, 'acara') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
+                                    <a role="button">Detail Berita Acara Tender</a>
                                 </li>
                             </ul>
                         </li>
@@ -49,16 +55,40 @@
                         <?php endif; ?>
 
                         <?php if (in_array ($active_user_data[ 'previledge' ], ['4'])): ?>
-                            <li class="<?= $this->uri (0, 'boq', 'active') ?>">
+                            <li class="<?= $this->uri (0, 'boq', 'parent active open') ?>">
                                 <a href="<?= $this->pathFor ('daftarBeritaTenderBOQ') ?>">
                                     <i class="icon mdi mdi-shopping-cart"></i><span>Penenturan BOQ</span>
                                 </a>
+                                <?php if($this->uri(0, 'boq')): ?>
+                                <ul class="sub-menu">
+                                    <li class="<?= ($this->uri(0, 'boq') && $this->uri(1, 'daftar') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('daftarBeritaTenderBOQ') ?>">Daftar Tender</a>
+                                    </li>
+                                    <li class="<?= ($this->uri(0, 'boq') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
+                                        <a role="button">Daftar BOQ Tender</a>
+                                    </li>
+                                </ul>
+                                <?php endif; ?>
                             </li>
                         <?php endif; ?>
 
-                        <li>
-                            <a href="<?= $this->pathFor('daftarBeritaTenderDokumen') ?>"><i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span></a>
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['3', '4'])): ?>
+                        <li class="<?= $this->uri (0, 'dokumen', 'parent active open') ?>">
+                            <a href="<?= $this->pathFor('daftarBeritaTenderDokumen') ?>">
+                                <i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span>
+                            </a>
+                            <?php if($this->uri(0, 'dokumen')): ?>
+                                <ul class="sub-menu">
+                                    <li class="<?= ($this->uri(0, 'dokumen') && $this->uri(1, 'daftar') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('daftarBeritaTenderDokumen') ?>">Daftar Tender</a>
+                                    </li>
+                                    <li class="<?= ($this->uri(0, 'dokumen') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
+                                        <a role="button">Daftar Dokumen Tender</a>
+                                    </li>
+                                </ul>
+                            <?php endif; ?>
                         </li>
+                        <?php endif; ?>
 
                         <?php if (in_array ($active_user_data[ 'previledge' ], ['2', '3'])): ?>
 

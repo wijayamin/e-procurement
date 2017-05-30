@@ -12,7 +12,7 @@ $this->start('style');
 $this->stop();
 $this->start('page-title');
 ?>
-Daftar RKS Berita Tender
+Daftar Dokumen Kelengkapan Berita Tender
 <?php
 $this->stop();
 $this->start('contents');
@@ -54,14 +54,14 @@ $this->start('contents');
                                 <td><?= $this->indDate($tender['tgl_mulai']) ?></td>
                                 <td><?= $this->indDate($tender['tgl_selesai']) ?></td>
                                 <td><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></td>
-                                <td class="milestone"><span class="completed">8 / 15</span><span class="version">v1.2.0</span>
+                                <td class="milestone"><span class="completed"><?= $this->countDokumen($tender['id_tender'])['done'] ?> dari <?= $this->countDokumen($tender['id_tender'])['total'] ?></span><span class="version">Progress</span>
                                     <div class="progress">
-                                        <div style="width: 45%" class="progress-bar progress-bar-primary"></div>
+                                        <div style="width: <?= $this->countDokumen($tender['id_tender'])['done']/$this->countDokumen($tender['id_tender'])['total']*100 ?>%" class="progress-bar progress-bar-primary"></div>
                                     </div>
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-space">
-                                        <a href="<?= $this->pathFor('detailBeritaTenderAcara', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-primary btn-sm">Tambah Dokumen</a>
+                                        <a href="<?= $this->pathFor('detailBeritaTenderDokumen', ['id_tender' => $tender['id_tender']]) ?>" type="button" class="btn btn-primary btn-sm">Tambah Dokumen</a>
                                     </div>
                                 </td>
                             </tr>

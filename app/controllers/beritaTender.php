@@ -18,6 +18,7 @@
         protected $tenderModels;
         protected $userModels;
         protected $notifikasiModels;
+        protected $dokumenModels;
 
         public function __construct (Container $container) {
             parent::__construct ($container);
@@ -26,6 +27,7 @@
             $this->penyelenggaraModels = new \ryan\models\penyelenggara($container);
             $this->tenderModels = new \ryan\models\tender($container);
             $this->notifikasiModels = new \ryan\models\notifikasi($container);
+            $this->dokumenModels = new \ryan\models\dokumenTender($container);
         }
 
         public function tambahBeritaTender (Req $req, Res $res, $args) {
@@ -45,6 +47,14 @@
                 ];
                 $insert = $this->tenderModels->addBeritaTender ($data);
                 if ($insert) {
+                    foreach ($_POST['upload'] as $dokumen){
+                        $dataDok = [
+                            'id_tender'=>$insert,
+                            'nama_dokumen'=>$dokumen,
+                            'dokumen_syarat'=>'1'
+                        ];
+                        $insertDok = $this->dokumenModels->setDokumenTender($dataDok);
+                    }
                     $this->notifikasiModels->addNotification ([
                         "id_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
                         "tentang" => 'Telah Menambah Berita Tender Baru "' . $data[ 'judul_tender' ] . '"',
@@ -52,7 +62,7 @@
                         "meta" => $this->router->pathFor ('detailBeritaTender', ['id_tender' => $insert])
                     ]);
 
-                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('detailBeritaTender'));
+                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('detailBeritaTender', ['id_tender'=>$insert]));
                 }
             }
         }

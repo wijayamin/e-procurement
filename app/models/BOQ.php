@@ -30,7 +30,7 @@ class BOQ extends \ryan\main{
     }
 
     public function getBOQByTender($id_tender){
-        $select = $this->db->prepare('select * from penawaran where ID_TENDER=:id_tender and INPUTAN_MANAJER is NULL');
+        $select = $this->db->prepare('select * from penawaran where ID_TENDER=:id_tender and INPUTAN_MANAJER is null');
         $select->bindParam(':id_tender', $id_tender);
         $select->execute();
         return $select->fetchAll();
@@ -43,10 +43,25 @@ class BOQ extends \ryan\main{
         return $select->fetch();
     }
 
+    public function getBOQ($id_penawaran = null){
+        if($id_penawaran == null){
+
+        }else{
+            $select = $this->db->prepare('select * from penawaran where id_penawaran=:id_penawaran');
+            $select->bindParam(':id_penawaran', $id_penawaran);
+            $select->execute();
+            return $select->fetch();
+        }
+    }
+
+
     public function setBOQ($data, $id_penawaran = null){
         if($id_penawaran == null){
             $insert = $this->pdo->insert(array_keys($data))->into('penawaran')->values(array_values($data));
             return $insert->execute(true);
+        }else{
+            $update = $this->pdo->update($data)->table('penawaran')->where("id_penawaran", '=', $id_penawaran);
+            return $update->execute();
         }
     }
 

@@ -164,4 +164,55 @@
                 return $this->view->render ("approval/boq/detail-boq", $req->getAttributes ());
             }
         }
+        public function approvalTenderBOQ(Req $req, Res $res, $args) {
+            $result = [];
+            if($req->getAttribute ('active_user_data')[ 'previledge' ] == "3" and $_POST["status"] == "ditolak"){
+                $data = [
+                    "id_tender" => $_POST['data'][0]['id_tender'],
+                    "id_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                    "nama_vendor" => $_POST['data'][0]['nama_vendor'],
+                    "nama_barang" => $_POST['data'][0]['nama_barang'],
+                    "harga_persatuan" => $_POST['data'][0]['harga_persatuan'],
+                    "volume_barang" => $_POST['data'][0]['volume_barang'],
+                    "ukuran_satuan" => $_POST['data'][0]['ukuran_satuan'],
+                    "waktu" => date ("Y-m-d H:i:s"),
+                    "approval" => json_encode([
+                        "direktur" => [
+                            "status" => "",
+                            "waktu" => "",
+                        ],
+                        "manajer" => [
+                            "status" => "diterima",
+                            "waktu" => date ("Y-m-d H:i:s"),
+                        ]
+                    ]),
+                    "inputan_manajer" => $_POST['data'][0]['id_penawaran']
+                ];
+                if($this->BOQModels->setBOQ($data)){
+                    $result['status']='success';
+                }
+            }
+            foreach ($_POST['data'] as $pdata){
+                $data = $this->BOQModels->getBOQ($pdata['id_penawaran']);
+                $dataApproval = json_decode($data["approval"], true);
+                if($req->getAttribute ('active_user_data')[ 'previledge' ] == "2"){
+                    $dataApproval["direktur"] = [
+                        "status" => $_POST["status"],
+                        "waktu" => date ("Y-m-d H:i:s"),
+                    ];
+                }elseif($req->getAttribute ('active_user_data')[ 'previledge' ] == "3"){
+                    $dataApproval["manajer"] = [
+                        "status" => $_POST["status"],
+                        "waktu" => date ("Y-m-d H:i:s"),
+                    ];
+                }
+                $approval = [
+                    "approval" => json_encode($dataApproval)
+                ];
+                if($this->BOQModels->setBOQ($approval, $pdata['id_penawaran'])){
+                    $result['status']='success';
+                }
+            }
+            return $res->withJson($result);
+        }
     }

@@ -77,6 +77,7 @@ class BOQ extends \ryan\main{
             ];
             $BOQ['total'] = $BOQ['harga_persatuan']*$BOQ['volume_barang'];
             $BOQ['inputan_manajer'] = $this->BOQModels->getBOQManajer($BOQ['id_penawaran']);
+            $BOQ['approval'] = json_decode($BOQ['approval'], true);
             if($BOQ['inputan_manajer']){
                 $BOQ['inputan_manajer']['pegawai'] = [
                     'who'=>$this->userModels->getUserDetail($BOQ['inputan_manajer']['id_user']),

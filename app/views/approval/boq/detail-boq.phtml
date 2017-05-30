@@ -12,10 +12,24 @@ $this->layout('base', $parent_data);
 $this->start('style');
 ?>
     <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/plugins/FixedColumns-3.2.2/css/fixedColumns.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/plugins/Select-1.2.2/css/select.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/bootstrap3-editable/css/bootstrap-editable.css"/>
     <style>
         td.wrap {
             word-wrap: break-word;
+        }
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+            white-space: nowrap;
+        }
+        div.dataTables_wrapper {
+            width: 800px;
+            margin: 0 auto;
+        }
+        .DTFC_LeftBodyLiner {
+            overflow-x: hidden;
         }
     </style>
     <!--tempat css/style-->
@@ -23,7 +37,7 @@ $this->start('style');
 $this->stop();
 $this->start('page-title');
 ?>
-    Daftar BOQ Tender
+    Approval BOQ Tender
 <?php
 $this->stop();
 $this->start('contents');
@@ -141,25 +155,33 @@ $this->start('contents');
             <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
     </aside>
     <div class="main-content container-fluid">
-        <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
+        <div class="panel panel-default panel-table panel-border-color panel-border-color-primary">
             <div class="panel-heading">Daftar BOQ
                 <div class="tools">
-                    <button class="btn btn-rounded btn-space btn-primary btn-sm" data-toggle="modal" data-target="#form-unitkerja">
-                        <i class="mdi mdi-shopping-cart-plus"></i>
-                        &nbsp; Tambah BOQ
-                    </button>
+                    <div class="btn-group btn-space">
+                        <button type="button" class="btn btn-success mass-terima" disabled>
+                            <i class="icon mdi mdi-check" style="color: white"></i> Terima
+                        </button>
+                        <?php if (in_array ($active_user_data[ 'previledge' ], ['2'])): ?>
+                        <button type="button" class="btn btn-danger mass-tolak" disabled>
+                            <i class="icon mdi mdi-close" style="color: white"></i> Tolak
+                        </button>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <div class="panel-body">
-                <table id="unit-kerja" class="table table-hover table-fw-widget" style="width: 100% !important;">
+                <table id="unit-kerja" class="table table-borderless table-fw-widget" style="width: 100% !important;">
                     <thead>
                         <tr>
-                            <th width="10%">No</th>
-                            <th>Vendor</th>
-                            <th>Barang</th>
-                            <th>Harga</th>
-                            <th>Jml</th>
-                            <th>Total</th>
+                            <th width="5%">
+                            </th>
+                            <th>No</th>
+                            <th>Vendor / Barang</th>
+                            <th>Harga / Jumlah / total</th>
+                            <th>Diajukan Oleh</th>
+                            <th>Status</th>
+                            <th>Approval</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,105 +190,30 @@ $this->start('contents');
             </div>
         </div>
     </div>
-    <div id="form-unitkerja" tabindex="-1" role="dialog" class="modal fade colored-header colored-header-primary">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
-                    <h3 class="modal-title">Form Input BOQ</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Vendor</label>
-                                <input type="text" placeholder="PT. XYZ" id="modal-vendor" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Barang</label>
-                                <input type="text" placeholder="GWS 55m" id="modal-barang" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <label>Harga Barang Satuan</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="basic-addon1">Rp</span>
-                                    <input type="number" class="form-control" id="modal-harga">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Jumlah</label>
-                                <input type="number" class="form-control" id="modal-volume">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Ukuran Satuan</label>
-                                <select multiple="" id="modal-satuan">
-                                    <optgroup label="Panjang">
-                                        <option value="mm">mm</option>
-                                        <option value="cm">cm</option>
-                                        <option value="m">m</option>
-                                        <option value="km">km</option>
-                                        <option value="inch">inch(&ldquo;)</option>
-                                        <option value="feet">feet</option>
-                                        <option value="mile">mile</option>
-                                    </optgroup>
-                                    <optgroup label="Luas">
-                                        <option value="mm&sup2;">mm&sup2;</option>
-                                        <option value="cm&sup2;">cm&sup2;</option>
-                                        <option value="m&sup2;">m&sup2;</option>
-                                        <option value="km&sup2;">km&sup2;</option>
-                                    </optgroup>
-                                    <optgroup label="Volume">
-                                        <option value="mm&sup3;">mm&sup3;</option>
-                                        <option value="cm&sup3;">cm&sup3;</option>
-                                        <option value="m&sup3;">m&sup3;</option>
-                                        <option value="km&sup3;">km&sup3;</option>
-                                    </optgroup>
-                                    <optgroup label="Berat">
-                                        <option value="g">g</option>
-                                        <option value="ons">ons</option>
-                                        <option value="kg">kg</option>
-                                        <option value="pound">pound</option>
-                                    </optgroup>
-                                    <optgroup label="Volume Cairan">
-                                        <option value="cc">cc</option>
-                                        <option value="ml">ml</option>
-                                        <option value="l">l</option>
-                                        <option value="galon">galon</option>
-                                    </optgroup>
-                                    <optgroup label="Unit">
-                                        <option value="Unit">Unit</option>
-                                        <option value="pcs">pcs</option>
-                                        <option value="lot">lot</option>
-                                        <option value="dus">dus</option>
-                                        <option value="kotak">kotak</option>
-                                        <option value="rol">rol</option>
-                                        <option value="kodi">kodi</option>
-                                        <option value="rim">rim</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
+    <!--akhir tempat konten-->
+    <!--Modal Approve terima Single-->
+    <div id="approval-terima" class="modal-container full-width  colored-header modal-effect-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+                <h3 class="modal-title">Setujui BOQ</h3>
+            </div>
+            <div class="modal-body">
+                <div role="alert" class="alert alert-warning alert-icon alert-icon-border alert-dismissible">
+                    <div class="icon"><span class="mdi mdi-info-outline"></span></div>
+                    <div class="message">
+                        <button type="button" data-dismiss="alert" aria-label="Close" class="close"><span aria-hidden="true" class="mdi mdi-close"></span></button>
+                        <strong>Info</strong> Klik <strong>TEKS</strong> untuk mengubah data BOQ
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary form-unitkerja-simpan">Tambahkan</button>
-                    <button type="button" data-dismiss="modal" class="btn btn-default md-close">Batal</button>
-                </div>
+                <div class="tempat-table" style="overflow:scroll;height:200px;width:100%;overflow:auto"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn modal-close modal-ok">Setujui</button>
+                <button type="button" data-dismiss="modal" class="btn btn-default modal-close modal-cancel">Batal</button>
             </div>
         </div>
     </div>
-
-    <!--akhir tempat konten-->
 <?php
 $this->stop();
 $this->start('js');
@@ -281,45 +228,254 @@ $this->start('js');
     <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.print.js" type="text/javascript"></script>
     <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
     <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/dataTables.rowsGroup.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/FixedColumns-3.2.2/js/dataTables.fixedColumns.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/Select-1.2.2/js/dataTables.select.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/currency.js" type="text/javascript"></script>
     <script src="public/assets/js/app-tables-datatables.js" type="text/javascript"></script>
     <script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
-    <script id="custom-render-child" type="x-tmpl-mustache">
-        <tr style="background-color:{{ bgcolor }}">
-            <td style="border-top:0px; padding:0px !important;"></td>
-            <td colspan="5" style="padding:0px !important;">
-                <table class="table table-condensed" style="background: none !important;">
-                    <thead>
-                        <tr>
-                            <th>Diajukan Oleh</th>
-                            <th>Status Approval</th>
-                            <th>Approval Anda</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="background-color: {{ bgcolor }} ;">
-                            <td class="user-avatar cell-detail user-info">
-                                <img src="public/profile/{{ pegawai.who.image }}" alt="Avatar">
-                                <span>{{ pegawai.who.nama }}</span>
-                                <span class="cell-detail-description time-from-now">{{ pegawai.time }}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        {{ #inputan_manajer }}
-        <tr>
-            <td style="border-top:0px !important;"><img src="public/assets/img/panah.png" width="30%"></td>
-            <td>inputan_manajer.nama_vendor</td>
-            <td>inputan_manajer.nama_barang</td>
-            <td>parseInt(inputan_manajer.harga_persatuan).formatMoney(0)</td>
-            <td>inputan_manajer.volume_barang     inputan_manajer.ukuran_satuan</td>
-        </tr>
-        {{ /inputan_manajer }}
-    </script>
+    <script src="public/assets/lib/bootstrap3-editable/js/bootstrap-editable.min.js" type="text/javascript"></script>
     <script>
-        $(document).ready(function () {
+        var tBOQ;
+        function populateTable(repopulate) {
+            if(repopulate){
+                tBOQ.destroy()
+            }
+            if ( $.fn.dataTable.isDataTable( '#unit-kerja' ) == false ) {
+                tBOQ = $('#unit-kerja').DataTable({
+                    sort: false,
+                    ajax:"<?= $this->pathFor('getBOQTender', ['id_tender'=>$tender['id_tender']]) ?>",
+                    columns:[
+                        {
+                            data: "id_penawaran",
+                            render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        {
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                delete data.rowData;
+//                                var datas =  {
+//                                    id_penawaran:data.id_penawaran,
+//                                    nama_vendor:data.nama_vendor,
+//                                    nama_barang:data.nama_barang,
+//                                    harga_persatuan:data.harga_persatuan,
+//                                    volume_barang:data.volume_barang,
+//                                    ukuran_satuan:data.ukuran_satuan,
+//                                    pegawai:data.pegawai,
+//                                    total:data.total,
+//                                }
+                                return  '<div class="be-checkbox be-checkbox-sm">'+
+                                    '   <input id="check'+data.id_penawaran+'" class="mass-check" type="checkbox" value=\''+JSON.stringify(data)+'\'>'+
+                                    '   <label for="check'+data.id_penawaran+'"></label>'+
+                                    '</div>'
+                            }
+                        },
+                        {
+                            data: null,
+                            className: "cell-detail",
+                            render: function (data, type, row, meta) {
+                                return '<span>'+data.nama_vendor+'</span><span class="cell-detail-description"><strong>'+data.nama_barang+'</strong></span>'
+                            }
+                        },
+                        {
+                            data:{
+                                _:null,
+                                sort:"volume_barang"
+                            },
+                            className: "cell-detail",
+                            render: function (data, type, row, meta) {
+                                return '<span> Rp. '+parseInt(data.harga_persatuan).formatMoney(0)+'</span><span class="cell-detail-description"><strong>'+data.volume_barang+' '+data.ukuran_satuan+'</strong></span><span> Rp. '+parseInt(data.total).formatMoney(0)+'</span>'
+                            }
+                        },
+                        {
+                            data: {
+                                _:"pegawai",
+                                sort:'pegawai.who.id_user'
+                            },
+                            className: 'user-avatar cell-detail user-info',
+                            render: function (data, type, row, meta) {
+                                var waktu = moment(data.time).fromNow()
+                                return '<img src="public/profile/' + data.who.image + '" alt="Avatar"><span>' + data.who.nama + '</span><span class="cell-detail-description">' + waktu + '</span>';
+                            },
+                        },
+                        {
+                            data: null,
+                            className: 'text-center',
+                            render: function (data, type, row, meta) {
+                                var dtStatusCol = Twig.twig({
+                                    href: "app/views/approval/boq/dt-status-col.twig",
+                                    async: false,
+                                })
+                                return  dtStatusCol.render(data.approval)
+                            }
+                        },
+                        {
+                            data: null,
+                            className: 'text-center',
+                            render: function (data, type, row, meta) {
+                                delete data.rowData;
+                                data.active_user_priv = <?= $active_user_data[ 'previledge' ] ?>;
+                                var approvalColTmp = Twig.twig({
+                                    href: "app/views/approval/boq/dt-approval-col.twig",
+                                    async: false,
+                                });
+                                return approvalColTmp.render({rowData:data})
+                            }
+                        },
+                    ],
+                    initComplete: function(settings, json) {
+                        tBOQ.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+                            var data = this.data();
+                            if(data.inputan_manajer){
+//                                tBOQ.row(rowIdx).nodes().to$().addClass('online')
+                                data.inputan_manajer.pegawai.time = moment(data.inputan_manajer.pegawai.time).fromNow()
+                                data.inputan_manajer.approval = JSON.parse(data.inputan_manajer.approval)
+                                data.inputan_manajer.active_user_priv = <?= $active_user_data[ 'previledge' ] ?>;
+                                var rowChildTmp = Twig.twig({
+                                    href: "app/views/approval/boq/custom-render-child.twig",
+                                    async: false,
+                                })
+                                tBOQ.row(rowIdx).child($(rowChildTmp.render(data))).show()
+                            }
+                        });
+                    }
+                });
+            }
+            var numFormat = $.fn.dataTable.render.number( '\,', '.', 2, 'Rp.' ).display;
 
+            $('#unit-kerja tbody').on('click', 'td .btn-terima', function () {
+                var rowData = $(this).data('rowdata');
+                approvalModal({rowData:[rowData]}, 'diterima', populateTable);
+            });
+            $('#unit-kerja tbody').on('click', 'td .btn-tolak', function () {
+                var rowData = $(this).data('rowdata');
+                var activeUser = <?= $active_user_data[ 'previledge' ] ?>;
+                if(activeUser == '3'){
+                    approvalModal({rowData:[rowData]}, 'ditolak', populateTable, true);
+                }else{
+                    approvalModal({rowData:[rowData]}, 'ditolak', populateTable);
+                }
+            });
+            $('#unit-kerja tbody').on('change', 'input[type="checkbox"]', function(){
+                var row = tBOQ.row( $(this).parents('tr') )
+                if(row.child.isShown()){
+                    row.child().find('input[type="checkbox"]').prop('checked', false);
+                }else{
+                    var parent = $(this).data('parent');
+                    if(parent){
+                        $('#unit-kerja tbody #check'+parent).prop('checked', false);
+                    }
+                }
+                if($('#unit-kerja tbody input[type="checkbox"]:checked').length){
+                    $('.mass-terima').prop('disabled', false)
+                    $('.mass-tolak').prop('disabled', false)
+                }else{
+                    $('.mass-terima').prop('disabled', true)
+                    $('.mass-tolak').prop('disabled', true)
+                }
+            });
+            $('.mass-terima').on('click', function () {
+                var selectedData = []
+                $('#unit-kerja tbody input[type="checkbox"]:checked').each(function () {
+                    selectedData.push(JSON.parse($(this).val()));
+                })
+                approvalModal({rowData:selectedData}, 'diterima');
+            })
+            $('.mass-tolak').on('click', function () {
+                var selectedData = []
+                var activeUser = <?= $active_user_data[ 'previledge' ] ?>;
+                $('#unit-kerja tbody input[type="checkbox"]:checked').each(function () {
+                    selectedData.push(JSON.parse($(this).val()));
+                })
+                if(activeUser == 3){
+                    approvalModal({rowData:selectedData}, 'ditolak', true);
+                }else{
+                    approvalModal({rowData:selectedData}, 'ditolak');
+                }
+            })
+            $.getJSON('<?= $this->pathFor('getBOQTender', ['id_tender'=>$tender['id_tender']]) ?>', function (data) {
+
+            });
+        }
+        function approvalModal(rowData, type, populateTable, isManajer){
+            console.log(rowData)
+            var approvalTableTmp = Twig.twig({
+                href: "app/views/approval/boq/table-approval-preview.twig",
+                async: false,
+            });
+            var approvalTableEditableTmp = Twig.twig({
+                href: "app/views/approval/boq/table-approval-editable.twig",
+                async: false,
+            });
+            $('#approval-terima').niftyModal({
+                beforeOpen: function( modal ){
+                    if(type == 'diterima'){
+                        $(modal.modalEl).removeClass('colored-header-danger');
+                        $(modal.modalEl).addClass('colored-header-success');
+                        $(modal.modalEl).find('.modal-title').html('Setujui BOQ di bawah ini ?');
+                        $(modal.modalEl).find('.modal-ok').html('Setujui');
+                        $(modal.modalEl).find('.modal-ok').removeClass('btn-danger')
+                        $(modal.modalEl).find('.modal-ok').addClass('btn-success')
+                    }else{
+                        $(modal.modalEl).removeClass('colored-header-success');
+                        $(modal.modalEl).addClass('colored-header-danger');
+                        $(modal.modalEl).find('.modal-title').html('Tolak BOQ di bawah ini ?');
+                        $(modal.modalEl).find('.modal-ok').html('Tolak');
+                        $(modal.modalEl).find('.modal-ok').removeClass('btn-success')
+                        $(modal.modalEl).find('.modal-ok').addClass('btn-danger')
+                    }
+                    if(typeof isManajer === 'undefined'){
+                        $(modal.modalEl).find('.tempat-table').html(approvalTableTmp.render(rowData));
+                        $(modal.modalEl).find('.alert').addClass('hidden')
+                    }else{
+                        $(modal.modalEl).find('.tempat-table').html(approvalTableEditableTmp.render(rowData));
+                        $(modal.modalEl).find('#boq-editable a.editable-revisi').editable({
+                            type: 'text',
+                        });
+                        $(modal.modalEl).find('#boq-editable a[data-name="harga_persatuan"]').on('save', function(e, params) {
+                            var total = $(modal.modalEl).find('#boq-editable a[data-name="volume_barang"]').editable('getValue', true)*params.newValue
+                            $(modal.modalEl).find('#boq-editable a[data-name="total"]').editable('setValue', total)
+                        });
+                        $(modal.modalEl).find('#boq-editable a[data-name="volume_barang"]').on('save', function(e, params) {
+                            var total = $(modal.modalEl).find('#boq-editable a[data-name="harga_persatuan"]').editable('getValue', true)*params.newValue
+                            $(modal.modalEl).find('#boq-editable a[data-name="total"]').editable('setValue', total)
+                        });
+                        $(modal.modalEl).find('.alert').removeClass('hidden')
+                    }
+//                    approvalTableTmp.render(data);
+                },
+                buttons: [
+                    {
+                        class: 'modal-ok',
+                        callback: function ( btn, modal, event ) {
+                            if(typeof isManajer != 'undefined'){
+                                var dataRev = [];
+                                dataRev.push($(modal.modalEl).find('#boq-editable a.editable-revisi').editable('getValue', false));
+                                console.log(dataRev)
+                                $.post("<?= $this->pathFor("ApprovalBOQTender") ?>", {data:dataRev, status:type}, function(data){
+                                    populateTable(true);
+                                }, 'json')
+                            }else{
+//                                console.log(rowData)
+                                $.post("<?= $this->pathFor("ApprovalBOQTender") ?>", {data:rowData.rowData, status:type}, function(data){
+                                    populateTable(true);
+                                }, 'json')
+                            }
+                        }
+                    },
+                    {
+                        class: 'modal-cancel',
+                        callback: function ( btn, modal, event ) {
+
+                        }
+                    }
+                ],
+            });
+        }
+        $(document).ready(function () {
+            $.fn.editable.defaults.mode = 'inline';
             Number.prototype.formatMoney = function(c, d, t){
                 var n = this,
                     c = isNaN(c = Math.abs(c)) ? 2 : c,
@@ -336,7 +492,6 @@ $this->start('js');
                 closeSelector: '.modal-close',
                 classAddAfterOpen: 'modal-show',
             });
-
             //We use this to apply style to certain elements
             $.extend(true, $.fn.dataTable.defaults, {
                 dom: "<'row be-datatable-header'<'col-sm-6'l><'col-sm-6'f>>" +
@@ -361,98 +516,7 @@ $this->start('js');
                     "searchPlaceholder": 'Cari',
                 },
             });
-
-            var unitKerja = $('#unit-kerja').DataTable({
-                ajax:"<?= $this->pathFor('getBOQTender', ['id_tender'=>$tender['id_tender']]) ?>",
-                columns:[
-                    {
-                        data: null,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {data:'nama_vendor'},
-                    {
-                        data:'nama_barang',
-                        className: 'wrap',
-                    },
-                    {
-                        data:'harga_persatuan',
-                        render: $.fn.dataTable.render.number( ','),
-                    },
-                    {
-                        data:{
-                            _:null,
-                            sort:"volume_barang"
-                        },
-                        render: function (data, type, row, meta) {
-                            return data.volume_barang + ' ' + data.ukuran_satuan
-                        },
-                    },
-                    {
-                        data:'total',
-                        render: $.fn.dataTable.render.number( ','),
-                    },
-                ],
-                initComplete: function(settings, json) {
-                    unitKerja.rows().every(function (rowId, tableLoop, rowLoop) {
-                        var data = this.data();
-                        var bg = '#f5f5f5';
-                        if(rowId % 2 == 0){
-                            $(this.row().node()).css('background-color', bg);
-                            data.bgcolor = bg;
-                            data.rowid = rowId
-                        }
-                        this.child($(Mustache.render($('#custom-render-child').html(), data))).show();
-                        console.log($(Mustache.render($('#custom-render-child').html(), data)));
-//                        $('.time-from-now').html(lala);
-                    });
-                }
-            });
-
-
-
-            $('#form-unitkerja').on('show.bs.modal', function (event) {
-                var mBtn = $(event.relatedTarget) // Button that triggered the modal
-                var mData = mBtn.data() // Extract info from data-* attributes
-                var modal = $(this)
-
-                modal.find("#modal-satuan").select2({
-                    placeholder: 'Meter',
-                    width: '100%',
-                    maximumSelectionLength: 1,
-                    tags: true
-                });
-
-                modal.find('.form-unitkerja-simpan').on('click', function () {
-                    var pegawai = modal.find('#modal-pegawai').val()
-                    var penugasan = modal.find('#modal-penugasan').val()
-                    $.ajax({
-                        type: "POST",
-                        url: '<?= $this->pathFor('setBOQTender', ['id_tender'=>$tender['id_tender']]) ?>',
-                        data: {
-                            nama_vendor:modal.find('#modal-vendor').val(),
-                            nama_barang:modal.find('#modal-barang').val(),
-                            harga_persatuan:modal.find('#modal-harga').val(),
-                            volume_barang:modal.find('#modal-volume').val(),
-                            ukuran_satuan:modal.find('#modal-satuan').val(),
-                        },
-                        success: function (result) {
-                            if(result.status == 'success'){
-                                unitKerja.ajax.reload();
-                                modal.find('input').val('');
-                                modal.find('select').val('');
-                                $('#form-unitkerja').modal('hide')
-                            }
-                        },
-                        dataType: "JSON"
-                    });
-
-
-                })
-
-            })
-
+            populateTable()
         })
     </script>
 <?php $this->stop() ?>

@@ -24,10 +24,10 @@ $app->group('', function () {
     $this->get('/dashboard', \ryan\controllers\dashboard::class . ':dashboardPage')->setName('DashboardPage');
 
     // Group Menu Berita Tender
-    $this->group('/berita-tender', function () {
+    $this->group('/tender', function () {
 
         // Halaman Daftar Semua Berita Tender
-        $this->any('', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('daftarBeritaTender');
+        $this->any('/daftar', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('daftarBeritaTender');
 
         // Halaman Untuk Menambah Berita Tender
         $this->any('/tambah', \ryan\controllers\beritaTender::class . ':tambahBeritaTender')->setName('tambahBeritaTender');
@@ -37,30 +37,25 @@ $app->group('', function () {
 
     });
 
-    //group menu RKS dan Berita Acara
-    $this->group('/acara-rks', function () {
+    // group rks
+    $this->group('/rks', function () {
 
-        // group rks
-        $this->group('/rks', function () {
+        // halaman daftar berita yang dapat di input rks
+        $this->any('/daftar', \ryan\controllers\acaraRKS::class . ':beritaTenderRKS')->setName('daftarBeritaTenderRKS');
 
-            // halaman daftar berita yang dapat di input rks
-            $this->any('', \ryan\controllers\acaraRKS::class . ':beritaTenderRKS')->setName('daftarBeritaTenderRKS');
+        // halaman detail berita dan upload rks
+        $this->any('/detail/{id_tender}', \ryan\controllers\acaraRKS::class . ':detailBeritaTenderRKS')->setName('detailBeritaTenderRKS');
 
-            // halaman detail berita dan upload rks
-            $this->any('/detail/{id_tender}', \ryan\controllers\acaraRKS::class . ':detailBeritaTenderRKS')->setName('detailBeritaTenderRKS');
+    });
 
-        });
+    //group berita acara
+    $this->group('/acara', function () {
 
-        //group berita acara
-        $this->group('/acara', function () {
+        //halaman daftar berita yang dapat di input berita acara
+        $this->any('/daftar', \ryan\controllers\acaraRKS::class . ':beritaTenderAcara')->setName('daftarBeritaTenderAcara');
 
-            //halaman daftar berita yang dapat di input berita acara
-            $this->any('', \ryan\controllers\acaraRKS::class . ':beritaTenderAcara')->setName('daftarBeritaTenderAcara');
-
-            // halaman detail berita dan upload berita acara
-            $this->any('/detail/{id_tender}', \ryan\controllers\acaraRKS::class . ':detailBeritaTenderAcara')->setName('detailBeritaTenderAcara');
-
-        });
+        // halaman detail berita dan upload berita acara
+        $this->any('/detail/{id_tender}', \ryan\controllers\acaraRKS::class . ':detailBeritaTenderAcara')->setName('detailBeritaTenderAcara');
 
     });
 
@@ -68,7 +63,7 @@ $app->group('', function () {
     $this->group('/unit-kerja', function () {
 
             //halaman daftar berita yang dapat di input unit kerja
-            $this->any('', \ryan\controllers\unitKerja::class . ':beritaTenderUnitKerja')->setName('daftarBeritaTenderUnitKerja');
+            $this->any('/daftar', \ryan\controllers\unitKerja::class . ':beritaTenderUnitKerja')->setName('daftarBeritaTenderUnitKerja');
 
             // halaman detail berita dan penentuan unit kerja
             $this->any('/daftar/{id_tender}', \ryan\controllers\unitKerja::class . ':detaiTenderUnitKerja')->setName('detailTenderUnitKerja');
@@ -78,14 +73,15 @@ $app->group('', function () {
     $this->group('/boq', function () {
 
             //halaman daftar berita yang dapat di input unit kerja
-            $this->any('', \ryan\controllers\BOQ::class . ':beritaTenderBOQ')->setName('daftarBeritaTenderBOQ');
+            $this->any('/daftar', \ryan\controllers\BOQ::class . ':beritaTenderBOQ')->setName('daftarBeritaTenderBOQ');
 
             // halaman detail berita dan penentuan unit kerja
-            $this->any('/daftar/{id_tender}', \ryan\controllers\BOQ::class . ':detaiTenderBOQ')->setName('detailTenderBOQ');
+            $this->any('/detail/{id_tender}', \ryan\controllers\BOQ::class . ':detaiTenderBOQ')->setName('detailTenderBOQ');
     });
 
-    $this->group('/dokumen-tender', function(){
-        $this->any('', \ryan\controllers\dokumenTender::class . ':daftarBeritaTender')->setName('daftarBeritaTenderDokumen');
+    $this->group('/dokumen', function(){
+        $this->any('/daftar', \ryan\controllers\dokumenTender::class . ':daftarBeritaTender')->setName('daftarBeritaTenderDokumen');
+        $this->any('/detail/{id_tender}', \ryan\controllers\dokumenTender::class . ':detailTenderDokumen')->setName('detailBeritaTenderDokumen');
     });
 
     //group approval
@@ -95,7 +91,7 @@ $app->group('', function () {
         $this->group('/tender', function () {
 
             // halaman daftar berita tender untuk di approve
-            $this->any('/berita', \ryan\controllers\approval::class . ':beritaTender')->setName('daftarApprovalBeritaTender');
+            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTender')->setName('daftarApprovalBeritaTender');
 
             // halaman approval tender
             $this->any('/detail/{id_tender}[/{status}]', \ryan\controllers\approval::class . ':approvalBeritaTender')->setName('approvalBeritaTender');
@@ -106,7 +102,7 @@ $app->group('', function () {
         $this->group('/acara-rks', function () {
 
             // ghalaman daftar berita yang sudah di input rks
-            $this->any('/berita', \ryan\controllers\approval::class . ':beritaTenderRKS')->setName('daftarApprovalRKSTender');
+            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTenderRKS')->setName('daftarApprovalRKSTender');
 
             // halaman approval rks
             $this->any('/detail/{id_tender}[/{status}]', \ryan\controllers\approval::class . ':approvalBeritaTenderRKS')->setName('approvalRKSTender');
@@ -117,10 +113,13 @@ $app->group('', function () {
         $this->group('/boq', function () {
 
             // ghalaman daftar berita yang sudah di input rks
-            $this->any('/berita', \ryan\controllers\approval::class . ':beritaTenderBOQ')->setName('daftarApprovalBOQTender');
+            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTenderBOQ')->setName('daftarApprovalBOQTender');
 
             // halaman approval rks
             $this->any('/detail/{id_tender}', \ryan\controllers\approval::class . ':detaiTenderBOQ')->setName('DetailApprovalBOQTender');
+
+            // halaman approval rks
+            $this->post('/approve', \ryan\controllers\approval::class . ':approvalTenderBOQ')->setName('ApprovalBOQTender');
 
         });
 
@@ -158,6 +157,13 @@ $app->group('/api', function () {
 
         $this->get('/get/{id_tender}', \ryan\controllers\BOQ::class . ':getBOQTender')->setName('getBOQTender');
 
+    });
+
+    $this->group('/dokumen', function(){
+        $this->get('/count/{id_tender}', \ryan\controllers\dokumenTender::class . ':countDokumenTender')->setName('getCountDokumenDone');
+        $this->get('/get/{id_tender}[/{is_req}]', \ryan\controllers\dokumenTender::class . ':getDokumenTender')->setName('getDokumenTender');
+        $this->post('/set/{id_tender}', \ryan\controllers\dokumenTender::class . ':setDokumenTender')->setName('setDokumenTender');
+        $this->get('/delete[/{id_dokumen}]', \ryan\controllers\dokumenTender::class . ':deleteDokumenTender')->setName('deleteDokumenTender');
     });
 
 })->add(new \ryan\controllers\login($container));
