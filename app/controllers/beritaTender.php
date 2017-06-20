@@ -99,10 +99,10 @@
                         "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
                         "tentang" => 'Menambahkan berita tender baru: "' . $data[ 'judul_tender' ] . '"',
                         "waktu" => date ("Y-m-d H:i:s"),
-                        "meta" => $this->router->pathFor ('detailBeritaTender', ['id_tender' => $insert])
+                        "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $insert])
                     ]);
 
-                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('detailBeritaTender', ['id_tender'=>$insert]));
+                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$insert]));
                 }
             }
         }
