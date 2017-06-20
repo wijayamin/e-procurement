@@ -18,6 +18,7 @@ class dokumenTender extends \ryan\main {
     protected $userModels;
     protected $notifikasiModels;
     protected $dokumenModels;
+    protected $unitKerjaModels;
 
     public function __construct($container) {
         parent::__construct($container);
@@ -27,9 +28,11 @@ class dokumenTender extends \ryan\main {
         $this->tenderModels = new \ryan\models\tender($container);
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
         $this->dokumenModels = new \ryan\models\dokumenTender($container);
+        $this->unitKerjaModels = new \ryan\models\unitKerja($container);
     }
 
     public function daftarBeritaTender(Request $req, Response $res, $args){
+        $route = $req->getAttribute('route');
         if ($req->isGet ()) {
             $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
                 $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
@@ -41,12 +44,13 @@ class dokumenTender extends \ryan\main {
             });
             $beritaTender = $this->tenderModels->getBeritaTender ();
             $req = $req->withAttribute ('beritaTender', $beritaTender);
-
-            return $this->view->render ("dokumen/daftar-berita", $req->getAttributes ());
+            $req = $req->withAttribute ('approval', $route->getName() == 'dokumenTender_daftarApproval');
+            return $this->view->render ("dokumen/daftar", $req->getAttributes ());
         }
     }
 
     public function detailTenderDokumen(Request $req, Response $res, $args){
+        $route = $req->getAttribute('route');
         if($req->isGet()){
             $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
                 $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
@@ -62,26 +66,92 @@ class dokumenTender extends \ryan\main {
             $req = $req->withAttribute('dokumenTender', $dokumenTender);
             $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
             $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
-            return $this->view->render ("dokumen/detail-berita", $req->getAttributes ());
+            $req = $req->withAttribute ('approval', $route->getName() == 'dokumenTender_detailApproval');
+            return $this->view->render ("dokumen/detail", $req->getAttributes ());
         }
     }
 
-    public function getDokumenTender(Request $req, Response $res, $args){
+    public function detailTenderDokumenApproval(Request $req, Response $res, $args){
+        $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+            $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
+            return $penyelenggara['nama_penyelenggara'];
+        });
+        $this->view->registerFunction('getUserUpload', function($id_user){
+            $user = $this->userModels->getUserDetail($id_user);
+            return $user;
+        });
+        $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
+        $dokumenTender = $this->dokumenModels->getDokumenByTender($args['id_tender']);
+        $req = $req->withAttribute('tender', $beritaTender);
+        $req = $req->withAttribute('dokumenTender', $dokumenTender);
+        $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
+        $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
+        return $this->view->render ("dokumen/detail-approval", $req->getAttributes ());
+    }
+
+    
+    
+    
+    public function approvalTenderDokumen(Request $req, Response $res, $args){
+        $select = $this->dokumenModels->getDokumenTender($args['id_dokumen']);
+        $approval = json_decode($select['approval'], true);
+        if($req->getAttribute('active_user_data')['previledge'] == "3"){
+            $approval['manajer']['status']=$args['status'];
+            $approval['manajer']['waktu']=date("Y-m-d H:i:s");
+        }elseif($req->getAttribute('active_user_data')['previledge'] == "2"){
+            $approval['direktur']['status']=$args['status'];
+            $approval['direktur']['waktu']=date("Y-m-d H:i:s");
+        }
+        $update = [
+            'approval'=>json_encode($approval)
+        ];
+        if($this->dokumenModels->setDokumenTender($update, $args['id_dokumen'])){
+            return $res->withJson([
+                'status'=>'success'
+            ]);
+        }else {
+            return $res->withJson([
+                'status' => 'failed'
+            ]);
+        }
+    }
+
+    public function getRequiredDokumenTender(Request $req, Response $res, $args){
         $doks = $this->dokumenModels->getDokumenByTender($args['id_tender']);
-        $dok_json = [];
-        foreach ($doks as &$dok){
-            $dok['who'] = $this->userModels->getUserDetail($dok['pengupload']);
-            if(isset($args["is_req"])){
-                if($dok['dokumen_syarat'] == '1'){
-                    array_push($dok_json, $dok);
-                }
+        foreach ($doks as $key => &$dok){
+            if($dok['dokumen_syarat'] == '1'){
+                $dok['who'] = $this->userModels->getUserDetail($dok['pengupload']);
+                $dok['who']['unit_kerja'] = $this->unitKerjaModels->getUnitKerja($dok['pengupload']);
+                $dok['approval'] = json_decode($dok['approval'], true);
             }else{
-                if($dok['dokumen_syarat'] == '0'){
-                    array_push($dok_json, $dok);
-                }
+                unset($doks[$key]);
             }
         }
-        return $res->withJson(['data'=>$dok_json]);
+        return $res->withJson(['data'=>array_values($doks)]);
+    }
+
+    public function getOptionalDokumenTender(Request $req, Response $res, $args){
+        $doks = $this->dokumenModels->getDokumenByTender($args['id_tender']);
+        foreach ($doks as $key => &$dok){
+            if($dok['dokumen_syarat'] == '0'){
+                $dok['who'] = $this->userModels->getUserDetail($dok['pengupload']);
+                $dok['who']['unit_kerja'] = $this->unitKerjaModels->getUnitKerjaByUser($dok['pengupload'], $args['id_tender']);
+                $dok['approval'] = json_decode($dok['approval'], true);
+            }else{
+                unset($doks[$key]);
+            }
+        }
+        return $res->withJson(['data'=>array_values($doks)]);
+    }
+
+
+    public function getDokumenTender(Request $req, Response $res, $args){
+        $doks = $this->dokumenModels->getDokumenByTender($args['id_tender']);
+        foreach ($doks as &$dok){
+            $dok['who'] = $this->userModels->getUserDetail($dok['pengupload']);
+            $dok['approval'] = json_decode($dok['approval'], true);
+        }
+        return $res->withJson(['data'=>$doks]);
     }
 
     public function countDokumenTender(Request $req, Response $res, $args){

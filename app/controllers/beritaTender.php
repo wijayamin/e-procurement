@@ -19,6 +19,7 @@
         protected $userModels;
         protected $notifikasiModels;
         protected $dokumenModels;
+        protected $unitkerjaModels;
 
         public function __construct (Container $container) {
             parent::__construct ($container);
@@ -28,6 +29,7 @@
             $this->tenderModels = new \ryan\models\tender($container);
             $this->notifikasiModels = new \ryan\models\notifikasi($container);
             $this->dokumenModels = new \ryan\models\dokumenTender($container);
+            $this->unitkerjaModels = new \ryan\models\unitKerja($container);
         }
 
         public function tambahBeritaTender (Req $req, Res $res, $args) {
@@ -44,6 +46,44 @@
                     'tgl_mulai' => $_POST[ 'tgl_mulai' ],
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
                     'tgl_upload' => date ("Y-m-d H:i:s"),
+                    'approval'=>json_encode([
+                        'direktur'=>[
+                            'status'=>'',
+                            'waktu'=>''
+                        ],
+                        'manajer'=>[
+                            'status'=>'',
+                            'waktu'=>''
+                        ]
+                    ]),
+                    'berita_acara'=>json_encode([
+                        'file'=>'',
+                        'waktu'=>'',
+                        'approval'=>[
+                            'direktur'=>[
+                                'status'=>'',
+                                'waktu'=>''
+                            ],
+                            'manajer'=>[
+                                'status'=>'',
+                                'waktu'=>''
+                            ]
+                        ]
+                    ]),
+                    'rks'=>json_encode([
+                        'file'=>'',
+                        'waktu'=>'',
+                        'approval'=>[
+                            'direktur'=>[
+                                'status'=>'',
+                                'waktu'=>''
+                            ],
+                            'manajer'=>[
+                                'status'=>'',
+                                'waktu'=>''
+                            ]
+                        ]
+                    ])
                 ];
                 $insert = $this->tenderModels->addBeritaTender ($data);
                 if ($insert) {
@@ -55,9 +95,9 @@
                         ];
                         $insertDok = $this->dokumenModels->setDokumenTender($dataDok);
                     }
-                    $this->notifikasiModels->addNotification ([
-                        "id_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
-                        "tentang" => 'Telah Menambah Berita Tender Baru "' . $data[ 'judul_tender' ] . '"',
+                    $this->notifikasiModels->sendNotificationByPreviledge(['1', '2', '3'], [
+                        "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                        "tentang" => 'Menambahkan berita tender baru: "' . $data[ 'judul_tender' ] . '"',
                         "waktu" => date ("Y-m-d H:i:s"),
                         "meta" => $this->router->pathFor ('detailBeritaTender', ['id_tender' => $insert])
                     ]);
@@ -68,35 +108,56 @@
         }
 
         public function daftarBeritaTender (Req $req, Res $res, $args) {
-            if ($req->isGet ()) {
-                $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
-                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
-
-                    return $penyelenggara[ 'nama_penyelenggara' ];
-                });
-                $beritaTender = $this->tenderModels->getBeritaTender ();
-                $req = $req->withAttribute ('beritaTender', $beritaTender);
-
-                return $this->view->render ("berita-tender/get", $req->getAttributes ());
-            }
+            $route = $req->getAttribute('route');
+            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
+                return $penyelenggara[ 'nama_penyelenggara' ];
+            });
+            $beritaTender = $this->tenderModels->getBeritaTender ();
+            $req = $req->withAttribute ('beritaTender', $beritaTender);
+            $req = $req->withAttribute ('approval', $route->getName() == 'beritaTender_daftarApproval');
+            return $this->view->render ("berita-tender/daftar", $req->getAttributes ());
         }
 
         public function detailBeritaTender (Req $req, Res $res, $args) {
-            if ($req->isGet ()) {
-                $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
-                    $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
+            $route = $req->getAttribute('route');
+            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+                return $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara)[ 'nama_penyelenggara' ];
+            });
+            $this->view->registerFunction ('getUserUpload', function ($id_user) {
+                return $this->userModels->getUserDetail ($id_user);
+            });
+            $this->view->registerFunction ('getDirektur', function () {
+                return $this->userModels->getDirektur();
+            });
+            $this->view->registerFunction ('getManajer', function () {
+                return $this->userModels->getManajer();
+            });
+            $beritaTender = $this->tenderModels->getBeritaTender ($args[ 'id_tender' ]);
+            $beritaTender['dokumen_syarat'] = $this->dokumenModels->getDokumenByTender($args[ 'id_tender' ]);
+            $beritaTender['unit_kerja'] = $this->unitkerjaModels->getUnitKerjaByTender($args[ 'id_tender' ]);
+            $req = $req->withAttribute ('tender', $beritaTender);
+            $req = $req->withAttribute ('menu', ['tender'=>['detail']]);
+            $req = $req->withAttribute ('approval', $route->getName() == 'beritaTender_detailApproval');
+            return $this->view->render ("berita-tender/detail", $req->getAttributes ());
+        }
 
-                    return $penyelenggara[ 'nama_penyelenggara' ];
-                });
-                $this->view->registerFunction ('getUserUpload', function ($id_user) {
-                    $user = $this->userModels->getUserDetail ($id_user);
-
-                    return $user;
-                });
-                $beritaTender = $this->tenderModels->getBeritaTender ($args[ 'id_tender' ]);
-                $req = $req->withAttribute ('tender', $beritaTender);
-
-                return $this->view->render ("berita-tender/detail", $req->getAttributes ());
+        public function approvalBeritaTender(Req $req, Res $res, $args){
+            $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+            $tender['approval'] = json_decode($tender['approval'], true);
+            $tender['approval'][$_POST['who']]['status'] = $_POST['status'];
+            $tender['approval'][$_POST['who']]['waktu'] = date("Y-m-d H:i:s");
+            $data = [
+                'approval'=>json_encode($tender['approval'])
+            ];
+            if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
+                return $res->withJson([
+                    "status"=>"success"
+                ]);
+            }else{
+                return $res->withJson([
+                    "status"=>"failed"
+                ]);
             }
         }
     }

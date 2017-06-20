@@ -12,10 +12,12 @@
     class notifikasi extends \ryan\main{
 
         protected $container;
+        protected $userModels;
 
         public function __construct ($container) {
             parent::__construct ($container);
             $this->container = $container;
+            $this->userModels = new \ryan\models\users($container);
         }
 
         /**
@@ -55,5 +57,18 @@
                 $select->execute();
                 return $select->fetch();
             }
+        }
+
+        public function sendNotificationByPreviledge($array_previledge, $data){
+            foreach ($array_previledge as $previledge){
+                foreach ($this->userModels->getUserWithPreviledge($previledge) as $user){
+                    $data['for_user'] = $user['id_user'];
+                    $insert = $this->pdo->insert(array_keys($data))->into('notifikasi')->values(array_values($data))->execute(true);
+                }
+            }
+        }
+
+        public function sendNotification($data){
+            $insert = $this->pdo->insert(array_keys($data))->into('notifikasi')->values(array_values($data))->execute(true);
         }
     }

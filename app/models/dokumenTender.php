@@ -22,6 +22,10 @@ class dokumenTender extends \ryan\main {
         return $this->pdo->select()->from('dokumen_tender')->where('id_tender', '=', $id_tender)->execute()->fetchAll();
     }
 
+    public function getDokumenTender($id_dokumen){
+        return $this->pdo->select()->from('dokumen_tender')->where('id_dokumen', '=', $id_dokumen)->execute()->fetch();
+    }
+
     public function countDokumenTender($id_tender, $is_syarat=null){
         if($is_syarat == null){
             $total = $this->db->prepare("select count(id_dokumen) from dokumen_tender where ID_TENDER=:id_tender");
@@ -64,5 +68,45 @@ class dokumenTender extends \ryan\main {
         }else{
             return $this->pdo->update($data)->table('dokumen_tender')->where('id_dokumen', '=', $id_dokumen)->execute();
         }
+    }
+
+    public function countApprovalDokumen($id_tender){
+        $select = $this->db->prepare("select * from dokumen_tender where ID_TENDER=:id_tender and approval is not NULL ");
+        $select->bindParam(':id_tender', $id_tender);
+        $select->execute();
+        $total = $all = $partial = 0;
+        foreach ($select->fetchAll() as $sel){
+            $approval = json_decode($sel["approval"], true);
+            $total++;
+            if($approval['direktur']['status'] == 'diterima' && $approval['manajer']['status'] == 'diterima'){
+                $all++;
+            }elseif($approval['direktur']['status'] == 'diterima' || $approval['manajer']['status'] == 'diterima'){
+                $partial++;
+            }
+        }
+        return [
+            'total'=>$total,
+            'all'=>$all,
+            'partial'=>$partial,
+        ];
+    }
+
+    public function countDokumenReqDetail($id_tender){
+        $total_q = $this->pdo->select()->from('dokumen_tender')->where('id_tender', '=', $id_tender)->where('dokumen_syarat', '=', '1')->execute()->fetchAll();
+        $uploaded_q = $this->pdo->select()->from('dokumen_tender')->where('id_tender', '=', $id_tender)->where('dokumen_syarat', '=', '1')->whereNotNull('file_dokumen')->execute()->fetchAll();
+        $approved = 0;
+        foreach ($total_q as $dok){
+            $approval = json_decode($dok['approval'], true);
+            if($approval){
+                if($approval['direktur']['status'] == 'diterima' && $approval['manajer']['status'] == 'diterima' ){
+                    $approved++;
+                }
+            }
+        }
+        return [
+            'total'=>sizeof($total_q),
+            'uploaded'=>sizeof($uploaded_q),
+            'approved'=>$approved
+        ];
     }
 }

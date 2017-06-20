@@ -56,6 +56,24 @@
                 $user = $this->userModels->getUserDetail($id_user);
                 return $user;
             });
+            $this->view->registerFunction('thisPriviledge', function(){
+                $user = $this->userModels->getUserDetail($this->session->id_user)['previledge'];
+                switch ($user){
+                    case '1':
+                        return 'admin';
+                        break;
+                    case '2':
+                        return 'direktur';
+                        break;
+                    case '3':
+                        return 'manajer';
+                        break;
+                    case '4':
+                        return 'unitkerja';
+                        break;
+                }
+                return $user;
+            });
             if(!isset($this->session->id_user)){
                 if($req->isGet()) {
                     return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('loginPage'));

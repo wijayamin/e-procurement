@@ -22,7 +22,7 @@ class unitKerja extends \ryan\main{
         $this->container = $container;
     }
 
-    public function getUnitKerja($collumn = null, $id = null) {
+    public function getUnitKerja($id = null) {
         if($id == null){
             return $this->db->query("select * from unit_kerja")->fetchAll();
         }else{
@@ -30,6 +30,14 @@ class unitKerja extends \ryan\main{
             $select->bindParam(':id_unitkerja', $id);
             $select->execute();
             return $select->fetch();
+        }
+    }
+
+    public function getUnitKerjaByUser($id_user, $id_tender= null){
+        if($id_tender == null){
+            return $this->pdo->select()->from('unit_kerja')->where('id_user', '=', $id_user)->execute()->fetchAll();
+        }else{
+            return $this->pdo->select()->from('unit_kerja')->where('id_user', '=', $id_user)->where('id_tender', '=', $id_tender)->execute()->fetch();
         }
     }
 
@@ -64,20 +72,9 @@ class unitKerja extends \ryan\main{
 
     public function setUnitKerja($data, $id_unitkerja = null){
         if($id_unitkerja == null){
-            $insert = $this->db->prepare('
-                insert into
-                unit_kerja(ID_USER, ID_TENDER, PENUGASAN, METADATA)
-                VALUE (:id_user, :id_tender, :penugasan, :metadata)
-            ');
-            $insert->bindParam(':id_user', $data['id_user']);
-            $insert->bindParam(':id_tender', $data['id_tender']);
-            $insert->bindParam(':penugasan', $data['penugasan']);
-            $insert->bindParam(':metadata', $data['metadata']);
-            $insert->execute();
-
-            return $this->db->lastInsertId();
+            return $this->pdo->insert(array_keys($data))->into('unit_kerja')->values(array_values($data))->execute(true);
         }else{
-            
+            return $this->pdo->update($data)->table('unit_kerja')->where('id_unitkerja', '=', $id_unitkerja)->execute();
         }
     }
 

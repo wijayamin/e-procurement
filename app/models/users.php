@@ -51,4 +51,12 @@
                 return $user->fetchAll();
             }
         }
+
+        public function getDirektur(){
+            return $this->pdo->select()->from('user')->where('previledge', '=', 2)->execute()->fetch();
+        }
+
+        public function getManajer(){
+            return $this->pdo->select()->from('user')->where('previledge', '=', 3)->execute()->fetch();
+        }
     }

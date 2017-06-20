@@ -1,0 +1,19 @@
+<div class="btn-group btn-space btn-group-xs">
+    {% if direktur.status == "diterima" %}
+        <button type="button" class="btn btn-color btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+    {% elseif direktur.status == "ditolak" %}
+        <button type="button" class="btn btn-color btn-danger"><i class="icon mdi mdi-close"></i></button>
+    {% else %}
+        <button type="button" class="btn btn-color btn-default"><i class="icon mdi mdi-circle-o"></i></button>
+    {% endif %}
+    <button type="button" class="btn btn-default">Direktur</button></div><br>
+<div class="btn-group btn-space btn-group-xs">
+    {% if manajer.status == "diterima" %}
+        <button type="button" class="btn btn-color btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+    {% elseif manajer.status == "ditolak" %}
+        <button type="button" class="btn btn-color btn-danger"><i class="icon mdi mdi-close"></i></button>
+    {% else %}
+        <button type="button" class="btn btn-color btn-default"><i class="icon mdi mdi-circle-o"></i></button>
+    {% endif %}
+    <button type="button" class="btn btn-default">Manajer</button>
+</div>

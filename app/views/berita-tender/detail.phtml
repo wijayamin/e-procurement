@@ -17,195 +17,229 @@
     $this->stop ();
     $this->start ('contents');
 ?>
+<?php $approve = json_decode($tender['approval'], true) ?>
     <!--tempat konten-->
     <div class="main-content container-fluid">
-        <div class="panel panel-default panel-border-color panel-border-color-primary">
-            <div class="panel-heading panel-heading-divider">
-                Detail Berita Tender
-                <span class="panel-subtitle"><?= $tender[ 'judul_tender' ] ?></span>
+        <?php if ($approval): ?>
+            <div role="alert" class="alert alert-primary alert-icon alert-icon-colored ">
+                <div class="icon"><span class="mdi mdi-info-outline"></span></div>
+                <div class="message">
+                    <span style="margin-top:660px;">
+                        <strong>Approval!</strong>
+                        Lakukan Approval terhadap berita tender ini
+                    </span>
+                    <div aria-label="Close" class="close" style="top:20px; opacity: 1;">
+                        <button data-toggle="modal" data-target="#mod-approval" class="btn btn-rounded btn-space btn-sm btn-success" <?= $approve[$this->thisPriviledge()]['status'] == 'diterima' ? 'disabled' : '' ?> data-type="diterima" data-id="<?= $tender['id_tender'] ?>" data-judul="<?= $this->e($tender['judul_tender']) ?>">
+                            <i class="icon icon-left mdi mdi-check"></i>
+                            Setujui
+                        </button>
+                        <button data-toggle="modal" data-target="#mod-approval" class="btn btn-rounded btn-space btn-sm btn-danger" <?= $approve[$this->thisPriviledge()]['status'] == 'ditolak' ? 'disabled' : '' ?>  data-type="ditolak" data-id="<?= $tender['id_tender'] ?>" data-judul="<?= $this->e($tender['judul_tender']) ?>">
+                            <i class="icon icon-left mdi mdi-close"></i>
+                            Tolak
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="panel panel-default panel-table">
+        <?php endif; ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="user-info-list panel panel-default panel-border-color panel-border-color-primary">
+                    <div class="panel-heading panel-heading-divider">
+                        Berita Tender
+                        <span class="panel-subtitle">
+                            Informasi Pokok Berita Tender
+                        </span>
+                    </div>
                     <div class="panel-body">
-                        <table class="table table-condensed table-hover table-bordered table-striped">
-                            <tbody>
+                        <table class="no-border no-strip skills">
+                            <tbody class="no-border-x no-border-y">
                                 <tr>
-                                    <td width="20%">Tanggal</td>
-                                    <td class="berita-tender-tanggal">
+                                    <td class="icon" valign="top"><span class="mdi mdi-info-outline"></span></td>
+                                    <td class="item" valign="top" style="width:25%"><strong>Judul Tender</strong></td>
+                                    <td><?= $tender[ 'judul_tender' ] ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="icon" valign="top"><span class="mdi mdi-city-alt"></span></td>
+                                    <td class="item" valign="top"><strong>Penyelenggara</strong></td>
+                                    <td><?= $this->getNamaPenyelenggara ($tender[ 'id_penyelenggara' ]) ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="icon" valign="top"><span class="mdi mdi-pin"></span></td>
+                                    <td class="item" valign="top"><strong>Wilayah</strong></td>
+                                    <td><?= $tender[ 'wilayah' ] ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="icon" valign="top"><span class="mdi mdi-calendar-check"></span></td>
+                                    <td class="item" valign="top"><strong>Waktu</strong></td>
+                                    <td>
                                         <span class="label label-default"><?= $this->indDate ($tender[ 'tgl_mulai' ]) ?></span>
                                         s/d
                                         <span class="label label-default"><?= $this->indDate ($tender[ 'tgl_selesai' ]) ?></span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Nama Penyelenggara</td>
-                                    <td class="berita-tender-nama">
-                                        <strong><?= $this->getNamaPenyelenggara ($tender[ 'id_penyelenggara' ]) ?></strong>
+                                    <td class="icon" valign="top"><span class="mdi mdi-link"></span></td>
+                                    <td class="item" valign="top"><strong>Website</strong></td>
+                                    <td>
+                                        <a href="<?= $tender[ 'link_website' ] ?>" target="_blank"><?= substr($tender[ 'link_website' ], 0, 50) ?></a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Judul Tender</td>
-                                    <td class="berita-tender-judul">
-                                        <strong><?= $tender[ 'judul_tender' ] ?></strong>
+                                    <td colspan="3" align="center" style="padding-top:20px;">
+                                        <strong>Persetujuan</strong>
                                     </td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-md-6" align="center">
+                            <b>Direktur</b>
+                            <br>
+                            <p style="padding: 10px 0 0 0;">
+                                <i class="icon mdi <?= $approve['direktur']['status'] == '' ? 'mdi-circle-o text-muted' : ($approve['direktur']['status'] == 'diterima' ? 'mdi-check-circle text-success' : 'mdi-close-circle-o text-danger') ?>" style="font-size: 5em;"></i>
+                            </p>
+                            <br>
+                            <ins><b><?= $this->getDirektur()['nama'] ?></b></ins><br>
+                            <span><?= $approve['direktur']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->indDate ($approve['direktur']['waktu']) ?></span><br>
+                        </div>
+                        <div class="col-md-6" align="center">
+                            <b>Manajer</b>
+                            <br>
+                            <p style="padding: 10px 0 0 0;">
+                                <i class="icon mdi <?= $approve['manajer']['status'] == '' ? 'mdi-circle-o text-muted' : ($approve['manajer']['status'] == 'diterima' ? 'mdi-check-circle text-success' : 'mdi-close-circle-o text-danger') ?>" style="font-size: 5em;"></i>
+                            </p>
+                            <br>
+                            <ins><b><?= $this->getManajer()['nama'] ?></b></ins><br>
+                            <span><?= $approve['manajer']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->indDate ($approve['manajer']['waktu']) ?></span><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-contrast panel-table">
+                    <div class="panel-heading panel-heading-contrast">
+                        Dokumen Kelengkapan
+                        <!--                        <div class="tools"><span class="icon mdi mdi-download"></span><span class="icon mdi mdi-more-vert"></span></div>-->
+                        <span class="panel-subtitle">
+                            Daftar dokumen persyaratan tender
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped table-borderless">
+                            <thead>
                                 <tr>
-                                    <td>Link Website</td>
-                                    <td class="berita-tender-link">
-                                        <div class="btn-group btn-space">
-                                            <a href="<?= $tender[ 'link_website' ] ?>" target="_blank" class="btn btn-color btn-social btn-twitter"><i class="icon mdi mdi-open-in-new"></i></a>
-                                            <a href="<?= $tender[ 'link_website' ] ?>" target="_blank" class="btn btn-default">
-                                                <?= $tender[ 'link_website' ] ?>
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th class="actions"></th>
+                                    <th style="width:60%;">Nama Dokumen</th>
+                                    <th style="width:40%;">Status</th>
                                 </tr>
-                                <tr>
-                                    <td>Lokasi</td>
-                                    <td class="berita-tender-wilayah">
-                                        <strong><?= $tender[ 'wilayah' ] ?></strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Dokumen Peryaratan</td>
-                                    <td class="berita-tender-syarat">
-                                        <?php foreach (explode ('|', $tender[ 'upload' ]) as $dokumen) { ?>
-                                            <span class="label label-default"><?= $dokumen ?></span>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Unit Kerja</td>
-                                    <td class="berita-tender-unit-kerja">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="user-avatar">
-                                                        <img src="public/assets/img/avatar6.png" alt="Avatar">
-                                                        <strong>Penelope Thornton</strong>
-                                                    </td>
-                                                    <td>Initial commit</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="user-avatar">
-                                                        <img src="public/assets/img/avatar4.png" alt="Avatar">
-                                                        <strong>Benji Harper</strong>
-                                                    </td>
-                                                    <td>Main structure markup</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="user-avatar">
-                                                        <img src="public/assets/img/avatar5.png" alt="Avatar">
-                                                        <strong>Justine Myranda</strong>
-                                                    </td>
-                                                    <td>Left sidebar adjusments</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="user-avatar">
-                                                        <img src="public/assets/img/avatar3.png" alt="Avatar">
-                                                        <strong>Sherwood Clifford</strong>
-                                                    </td>
-                                                    <td>Topbar dropdown style</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Dokumen Persyaratan RKS</td>
-                                    <td class="berita-tender-dokumen-syarat-rks">1.580</td>
-                                </tr>
-                                <tr>
-                                    <td>Tanggal Upload</td>
-                                    <td class="berita-tender-dibuat">
-                                        <table class="table">
-                                            <tr>
-                                                <td class="user-avatar">
-                                                    <img src="public/assets/img/<?= $this->getUserUpload ($tender[ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
-                                                    <span class="label label-primary"><?= $this->getUserUpload ($tender[ 'id_user' ])[ 'nama' ] ?></span>
-                                                    Pada
-                                                    <span class="label label-default">
-                                                        <?= $this->indDateTime ($tender[ 'tgl_upload' ]) ?>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Status Approval</td>
-                                    <td class="berita-tender-status-approval">
-                                        <?php
-                                            $approval_direktur = json_decode ($tender[ 'direktur_approval' ], true);
-                                            $approval_manager = json_decode ($tender[ 'manajer_approval' ], true);
-                                        ?>
-                                        <div class="btn-group btn-space">
-                                            <?php if ($approval_direktur == null) { ?>
-                                                <button type="button" class="btn btn-color btn-default">
-                                                    <i class="icon mdi mdi-circle-o"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-default">Direktur</button>
-                                                <?php if($active_user_data['previledge'] == '2') { ?>
-                                                    <a href="<?= $this->pathFor('approvalBeritaTender', ['id_tender'=>$tender[ 'id_tender' ]]) ?>" class="btn btn-primary">Approve Sekarang</a>
-                                                <?php }else{ ?>
-                                                    <button type="button" class="btn btn-default active">Belum</button>
-                                                <?php } ?>
-                                            <?php } elseif ($approval_direktur[ 'status' ] == 'diterima') { ?>
-                                                <button type="button" class="btn btn-color btn-success">
-                                                    <i class="icon mdi mdi-check-circle"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-success">Direktur</button>
-                                                <button type="button" class="btn btn-default"><?= $this->indDateTime ($approval_direktur[ 'waktu' ]) ?></button>
-                                            <?php } else { ?>
-                                                <button type="button" class="btn btn-color btn-danger">
-                                                    <i class="icon mdi mdi-close-circle-o"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger">Direktur</button>
-                                                <button type="button" class="btn btn-default"><?= $this->indDateTime ($approval_direktur[ 'waktu' ]) ?></button>
-                                            <?php } ?>
-                                        </div>
-                                        <br>
-                                        <div class="btn-group btn-space">
-                                            <?php if ($approval_manager == null) { ?>
-                                                <button type="button" class="btn btn-color btn-default">
-                                                    <i class="icon mdi mdi-circle-o"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-default">Manajer</button>
-                                                <?php if($active_user_data['previledge'] == '3') { ?>
-                                                    <a href="<?= $this->pathFor('approvalBeritaTender', ['id_tender'=>$tender[ 'id_tender' ]]) ?>" class="btn btn-primary">Approve Sekarang</a>
-                                                <?php }else{ ?>
-                                                <button type="button" class="btn btn-default active">Belum</button>
-                                                <?php } ?>
-                                            <?php } elseif ($approval_manager[ 'status' ] == 'diterima') { ?>
-                                                <button type="button" class="btn btn-color btn-success">
-                                                    <i class="icon mdi mdi-check-circle"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-success">Manajer</button>
-                                                <button type="button" class="btn btn-default"><?= $this->indDateTime ($approval_manager[ 'waktu' ]) ?></button>
-                                            <?php } else { ?>
-                                                <button type="button" class="btn btn-color btn-danger">
-                                                    <i class="icon mdi mdi-close-circle-o"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger">Manajer</button>
-                                                <button type="button" class="btn btn-default"><?= $this->indDateTime ($approval_manager[ 'waktu' ]) ?></button>
-                                            <?php } ?>
-                                        </div>
-                                        <br>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Status Dokumen</td>
-                                    <td class="berita-tender-status-dokumen">
-                                        <button class="btn btn-space btn-default btn-big col-md-12">
+                            </thead>
+                            <tbody class="no-border-x">
+                                <?php foreach ($tender['dokumen_syarat'] as $key => $dokumen): ?>
+                                    <?php $dokumen['approval'] = json_decode($dokumen['approval'], true); ?>
+                                    <tr>
+                                        <td><?= $key+1 ?></td>
+                                        <td class="cell-detail">
+                                            <span><?= $dokumen['nama_dokumen'] ?></span>
+                                            <?php if($dokumen['dokumen_syarat'] == '0'): ?>
+                                                <span class="cell-detail-description">Dokumen Tambahan</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="milestone">
+                                            <span class="version"><?= !$dokumen['file_dokumen'] ? 'Menunggu Upload' : (!$dokumen['approval'] ? 'Menuggu Approval' : ($dokumen['approval']['manajer']['status'] == '' || $dokumen['approval']['direktur']['status'] == '' ? 'Kurang Satu Approval' : 'Selesai' )) ?></span>
                                             <div class="progress">
-                                                <div style="width: 70%" class="progress-bar progress-bar-primary progress-bar-striped active">
-                                                    Animated 70%
-                                                </div>
+                                                <div style="width: 1%" class="progress-bar progress-bar-primary"></div>
+                                                <?php if($dokumen['file_dokumen']): ?>
+                                                    <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
+                                                    <?php if($dokumen['approval'] and $dokumen['approval']['manajer']['status'] != ''): ?>
+                                                        <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
+                                                    <?php elseif($dokumen['approval'] and $dokumen['approval']['direktur']['status'] != ''): ?>
+                                                        <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </div>
-                                            Lihat Daftar Dokumen
-                                        </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-contrast panel-table">
+                    <div class="panel-heading panel-heading-contrast panel-heading-divider">
+                        Infromasi Berita Tender
+                        <!--                        <div class="tools"><span class="icon mdi mdi-download"></span><span class="icon mdi mdi-more-vert"></span></div>-->
+                        <span class="panel-subtitle">
+                            Daftar informasi tambahan berita tender
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-borderless">
+                            <tbody class="no-border-x">
+                                <tr>
+                                    <td width="35%"><b>Ditambahkan Oleh</b></td>
+                                    <td class="user-avatar cell-detail user-info" colspan="3">
+                                        <img src="public/profile/<?= $this->getUserUpload ($tender[ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
+                                        <span><?= ($tender[ 'id_user' ] == $active_user_data['id_user'] ? 'Anda Sendiri' : $this->getUserUpload ($tender[ 'id_user' ])[ 'nama' ]) ?></span>
+                                        <span class="cell-detail-description"><?= $this->indDateTime ($tender[ 'tgl_upload' ]) ?></span>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="vertical-align: top !important;"><b>Dokumen RKS</b></td>
+                                    <td colspan="3">
+                                        <?php $rks = json_decode($tender['rks'], true) ?>
+                                        <?php if($rks['file']): ?>
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive-item" src="public/content/dokumen/<?= $rks['file'] ?>"></iframe>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">Belum Ditambahkan</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top !important;"><b>Berita Acara</b></td>
+                                    <td colspan="3">
+                                        <?php $berita_acara = json_decode($tender['berita_acara'], true) ?>
+                                        <?php if($berita_acara['file']): ?>
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive-item" src="public/content/dokumen/<?= $berita_acara['file'] ?>"></iframe>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="text-muted">Belum Ditambahkan</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel panel-contrast panel-table">
+                    <div class="panel-heading panel-heading-contrast">
+                        Unit Kerja
+                        <!--                        <div class="tools"><span class="icon mdi mdi-download"></span><span class="icon mdi mdi-more-vert"></span></div>-->
+                        <span class="panel-subtitle">
+                            Daftar unit kerja dan penugasan-nya
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="actions"></th>
+                                    <th style="width:60%;">Unit Kerja</th>
+                                    <th style="width:40%;">Penugasan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="no-border-x">
+                                <?php foreach ($tender['unit_kerja'] as $key => $unit_kerja): ?>
+                                    <tr>
+                                        <td><?= $key+1 ?></td>
+                                        <td class="user-avatar">
+                                            <img src="public/profile/<?= $this->getUserUpload ($unit_kerja[ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
+                                            <?= $this->getUserUpload ($unit_kerja[ 'id_user' ])[ 'nama' ] ?>
+                                        </td>
+                                        <td><span class="label label-primary"><?= $unit_kerja['penugasan'] ?></span></td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -214,7 +248,27 @@
         </div>
     </div>
 
-
+    <div id="mod-approval" tabindex="-1" role="dialog" style="display: none;" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="mod-icon"><span class="modal-main-icon mdi mdi-check"></span></div>
+                        <h3>Awesome!</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Fusce ultrices euismod lobortis.</p>
+                        <div class="xs-mt-50">
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-action">Proceed</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
     <!--akhir tempat konten-->
 <?php
     $this->stop ();
@@ -224,7 +278,49 @@
 
     <script>
         $(document).ready(function () {
-
+            $('#mod-approval').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modData = button.data();
+                var modal = $(this);
+                modal.find('p').html(modData.judul);
+                if(modData.type == 'diterima'){
+                    modal.find('h3').html("Setujui Berita Tender Ini ?");
+                    modal.find('.mod-icon').addClass('text-success');
+                    modal.find('.mod-icon').removeClass('text-danger');
+                    modal.find('.btn-action').addClass('btn-success');
+                    modal.find('.btn-action').removeClass('btn-danger');
+                    modal.find('.btn-action').html('Setujui');
+                }
+                if(modData.type == 'ditolak'){
+                    modal.find('h3').html("Tolak Berita Tender Ini ?");
+                    modal.find('.mod-icon').removeClass('text-success');
+                    modal.find('.mod-icon').addClass('text-danger');
+                    modal.find('.btn-action').removeClass('btn-success');
+                    modal.find('.btn-action').addClass('btn-danger');
+                    modal.find('.btn-action').html('Tolak');
+                }
+                modal.find('.btn-action').on('click', function () {
+                    var who = '';
+                    if(active_user.previledge == '2'){
+                        who = 'direktur'
+                    }else if(active_user.previledge == '3'){
+                        who = 'manajer'
+                    }
+                    $.post(
+                        '<?= $this->pathFor('beritaTender_approval', ['id_tender'=>$tender['id_tender']]) ?>',
+                        {
+                            who:who,
+                            status:modData.type
+                        },
+                        function(data){
+                            if(data.status == 'success'){
+                                location.reload();
+                            }
+                        },
+                        "json"
+                    )
+                });
+            });
         })
     </script>
 <?php $this->stop () ?>

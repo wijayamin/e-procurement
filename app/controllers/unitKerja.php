@@ -35,40 +35,77 @@ class unitKerja extends \ryan\main{
         $this->unitKerjaModels = new \ryan\models\unitKerja($container);
     }
 
-    public function beritaTenderUnitKerja(Request $req, Response $res, $args) {
-        if($req->isGet()){
-            $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
-                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
-                return $penyelenggara['nama_penyelenggara'];
-            });
-            $this->view->registerFunction('countUnitKerja', function($id_tender){
-                $unitKerja = $this->unitKerjaModels->countUnitKerjaTender($id_tender);
-                return $unitKerja;
-            });
-            $beritaTender = $this->tenderModels->getBeritaTender();
-            $req = $req->withAttribute('beritaTender', $beritaTender);
-            return $this->view->render ("unit-kerja/daftar-berita", $req->getAttributes ());
-        }
+    public function daftarUnitKerja(Request $req, Response $res, $args){
+        $route = $req->getAttribute('route');
+        $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+            return $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara)['nama_penyelenggara'];
+        });
+        $this->view->registerFunction('detailUnitKerja', function($id_tender){
+            return $this->unitKerjaModels->getUnitKerjaByTender($id_tender);
+        });
+        $this->view->registerFunction('getUserUpload', function($id_user){
+            return $this->userModels->getUserDetail($id_user);
+        });
+        $beritaTender = $this->tenderModels->getBeritaTender();
+        $req = $req->withAttribute('beritaTender', $beritaTender);
+        $req = $req->withAttribute ('approval', $route->getName() == 'rksAcara_daftarApproval');
+        return $this->view->render ("unit-kerja/daftar", $req->getAttributes ());
     }
 
-    public function detaiTenderUnitKerja(Request $req, Response $res, $args){
-        if($req->isGet()){
-            $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
-                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
-                return $penyelenggara['nama_penyelenggara'];
-            });
-            $this->view->registerFunction('getUserUpload', function($id_user){
-                $user = $this->userModels->getUserDetail($id_user);
-                return $user;
-            });
-            $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
-            $req = $req->withAttribute('tender', $beritaTender);
-            $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
-            $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
-            return $this->view->render ("unit-kerja/detail-berita", $req->getAttributes ());
-        }
+    public function detailUnitKerja(Request $req, Response $res, $args){
+        $route = $req->getAttribute('route');
+        $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
+            return $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara)['nama_penyelenggara'];
+        });
+        $this->view->registerFunction('getUserUpload', function($id_user){
+            return $this->userModels->getUserDetail($id_user);
+        });
+        $beritaTender = $this->tenderModels->getBeritaTender($args['id_tender']);
+        $req = $req->withAttribute('tender', $beritaTender);
+        $req = $req->withAttribute ('approval', $route->getName() == 'rksAcara_daftarApproval');
+        $req = $req->withAttribute ('no_file', $this->flash->getMessage ('no_file'));
+        $req = $req->withAttribute ('file_saved', $this->flash->getMessage ('file_saved'));
+        return $this->view->render ("unit-kerja/detail", $req->getAttributes ());
     }
 
+    public function addUnitKerja(Request $req, Response $res, $args){
+        $result = [
+            'status'=>'failed'
+        ];
+        foreach ($_POST['pegawai'] as $pegawai){
+            $waktu = date ("Y-m-d H:i:s");
+            $data = [
+                'id_user'=>$pegawai,
+                'id_tender'=>$args['id_tender'],
+                'penugasan'=>$_POST['penugasan'],
+                'waktu'=>$waktu,
+                'approval'=>json_encode([
+                    'direktur'=>[
+                        'status'=>'',
+                        'waktu'=>''
+                    ],
+                    'manajer'=>[
+                        'status'=>'',
+                        'waktu'=>''
+                    ]
+                ])
+            ];
+            if($this->unitKerjaModels->setUnitKerja($data)){
+                $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+                $notification_data = [
+                    'by_user'=>$req->getAttribute ('active_user_data')[ 'id_user' ],
+                    'for_user'=>$pegawai,
+                    'tentang'=>'Anda telah dipilih menjadi unitkerja <mark>'.$_POST['penugasan'].'</mark> pada tender "'.$tender['judul_tender'].'"',
+                    'waktu'=>$waktu,
+                    'meta'=>$this->router->pathFor('beritaTender_detail', ['id_tender'=>$args['id_tender']])
+                ];
+                $this->notifikasiModels->sendNotification($notification_data);
+                $result['status']='success';
+            }
+        }
+        return $res->withJson($result);
+
+    }
 
     public function getAvailableUnitKerja(Request $req, Response $res, $args){
         $users = $this->userModels->getUserWithPreviledge('4');
@@ -83,33 +120,7 @@ class unitKerja extends \ryan\main{
         $unitskerja = $this->unitKerjaModels->getUnitKerjaByTender($args['id_tender']);
         foreach ($unitskerja as &$unit){
             $unit['pegawai'] = $this->userModels->getUserDetail($unit['id_user']);
-            $unit['metadata'] = json_decode($unit['metadata'], true);
-            $unit['metadata']['who'] = $this->userModels->getUserDetail($unit['metadata']['who'])['nama'];
         }
         return $res->withJson(['data'=>$unitskerja]);
     }
-
-    public function setUnitKerja(Request $req, Response $res, $args){
-        $result = [
-            'status'=>'failed'
-        ];
-        foreach ($_POST['pegawai'] as $pegawai){
-            $data = [
-                'id_user'=>$pegawai,
-                'id_tender'=>$args['id_tender'],
-                'penugasan'=>$_POST['penugasan'],
-                'metadata'=>json_encode([
-                    'time'=>date ("Y-m-d H:i:s"),
-                    'who'=>$req->getAttribute ('active_user_data')[ 'id_user' ]
-                ])
-            ];
-            if($this->unitKerjaModels->setUnitKerja($data)){
-                $result['status']='success';
-            }
-        }
-        return $res->withJson($result);
-        
-    }
-
-
 }

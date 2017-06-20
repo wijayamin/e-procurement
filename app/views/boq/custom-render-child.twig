@@ -1,0 +1,69 @@
+<tr class="child online">
+    <td><img src="public/assets/img/panah.png" height="10px"></td>
+    <td>
+        <div class="be-checkbox be-checkbox-sm">
+            {% set datas = { 'id_penawaran':inputan_manajer.id_penawaran, 'nama_vendor':inputan_manajer.nama_vendor, 'nama_barang':inputan_manajer.nama_barang, 'harga_persatuan':inputan_manajer.harga_persatuan, 'volume_barang':inputan_manajer.volume_barang, 'ukuran_satuan':inputan_manajer.ukuran_satuan, 'pegawai':inputan_manajer.pegawai, } %}
+            <input id="check{{ inputan_manajer.id_penawaran }}" type="checkbox" data-parent="{{ inputan_manajer.inputan_manajer }}" value='{{ datas|json_encode() }}'>
+            <label for="check{{ inputan_manajer.id_penawaran }}"></label>
+        </div>
+    </td>
+    <td class="cell-detail">
+        <span>{{inputan_manajer.nama_vendor}}</span>
+        <span class="cell-detail-description"><strong>{{inputan_manajer.nama_barang}}</strong></span>
+    </td>
+    <td class="cell-detail">
+        <span> Rp. {{inputan_manajer.harga_persatuan|number_format(0, '.', ',')}}</span>
+        <span class="cell-detail-description"><strong>{{inputan_manajer.volume_barang}} {{inputan_manajer.ukuran_satuan}}</strong></span>
+        <span> Rp. {{inputan_manajer.total|number_format(0, '.', ',')}}</span>
+    </td>
+    <td class="user-avatar cell-detail user-info">
+        <img src="public/profile/{{inputan_manajer.pegawai.who.image}}" alt="Avatar">
+        <span>{{inputan_manajer.pegawai.who.nama}}</span>
+        <span class="cell-detail-description">{{inputan_manajer.pegawai.time}}</span>
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-space btn-group-xs">
+            {% if inputan_manajer.approval.direktur.status == "diterima" %}
+            <button type="button" class="btn btn-color btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+            {% elseif inputan_manajer.approval.direktur.status == "ditolak" %}
+            <button type="button" class="btn btn-color btn-danger"><i class="icon mdi mdi-close"></i></button>
+            {% else %}
+            <button type="button" class="btn btn-color btn-default"><i class="icon mdi mdi-circle-o"></i></button>
+            {% endif %}
+            <button type="button" class="btn btn-default">Direktur</button></div><br>
+        <div class="btn-group btn-space btn-group-xs">
+            {% if inputan_manajer.approval.manajer.status == "diterima" %}
+            <button type="button" class="btn btn-color btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+            {% elseif inputan_manajer.approval.manajer.status == "ditolak" %}
+            <button type="button" class="btn btn-color btn-danger"><i class="icon mdi mdi-close"></i></button>
+            {% else %}
+            <button type="button" class="btn btn-color btn-default"><i class="icon mdi mdi-circle-o"></i></button>
+            {% endif %}
+            <button type="button" class="btn btn-default">Manajer</button>
+        </div>
+    </td>
+    <td class=" text-center">
+        {% if inputan_manajer.active_user_priv != 3 %}
+            {% if inputan_manajer.approval %}
+                <div class="btn-group btn-space">
+                    <button type="button" class="btn btn-success btn-terima" data-rowData='{{ inputan_manajer|json_encode() }}' {{ inputan_manajer.approval.direktur.status == "diterima" ? "disabled" }}>
+                        <i class="icon mdi mdi-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-tolak" data-rowData='{{ inputan_manajer|json_encode() }}' {{ inputan_manajer.approval.direktur.status == "ditolak" ? "disabled" }}>
+                        <i class="icon mdi mdi-close"></i>
+                    </button>
+                </div>
+            {% else %}
+                <div class="btn-group btn-space">
+                    <button type="button" class="btn btn-success btn-terima" data-rowData='{{ inputan_manajer|json_encode() }}'><i class="icon mdi mdi-check"></i></button>
+                    <button type="button" class="btn btn-danger btn-terima" data-rowData='{{ inputan_manajer|json_encode() }}'><i class="icon mdi mdi-close"></i></button>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="btn-group btn-space">
+                <button type="button" class="btn btn-primary btn-edit" data-rowData='{{ inputan_manajer|json_encode() }}'><i class="icon mdi mdi-edit"></i></button>
+                <button type="button" class="btn btn-danger btn-hapus" data-rowData='{{ inputan_manajer|json_encode() }}'><i class="icon mdi mdi-delete"></i></button>
+            </div>
+        {% endif %}
+    </td>
+</tr>

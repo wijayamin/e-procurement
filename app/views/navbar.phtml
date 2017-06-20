@@ -1,5 +1,6 @@
 <div class="be-left-sidebar">
-    <div class="left-sidebar-wrapper"><a href="#" class="left-sidebar-toggle">Fixed Sidebar</a>
+    <div class="left-sidebar-wrapper">
+        <a id="side-menu" class="left-sidebar-toggle">Menu</a>
         <div class="left-sidebar-spacer">
             <div class="left-sidebar-scroll">
                 <div class="left-sidebar-content">
@@ -13,42 +14,36 @@
                             <a href="<?= $this->pathFor ('DashboardPage') ?>"><i class="icon mdi mdi-home"></i><span>Dashboard</span></a>
                         </li>
 
-                        <li class="parent <?= $this->uri (0, 'tender', 'active open') ?>">
+                        <li class="parent <?= ($this->uri(0, 'tender') && !$this->uri(1, 'approval') ? 'active':'') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>Berita Tender</span></a>
                             <ul class="sub-menu">
-                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'daftar') ? 'active':'') ?>">
-                                    <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Daftar Tender</a>
+                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'list') ? 'active':'') ?>">
+                                    <a href="<?= $this->pathFor ('beritaTender_daftar') ?>">Daftar Tender</a>
                                 </li>
                                 <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
                                     <a role="button">Detail Tender</a>
                                 </li>
-                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'tambah') ? 'active':'') ?>">
-                                    <a href="<?= $this->pathFor ('tambahBeritaTender') ?>">Tambah</a>
+                                <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'add') ? 'active':'') ?>">
+                                    <a href="<?= $this->pathFor ('beritaTender_tambah') ?>">Tambah</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li class="parent <?= ($this->uri(0, 'rks') || $this->uri(0, 'acara') ? 'active open':'') ?>">
+                        <li class="parent <?= ($this->uri(0, 'rks-acara') && !$this->uri(1, 'approval') ? 'active open':'') ?>">
                             <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
                             <ul class="sub-menu">
-                                <li class="<?= ($this->uri(0, 'rks') && $this->uri(1, 'daftar') ? 'active':'') ?>">
-                                    <a href="<?= $this->pathFor ('daftarBeritaTenderRKS') ?>">Daftar RKS Tender</a>
+                                <li class="<?= ($this->uri(0, 'rks-acara') && $this->uri(1, 'list') ? 'active':'') ?>">
+                                    <a href="<?= $this->pathFor ('rksAcara_daftar') ?>">Daftar Berita Tender</a>
                                 </li>
-                                <li class="<?= ($this->uri(0, 'rks') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
-                                    <a role="button">Detail RKS Tender</a>
-                                </li>
-                                <li class="<?= ($this->uri(0, 'acara') && $this->uri(1, 'daftar') ? 'active':'') ?>">
-                                    <a href="<?= $this->pathFor ('daftarBeritaTenderAcara') ?>">Daftar Berita Acara Tender</a>
-                                </li>
-                                <li class="<?= ($this->uri(0, 'acara') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
-                                    <a role="button">Detail Berita Acara Tender</a>
+                                <li class="<?= ($this->uri(0, 'rks-acara') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
+                                    <a href="">Daftar RKS Tender</a>
                                 </li>
                             </ul>
                         </li>
 
                         <?php if (in_array ($active_user_data[ 'previledge' ], ['3'])): ?>
                         <li class="<?= $this->uri (0, 'unit-kerja', 'active') ?>">
-                            <a href="<?= $this->pathFor ('daftarBeritaTenderUnitKerja') ?>">
+                            <a href="<?= $this->pathFor ('unitKerja_daftar') ?>">
                                 <i class="icon mdi mdi-assignment-account"></i><span>Penenturan Unit Kerja</span>
                             </a>
                         </li>
@@ -56,13 +51,13 @@
 
                         <?php if (in_array ($active_user_data[ 'previledge' ], ['4'])): ?>
                             <li class="<?= $this->uri (0, 'boq', 'parent active open') ?>">
-                                <a href="<?= $this->pathFor ('daftarBeritaTenderBOQ') ?>">
+                                <a href="<?= $this->pathFor ('BOQTender_daftar') ?>">
                                     <i class="icon mdi mdi-shopping-cart"></i><span>Penenturan BOQ</span>
                                 </a>
                                 <?php if($this->uri(0, 'boq')): ?>
                                 <ul class="sub-menu">
                                     <li class="<?= ($this->uri(0, 'boq') && $this->uri(1, 'daftar') ? 'active':'') ?>">
-                                        <a href="<?= $this->pathFor ('daftarBeritaTenderBOQ') ?>">Daftar Tender</a>
+                                        <a href="<?= $this->pathFor ('BOQTender_daftar') ?>">Daftar Tender</a>
                                     </li>
                                     <li class="<?= ($this->uri(0, 'boq') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
                                         <a role="button">Daftar BOQ Tender</a>
@@ -73,14 +68,14 @@
                         <?php endif; ?>
 
                         <?php if (in_array ($active_user_data[ 'previledge' ], ['3', '4'])): ?>
-                        <li class="<?= $this->uri (0, 'dokumen', 'parent active open') ?>">
-                            <a href="<?= $this->pathFor('daftarBeritaTenderDokumen') ?>">
+                        <li class="<?= ($this->uri(0, 'dokumen') && !$this->uri(1, 'approval') ? 'active open':'') ?>">
+                            <a href="<?= $this->pathFor('dokumenTender_daftar') ?>">
                                 <i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span>
                             </a>
                             <?php if($this->uri(0, 'dokumen')): ?>
                                 <ul class="sub-menu">
                                     <li class="<?= ($this->uri(0, 'dokumen') && $this->uri(1, 'daftar') ? 'active':'') ?>">
-                                        <a href="<?= $this->pathFor ('daftarBeritaTenderDokumen') ?>">Daftar Tender</a>
+                                        <a href="<?= $this->pathFor ('dokumenTender_daftar') ?>">Daftar Tender</a>
                                     </li>
                                     <li class="<?= ($this->uri(0, 'dokumen') && $this->uri(1, 'detail') ? 'active':'hidden') ?>">
                                         <a role="button">Daftar Dokumen Tender</a>
@@ -94,20 +89,20 @@
 
                             <li class="divider"><span class="label label-danger">Approval Tender</span></li>
 
-                            <li class="parent <?= $this->uri (0, 'approval', 'active open') ?>">
+                            <li class="parent <?= $this->uri (1, 'approval', 'active open') ?>">
                                 <a href="#"><i class="icon mdi mdi-assignment-check"></i><span>Approval Tender</span></a>
                                 <ul class="sub-menu">
-                                    <li class="<?= $this->uri ('approval/tender/berita', 'active') ?>">
-                                        <a href="<?= $this->pathFor ('daftarApprovalBeritaTender') ?>">Berita Tender</a>
+                                    <li class="<?= ($this->uri(0, 'tender') && $this->uri(1, 'approval') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('beritaTender_daftarApproval') ?>">Berita Tender</a>
                                     </li>
-                                    <li class="<?= $this->uri ('approval/acara-rks/berita', 'active') ?>">
-                                        <a href="<?= $this->pathFor ('daftarApprovalRKSTender') ?>">RKS</a>
+                                    <li class="<?= ($this->uri(0, 'rks-acara') && $this->uri(1, 'approval') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('rksAcara_daftarApproval') ?>">RKS</a>
                                     </li>
-                                    <li class="<?= $this->uri ('approval/boq/berita', 'active') ?>">
-                                        <a href="<?= $this->pathFor ('daftarApprovalBOQTender') ?>">BOQ</a>
+                                    <li class="<?= ($this->uri(0, 'boq') && $this->uri(1, 'approval') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('BOQTender_daftarApproval') ?>">BOQ</a>
                                     </li>
-                                    <li class="<?= $this->uri ('approval-tender/dokumen-kelengkapan', 'active') ?>">
-                                        <a href="<?= $this->pathFor ('daftarBeritaTender') ?>">Dokumen</a>
+                                    <li class="<?= ($this->uri(0, 'dokumen') && $this->uri(1, 'approval') ? 'active':'') ?>">
+                                        <a href="<?= $this->pathFor ('dokumenTender_daftarApproval') ?>">Dokumen</a>
                                     </li>
                                 </ul>
                             </li>
