@@ -142,17 +142,21 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="milestone">
-                                            <span class="version"><?= !$dokumen['file_dokumen'] ? 'Menunggu Upload' : (!$dokumen['approval'] ? 'Menuggu Approval' : ($dokumen['approval']['manajer']['status'] == '' || $dokumen['approval']['direktur']['status'] == '' ? 'Kurang Satu Approval' : 'Selesai' )) ?></span>
+                                            <span class="version"><?= !$dokumen['file_dokumen'] ? 'Menunggu Upload' : (!$dokumen['approval'] ? 'Menuggu Approval' : ($dokumen['approval']['manajer']['status'] == '' && $dokumen['approval']['direktur']['status'] == '' ? 'Menuggu Approval' : ($dokumen['approval']['manajer']['status'] == '' || $dokumen['approval']['direktur']['status'] == '' ? 'Kurang Satu Approval' : 'Selesai' ) )) ?></span>
                                             <div class="progress">
-                                                <div style="width: 1%" class="progress-bar progress-bar-primary"></div>
-                                                <?php if($dokumen['file_dokumen']): ?>
-                                                    <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
-                                                    <?php if($dokumen['approval'] and $dokumen['approval']['manajer']['status'] != ''): ?>
-                                                        <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
-                                                    <?php elseif($dokumen['approval'] and $dokumen['approval']['direktur']['status'] != ''): ?>
-                                                        <div style="width: 33%" class="progress-bar progress-bar-primary"></div>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
+                                                <?php
+                                                $progress = 1;
+                                                if($dokumen['file_dokumen']){
+                                                    $progress=$progress+33;
+                                                    if($dokumen['approval'] and $dokumen['approval']['direktur']['status'] != ''){
+                                                        $progress = $progress + 33;
+                                                    }
+                                                    if($dokumen['approval'] and $dokumen['approval']['manajer']['status'] != ''){
+                                                        $progress = $progress + 33;
+                                                    }
+                                                }
+                                                ?>
+                                                <div style="width: <?= $progress ?>%" class="progress-bar progress-bar-primary"></div>
                                             </div>
                                         </td>
                                     </tr>
