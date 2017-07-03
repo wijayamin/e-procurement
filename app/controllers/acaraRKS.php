@@ -30,6 +30,7 @@ class acaraRKS extends \ryan\main {
         $this->userModels = new \ryan\models\users($container);
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
     }
+
     public function daftarBeritaTender(Req $req, Res $res, $args){
         $route = $req->getAttribute('route');
         $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
@@ -71,6 +72,16 @@ class acaraRKS extends \ryan\main {
         $tender[$args['type']]['file'] = $filename;
         $tender[$args['type']]['waktu'] = date ("Y-m-d H:i:s");
         $tender[$args['type']]['user_id'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
+        $tender[$args['type']]['approval'] = [
+            "direktur"=>[
+                "status"=>"",
+                "waktu"=>""
+            ],
+            "manajer"=>[
+                "status"=>"",
+                "waktu"=>""
+            ]
+        ];
         $data = [
             $args['type']=>json_encode($tender[$args['type']])
         ];
