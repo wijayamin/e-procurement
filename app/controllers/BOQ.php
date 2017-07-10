@@ -180,7 +180,17 @@ class BOQ extends \ryan\main{
         if($this->BOQModels->setBOQ($data)){
             $result['status']='success';
         }
-        return $res->withJson($data);
+        return $res->withJson($result);
+    }
+
+    public function BOQ_delete(Request $req, Response $res, $args){
+        if(isset($_POST['id_penawaran'])){
+            if($this->BOQModels->deleteBOQ($_POST['id_penawaran'])){
+                return $res->withJson([
+                   'status'=>'success'
+                ]);
+            }
+        }
     }
 
 }

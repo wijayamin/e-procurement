@@ -65,6 +65,10 @@ class BOQ extends \ryan\main{
         }
     }
 
+    public function deleteBOQ($id_penawaran){
+        return $this->pdo->delete()->from('penawaran')->where('id_penawaran', '=', $id_penawaran)->execute();
+    }
+
     public function countBOQApproval($id_tender){
         $select = $this->db->prepare('select COUNT(ID_PENAWARAN) from penawaran where ID_TENDER=:id_tender and APPROVAL is not NULL');
         $select->bindParam(':id_tender', $id_tender);

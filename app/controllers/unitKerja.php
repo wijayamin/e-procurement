@@ -35,7 +35,7 @@ class unitKerja extends \ryan\main{
         $this->unitKerjaModels = new \ryan\models\unitKerja($container);
     }
 
-    public function daftarUnitKerja(Request $req, Response $res, $args){
+    public function unitKerja_daftar(Request $req, Response $res, $args){
         $route = $req->getAttribute('route');
         $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
             return $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara)['nama_penyelenggara'];
@@ -52,7 +52,7 @@ class unitKerja extends \ryan\main{
         return $this->view->render ("unit-kerja/daftar", $req->getAttributes ());
     }
 
-    public function detailUnitKerja(Request $req, Response $res, $args){
+    public function unitKerja_detail(Request $req, Response $res, $args){
         $route = $req->getAttribute('route');
         $this->view->registerFunction('getNamaPenyelenggara', function($id_penyelenggara){
             return $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara)['nama_penyelenggara'];
@@ -68,7 +68,7 @@ class unitKerja extends \ryan\main{
         return $this->view->render ("unit-kerja/detail", $req->getAttributes ());
     }
 
-    public function addUnitKerja(Request $req, Response $res, $args){
+    public function unitKerja_add(Request $req, Response $res, $args){
         $result = [
             'status'=>'failed'
         ];
@@ -107,7 +107,7 @@ class unitKerja extends \ryan\main{
 
     }
 
-    public function getAvailableUnitKerja(Request $req, Response $res, $args){
+    public function unitKerja_available(Request $req, Response $res, $args){
         $users = $this->userModels->getUserWithPreviledge('4');
         foreach ($users as &$user){
             $unitkerja = $this->unitKerjaModels->isUnitKerjaExsist($args['id_tender'], $user['id_user']);
@@ -116,11 +116,23 @@ class unitKerja extends \ryan\main{
         return $res->withJson($users);
     }
 
-    public function getUnitKerjaTender(Request $req, Response $res, $args){
+    public function unitKerja_get(Request $req, Response $res, $args){
         $unitskerja = $this->unitKerjaModels->getUnitKerjaByTender($args['id_tender']);
         foreach ($unitskerja as &$unit){
             $unit['pegawai'] = $this->userModels->getUserDetail($unit['id_user']);
         }
         return $res->withJson(['data'=>$unitskerja]);
+    }
+
+    public function unitKerja_delete(Request $req, Response $res, $args){
+        if($this->unitKerjaModels->deleteUnitKerja($_POST['id_unitkerja'])){
+            return $res->withJson([
+               'status'=>'success'
+            ]);
+        }else{
+            return $res->withJson([
+                'status'=>'failed'
+            ]);
+        }
     }
 }

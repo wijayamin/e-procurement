@@ -78,4 +78,8 @@ class unitKerja extends \ryan\main{
         }
     }
 
+    public function deleteUnitKerja($id_unitkerja){
+        return $this->pdo->delete()->from('unit_kerja')->where('id_unitkerja', '=', $id_unitkerja)->execute();
+    }
+
 }

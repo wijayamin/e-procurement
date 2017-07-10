@@ -25,6 +25,7 @@ $app->group('', function () {
     $this->group('/tender', function () {
         $this->get('/list', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('beritaTender_daftar');
         $this->map(['GET', 'POST'], '/add', \ryan\controllers\beritaTender::class . ':tambahBeritaTender')->setName('beritaTender_tambah');
+        $this->map(['GET', 'POST'], '/edit/{id_tender}', \ryan\controllers\beritaTender::class . ':beritaTender_edit')->setName('beritaTender_edit');
         $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':detailBeritaTender')->setName('beritaTender_detail');
 
         $this->get('/approval', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('beritaTender_daftarApproval');
@@ -44,11 +45,12 @@ $app->group('', function () {
     });
 
     $this->group('/unit-kerja', function () {
-        $this->get('/list', \ryan\controllers\unitKerja::class . ':daftarUnitKerja')->setName('unitKerja_daftar');
-        $this->get('/daftar/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':detailUnitKerja')->setName('unitKerja_detail');
-        $this->get('/available/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':getAvailableUnitKerja')->setName('unitKerja_tersedia');
-        $this->get('/get/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':getUnitKerjaTender')->setName('unitKerja_list');
-        $this->post('/add/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':addUnitKerja')->setName('unitKerja_tambah');
+        $this->get('/list', \ryan\controllers\unitKerja::class . ':unitKerja_daftar')->setName('unitKerja_daftar');
+        $this->get('/daftar/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':unitKerja_detail')->setName('unitKerja_detail');
+        $this->get('/available/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':unitKerja_available')->setName('unitKerja_tersedia');
+        $this->get('/get/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':unitKerja_get')->setName('unitKerja_list');
+        $this->post('/add/{id_tender:[0-9]+}', \ryan\controllers\unitKerja::class . ':unitKerja_add')->setName('unitKerja_tambah');
+        $this->post('/delete', \ryan\controllers\unitKerja::class . ':unitKerja_delete')->setName('unitKerja_hapus');
     });
 
     $this->group('/boq', function () {
@@ -57,6 +59,7 @@ $app->group('', function () {
 
         $this->post('/set/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_set')->setName('BOQTender_set');
         $this->get('/get/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_get')->setName('BOQTender_get');
+        $this->post('/delete', \ryan\controllers\BOQ::class . ':BOQ_delete')->setName('BOQTender_delete');
 
         $this->any('/approval', \ryan\controllers\BOQ::class . ':BOQ_daftar')->setName('BOQTender_daftarApproval');
         $this->any('/approval/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_detail_approval')->setName('BOQTender_detailApproval');
@@ -68,10 +71,12 @@ $app->group('', function () {
         $this->get('/daftar', \ryan\controllers\dokumenTender::class . ':daftarBeritaTender')->setName('dokumenTender_daftar');
         $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':detailTenderDokumen')->setName('dokumenTender_detail');
 
+
+        $this->post('/add/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':dokumen_add')->setName('dokumenTender_add');
         $this->get('/get/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':getDokumenTender')->setName('dokumenTender_get');
         $this->get('/get/required/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':getRequiredDokumenTender')->setName('dokumenTender_getRequired');
         $this->get('/get/optional/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':getOptionalDokumenTender')->setName('dokumenTender_getOptional');
-        $this->post('/set/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':setDokumenTender')->setName('dokumenTender_set');
+        $this->post('/set/{id_tender:[0-9]+}', \ryan\controllers\dokumenTender::class . ':dokumen_edit')->setName('dokumenTender_set');
         $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenTender::class . ':deleteDokumenTender')->setName('dokumenTender_delete');
 
 //        $this->get('/count/{id_tender}', \ryan\controllers\dokumenTender::class . ':countDokumenTender')->setName('dokumenTender_getDoned');

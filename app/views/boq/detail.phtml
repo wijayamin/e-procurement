@@ -91,12 +91,12 @@ $this->start('contents');
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th>Nama Vendor</th>
-                            <th>Nama Barang</th>
+                            <th>Barang / Vendor</th>
                             <th>Harga</th>
-                            <th>Jml</th>
+                            <th>Jumlah</th>
                             <th>Total</th>
                             <th class="text-right" width="20%">Diajukan Oleh</th>
+                            <th class="action"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,6 +202,27 @@ $this->start('contents');
             </div>
         </div>
     </div>
+    <div id="modal-delete" tabindex="-1" role="dialog" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
+                        <h3>Hapus Penawaran BOQ!</h3>
+                        <p>Apakah anda yakin akan menghapus barang <strong class="barang"></strong> dari <strong class="vendor"></strong>?</p>
+                        <div class="xs-mt-50">
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-danger btn-hapus">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
 
     <!--akhir tempat konten-->
 <?php
@@ -263,8 +284,14 @@ $this->start('js');
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    {data:'nama_vendor'},
-                    {data:'nama_barang'},
+                    {
+                        data:null,
+                        className : "cell-detail",
+                        render: function (data, type, row, meta) {
+                            return  '<span>' + data.nama_barang + '</span>' +
+                                    '<span class="cell-detail-description">' + data.nama_vendor + '</span>'
+                        },
+                    },
                     {
                         data:'harga_persatuan',
                         render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' ),
@@ -293,7 +320,31 @@ $this->start('js');
                             return '<img src="public/profile/' + data.who.image + '" alt="Avatar"><span>' + data.who.nama + '</span><span class="cell-detail-description">' + waktu + '</span>';
                         },
                     },
+                    {
+                        data: null,
+                        className: 'text-right',
+                        render: function (data, type, row, meta) {
+                            delete data.rowData;
+                            return '<button class="btn btn-space btn-danger btn-delete" data-toggle="modal" data-target="#modal-delete" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>';
+                        },
+                    },
                 ],
+            });
+
+            $('#modal-delete').on('show.bs.modal', function (event) {
+                var mBtn = $(event.relatedTarget);
+                var modal = $(this);
+                var rowData = mBtn.data('rowdata');
+                modal.find('p strong.barang').html(rowData.nama_barang);
+                modal.find('p strong.vendor').html(rowData.nama_vendor);
+                modal.find('.btn-hapus').on('click', function () {
+                    $.post('<?= $this->pathFor('BOQTender_delete') ?>', {id_penawaran:rowData.id_penawaran}, function (data) {
+                        if(data.status == 'success'){
+                            unitKerja.ajax.reload();
+                            $('#modal-delete').modal('hide')
+                        }
+                    }, 'json')
+                })
             });
 
             $('#form-unitkerja').on('show.bs.modal', function (event) {

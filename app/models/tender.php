@@ -38,13 +38,17 @@
             return $this->db->lastInsertId();
         }
 
+        public function setBeritaTender($data, $id_tender){
+            return $this->pdo->update($data)->table('tender')->where('id_tender', '=', $id_tender)->execute();
+        }
+
         public function updateBeritaTender($id_tender, $data){
             return $this->pdo->update($data)->table('tender')->where('id_tender', '=', $id_tender)->execute();
         }
 
         public function getBeritaTender($id_tender = null){
             if($id_tender == null){
-                return $this->db->query("select * from tender")->fetchAll();
+                return $this->db->query("select * from tender where DELETED = 0")->fetchAll();
             }else{
                 $select = $this->db->prepare("select * from tender where ID_TENDER=:id_tender");
                 $select->bindParam(':id_tender', $id_tender);

@@ -78,8 +78,12 @@ $this->start('contents');
     </aside>
     <div class="main-content container-fluid">
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
-            <div class="panel-heading">Daftar Dokumen Tender
+            <div class="panel-heading">Daftar Dokumen Prasyarat
                 <div class="tools">
+                    <button class="btn btn-space btn-primary btn-sm add-dok" data-type="required">
+                        <i class="mdi mdi-file-plus"></i>
+                        &nbsp; Tambah Dokumen Prasyarat
+                    </button>
                 </div>
             </div>
             <div class="panel-body">
@@ -88,9 +92,9 @@ $this->start('contents');
                         <tr>
                             <th width="5%">No</th>
                             <th width="20%">Nama Dokumen</th>
-                            <th width="45%">File</th>
+                            <th width="35%">File</th>
                             <th width="20%">Diupload Oleh</th>
-                            <th width="10%"class="text-center">Upload</th>
+                            <th width="20%"class="action"></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -100,8 +104,8 @@ $this->start('contents');
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
             <div class="panel-heading">Daftar Dokumen Pelengkap
                 <div class="tools">
-                    <button class="btn btn-rounded btn-space btn-primary btn-sm add-opt-dok">
-                        <i class="mdi mdi-shopping-cart-plus"></i>
+                    <button class="btn btn-space btn-primary btn-sm add-dok" data-type="optional">
+                        <i class="mdi mdi-file-plus"></i>
                         &nbsp; Tambah Dokumen Pelengkap
                     </button>
                 </div>
@@ -112,9 +116,9 @@ $this->start('contents');
                         <tr>
                             <th width="5%">No</th>
                             <th width="20%">Nama Dokumen</th>
-                            <th width="45%">File</th>
+                            <th width="35%">File</th>
                             <th width="20%">Diupload Oleh</th>
-                            <th width="10%"class="text-center">Upload</th>
+                            <th width="20%" class="action"></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -122,25 +126,32 @@ $this->start('contents');
             </div>
         </div>
     </div>
-    <div id="add-opt-dok" class="modal-container colored-header colored-header-primary modal-effect-1">
+    <div id="modal-add-dok" class="modal-container colored-header colored-header-primary modal-effect-1">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
                 <h3 class="modal-title">Tambah Dokumen Pelengkap</h3>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group xs-mt-10">
+                <form class="form-horizontal" action="<?= $this->pathFor('dokumenTender_add', ['id_tender'=>$tender['id_tender']]) ?>">
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">Nama Dokumen</label>
                         <div class="col-sm-9">
                             <input type="text" name="nama_dokumen" placeholder="Nama Dokumen : SIUP" class="form-control">
-                            <input type="hidden" name="id_tender" value="<?= $tender['id_tender'] ?>">
+                            <span class="help-block text-waring">Wajib di-isi</span>
+                            <input type="hidden" name="dokumen_syarat" value="1">
                         </div>
                     </div>
-                    <div class="form-group xs-mt-10">
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">File Dokumen</label>
                         <div class="col-sm-9">
-                            <input type="file" name="dokOpt[0]" placeholder="Nama Dokumen : SIUP" accept="application/pdf"  class="form-control">
+                            <div class="input-group xs-mb-15">
+                                <input type="text" name="file_name" class="form-control" readonly>
+                                <input type="file" name="file_dokumen" placeholder="Nama Dokumen : SIUP" accept="application/pdf"  class="hidden" hidden>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary modal-close input-file"><i class="mdi mdi-file-plus"></i> Pilih File</button>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -151,17 +162,55 @@ $this->start('contents');
             </div>
         </div>
     </div>
-    <div id="yakin-hapus" class="modal-container modal-full-color modal-full-color-danger modal-effect-8" style="perspective: 1300px; height: 382px;">
+    <div id="modal-edit-dok" class="modal-container colored-header colored-header-primary modal-effect-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+                <h3 class="modal-title">Ubah data dokumen</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="<?= $this->pathFor('dokumenTender_set', ['id_tender'=>$tender['id_tender']]) ?>">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Nama Dokumen</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="nama_dokumen" placeholder="Nama Dokumen : SIUP" class="form-control">
+                            <input type="hidden" name="id_dokumen">
+                            <span class="help-block text-waring">Wajib di-isi</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">File Dokumen</label>
+                        <div class="col-sm-9">
+                            <div class="input-group xs-mb-15">
+                                <input type="text" name="file_name" class="form-control" readonly>
+                                <input type="file" name="file_dokumen" placeholder="Nama Dokumen : SIUP" accept="application/pdf"  class="hidden" hidden>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary modal-close input-file"><i class="mdi mdi-file-plus"></i> Pilih File</button>
+                                </span>
+                            </div>
+                            <span class="help-block text-waring">untuk merubah nama dokumen, file dokumen tidak perlu di isi</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-default btn-cancel modal-close">Cancel</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary btn-ok modal-close">Proceed</button>
+            </div>
+        </div>
+    </div>
+    <div id="modal-delete-dok" class="modal-container modal-effect-8" style="perspective: 1300px; height: 382px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
             </div>
             <div class="modal-body">
-                <div class="text-center"><span class="modal-main-icon mdi mdi-close-circle-o"></span>
+                <div class="text-center">
+                    <span class="modal-main-icon mdi mdi-delete text-danger"></span>
                     <h3>Hapus!</h3>
                     <p>Apakah anda yakin akan menghapus dokumen <strong></strong>?</p>
                     <div class="xs-mt-50">
-                        <button type="button" data-dismiss="modal" class="btn btn-success btn-space yakin modal-close">Ya</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-danger btn-space btn-delete modal-close">Hapus</button>
                         <button type="button" data-dismiss="modal" class="btn btn-default btn-space modal-close">Batal</button>
                     </div>
                 </div>
@@ -170,19 +219,6 @@ $this->start('contents');
         </div>
     </div>
     <div class="modal-overlay"></div>
-    <div id="preview-template" style="display: none;">
-        <div class="dz-preview dz-file-preview" style="display: none;">
-            <div class="dz-details" style="display: none;">
-                <div class="dz-filename"><span data-dz-name></span></div>
-                <div class="dz-size" data-dz-size></div>
-                <img data-dz-thumbnail />
-            </div>
-            <div class="dz-progress" style="display: none;"><span class="dz-upload" data-dz-uploadprogress></span></div>
-            <div class="dz-success-mark" style="display: none;"><span>✔</span></div>
-            <div class="dz-error-mark" style="display: none;"><span>✘</span></div>
-            <div class="dz-error-message" style="display: none;"><span data-dz-errormessage></span></div>
-        </div>
-    </div>
 
     <!--akhir tempat konten-->
 <?php
@@ -211,7 +247,6 @@ $this->start('js');
                 closeSelector: '.modal-close',
                 classAddAfterOpen: 'modal-show',
             });
-            //We use this to apply style to certain elements
             $.extend(true, $.fn.dataTable.defaults, {
                 dom: "<'row be-datatable-header'<'col-sm-6'l><'col-sm-6'f>>" +
                 "<'row be-datatable-body'<'col-sm-12'tr>>" +
@@ -234,32 +269,54 @@ $this->start('js');
                     "searchPlaceholder": 'Cari',
                 },
             });
+
+
             var upload_url = "<?= $this->pathFor("dokumenTender_set", ['id_tender'=>$tender['id_tender']]) ?>";
-            $('.add-opt-dok').on('click', function(){
-                $('#add-opt-dok').niftyModal({
+
+
+            $('.add-dok').on('click', function(){
+                var type = $(this).data('type')
+                $('#modal-add-dok').niftyModal({
                     beforeOpen: function( modals ){
                         var modal = $(modals.modalEl);
+                        modal.find('.modal-title').html('Tambah Dokumen ' + (type == 'required' ? 'Prasyarat' : 'Pelengkap'))
                         modal.find('input[name="nama_dokumen"]').val('')
-                        modal.find('input[name="dokOpt[0]"]').val('')
+                        modal.find('input[name="file_dokumen"]').val('')
+                        modal.find('input[name="file_name"]').val('')
+                        modal.find('input[name="dokumen_syarat"]').val(type == 'required' ? '1' : '0')
                     },
                     buttons: [
                         {
+                            class: 'input-file',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                modal.find('input[name="file_dokumen"]').click();
+                                modal.find('input[name="file_dokumen"]').on('change', function () {
+                                    modal.find('input[name="file_name"]').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+                                });
+                                return false
+                            }
+                        },{
                             class: 'btn-ok',
                             callback: function ( btn, modals, event ) {
                                 var modal = $(modals.modalEl);
-                                modal.find('form').ajaxSubmit({
-                                    url:upload_url,
-                                    type:"post",
-                                    dataType:"json",
-                                    success: function (res, status, xhr, $form) {
-                                        if(res.status == "success"){
-                                            dokOpt.ajax.reload();
-                                            return true;
-                                        }else{
-                                            return false;
+                                if(modal.find('input[name="nama_dokumen"]').val() !== ""){
+                                    modal.find('form').ajaxSubmit({
+                                        type:"post",
+                                        dataType:"json",
+                                        success: function (res, status, xhr, $form) {
+                                            if(res.status == "success"){
+                                                dokReq.ajax.reload();
+                                                dokOpt.ajax.reload();
+                                                return true;
+                                            }else{
+                                                return false;
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }else{
+                                    return false;
+                                }
                             }
                         }
                     ],
@@ -305,11 +362,13 @@ $this->start('js');
                     },
                     {
                         data: null,
-                        className: "text-center",
+                        className: "text-right",
                         render: function (data, type, row, meta) {
-                            return  '<form action="'+upload_url+'" class="btn btn-space btn-' + (data.file_dokumen ? 'default' : 'primary') + ' btn-upload" data-id="'+data.id_dokumen+'">'+
-                                    '   <i class="icon icon-left mdi mdi-attachment"></i> ' + (data.file_dokumen ? 'ganti' : 'upload') +
-                                    '</form>'
+                            delete data.rowData;
+                            return  '   <div class="btn-group">'+
+                                    '      <button type="button" class="btn btn-' + (data.file_dokumen ? 'default' : 'primary') + ' btn-edit" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-attachment"></i> ' + (data.file_dokumen ? 'ganti' : 'upload') + '</button>'+
+                                    '      <button class="btn btn-danger btn-delete"  data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>'+
+                                    '   </div>'
                         }
                     },
                 ],
@@ -317,22 +376,96 @@ $this->start('js');
                     if(data.file_dokumen){
                         $(row).addClass('online');
                     }
-                    $(row).find('form.btn-upload').each(function () {
+                    $(row).find('form.form-upload').each(function () {
                         var id = $(this).data('id');
-                        $(this).dropzone({
-                            paramName:"dokReq["+id+"]",
-                            maxFilesize: 50,
-                            clickable: true,
-                            acceptedFiles:"application/pdf",
-                            createImageThumbnails: false,
-                            previewTemplate: document.getElementById('preview-template').innerHTML,
-                            success:function(file, data){
-                                dokReq.ajax.reload()
-                            }
-                        })
                     })
                 }
             });
+
+            function modalEdit(data) {
+                $('#modal-edit-dok').niftyModal({
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('.modal-title').html('Ubah Dokumen ' + data.nama_dokumen)
+                        modal.find('input[name="nama_dokumen"]').val(data.nama_dokumen)
+                        modal.find('input[name="file_dokumen"]').val('')
+                        modal.find('input[name="file_name"]').val(data.file_dokumen ? data.file_dokumen : 'Belum diupload')
+                        modal.find('input[name="id_dokumen"]').val(data.id_dokumen)
+                    },
+                    buttons: [
+                        {
+                            class: 'input-file',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                modal.find('input[name="file_dokumen"]').click();
+                                modal.find('input[name="file_dokumen"]').on('change', function () {
+                                    modal.find('input[name="file_name"]').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+                                });
+                                return false
+                            }
+                        },{
+                            class: 'btn-ok',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                if(modal.find('input[name="nama_dokumen"]').val() !== ""){
+                                    modal.find('form').ajaxSubmit({
+                                        type:"post",
+                                        dataType:"json",
+                                        success: function (res, status, xhr, $form) {
+                                            if(res.status == "success"){
+                                                dokReq.ajax.reload();
+                                                dokOpt.ajax.reload();
+                                                return true;
+                                            }else{
+                                                return false;
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    return false;
+                                }
+                            }
+                        }
+                    ],
+                });
+            }
+
+            $('#dok-req tbody').on('click', '.btn-edit', function () {
+                modalEdit($(this).data('rowdata'));
+            });
+
+            function modalDelete(data) {
+                $('#modal-delete-dok').niftyModal({
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('p strong').html(data.nama_dokumen)
+                    },
+                    buttons: [
+                        {
+                            class: 'btn-delete',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                if(modal.find('input[name="nama_dokumen"]').val() !== ""){
+                                    $.getJSON("<?= $this->pathFor('dokumenTender_delete') ?>/"+data.id_dokumen, function(data){
+                                        if(data.status == "success"){
+                                            dokReq.ajax.reload();
+                                            dokOpt.ajax.reload();
+                                            return true;
+                                        }
+                                    });
+                                }else{
+                                    return false;
+                                }
+                            }
+                        }
+                    ]
+                });
+            }
+
+            $('#dok-req tbody').on('click', '.btn-delete', function () {
+                modalDelete($(this).data('rowdata'));
+            })
+
             var dokOpt = $('#dok-opt').DataTable({
                 ajax:"<?= $this->pathFor('dokumenTender_getOptional', ['id_tender'=>$tender['id_tender']]) ?>",
                 columns:[
@@ -372,11 +505,13 @@ $this->start('js');
                     },
                     {
                         data: null,
-                        className: "text-center",
+                        className: "text-right",
                         render: function (data, type, row, meta) {
-                            return  '<button class="btn btn-space btn-danger btn-hapus" data-id="'+data.id_dokumen+'" data-dokumen="'+data.nama_dokumen+'">'+
-                                    '   <i class="icon icon-left mdi mdi-delete"></i> Hapus'+
-                                    '</button>'
+                            delete  data.rowData;
+                            return  '   <div class="btn-group">'+
+                                    '      <button type="button" class="btn btn-' + (data.file_dokumen ? 'default' : 'primary') + ' btn-edit" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-attachment"></i> ' + (data.file_dokumen ? 'ganti' : 'upload') + '</button>'+
+                                    '      <button class="btn btn-danger btn-delete" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>'+
+                                    '   </div>'
                         }
                     },
                 ],
@@ -385,30 +520,13 @@ $this->start('js');
                 }
             });
 
-            $('#dok-opt tbody').on('click', '.btn-hapus', function () {
-                var file_dokumen = $(this).data('dokumen');
-                var id_dokumen = $(this).data('id');
-                $('#yakin-hapus').niftyModal({
-                    beforeOpen: function( modals ){
-                        var modal = $(modals.modalEl);
-                        modal.find('strong').html(file_dokumen);
-                    },
-                    buttons: [
-                        {
-                            class: 'yakin',
-                            callback: function ( btn, modals, event ) {
-                                var modal = $(modals.modalEl);
-                                $.getJSON("<?= $this->pathFor('dokumenTender_delete') ?>/"+id_dokumen, function(data){
-                                    if(data.status == "success"){
-                                        dokOpt.ajax.reload();
-                                        return true;
-                                    }
-                                });
-                            }
-                        }
-                    ],
-                });
-            } );
+            $('#dok-opt tbody').on('click', '.btn-edit', function () {
+                modalEdit($(this).data('rowdata'));
+            })
+            $('#dok-opt tbody').on('click', '.btn-delete', function () {
+                modalDelete($(this).data('rowdata'));
+            })
+
         })
     </script>
 <?php $this->stop() ?>

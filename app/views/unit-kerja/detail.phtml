@@ -93,6 +93,7 @@ $this->start('contents');
                             <th width="5%">No</th>
                             <th>Nama Pegawai</th>
                             <th>Penugasan</th>
+                            <th class="actions" width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,6 +102,7 @@ $this->start('contents');
             </div>
         </div>
     </div>
+    <div class="modal-overlay"></div>
     <div id="form-unitkerja" tabindex="-1" role="dialog" class="modal fade colored-header colored-header-primary">
         <div class="modal-dialog custom-width">
             <div class="modal-content">
@@ -127,6 +129,27 @@ $this->start('contents');
             </div>
         </div>
     </div>
+    <div id="hapus-unitkerja" tabindex="-1" role="dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
+                        <h3>Danger!</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Fusce ultrices euismod lobortis.</p>
+                        <div class="xs-mt-50">
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Cancel</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-danger btn-hapus">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
 
     <!--akhir tempat konten-->
 <?php
@@ -147,7 +170,7 @@ $this->start('js');
     <script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
-            $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+//            $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
             $.fn.niftyModal('setDefaults', {
                 overlaySelector: '.modal-overlay',
                 closeSelector: '.modal-close',
@@ -197,7 +220,15 @@ $this->start('js');
                                     '<span class="cell-detail-description">' + moment(data.waktu).format('D MMMM YYYY h:mm') + '</span>'
                         }
                     },
-                    {data:'penugasan'}
+                    {data:'penugasan'},
+                    {
+                        data:null,
+                        className:'text-right',
+                        render: function (data, type, row, meta) {
+                            delete data.rowData;
+                            return  '<button class="btn btn-space btn-danger btn-hapus" data-toggle="modal" data-target="#hapus-unitkerja" data-rowdata=\''+JSON.stringify(data)+'\'><i class="mdi mdi-delete"></i></button>'
+                        }
+                    }
                 ],
                 order: [[ 2, 'asc' ]],
                 "drawCallback": function ( settings ) {
@@ -207,13 +238,32 @@ $this->start('js');
                     api.column(2, {page:'current'} ).data().each( function ( group, i ) {
                         if ( last !== group ) {
                             $(rows).eq( i ).before(
-                                '<tr class="active"><td colspan="3" style="padding-top:5px;padding-bottom: 5px;" class="text-center"><span class="label label-primary"> '+group+' </span></td></tr>'
+                                '<tr class="active"><td colspan="4" style="padding-top:5px;padding-bottom: 5px;" class="text-center"><span class="label label-primary"> '+group+' </span></td></tr>'
                             );
 
                             last = group;
                         }
                     } );
                 }
+            });
+
+
+
+            $('#hapus-unitkerja').on('show.bs.modal', function (event) {
+                var mBtn = $(event.relatedTarget) // Button that triggered the modal
+                var mData = mBtn.data() // Extract info from data-* attributes
+                var modal = $(this)
+                modal.find('h3').html("Hapus Unit Kerja?");
+                modal.find('p').html('Apakah anda yakin akan menghapus unit kerja <strong><mark>'+mData.rowdata.pegawai.nama+'</mark></strong> yang ditugaskan untuk <b><mark>'+mData.rowdata.penugasan+'</mark></b>');
+                modal.find('.btn-hapus').on('click', function(){
+                    $.post('<?= $this->pathFor('unitKerja_hapus') ?>', {id_unitkerja:mData.rowdata.id_unitkerja}, function (res) {
+                        if(res.status == 'success'){
+                            unitKerja.ajax.reload();
+                            modal.modal('hide');
+                        }
+                    }, 'json');
+                    return false;
+                })
             });
 
             $('#form-unitkerja').on('show.bs.modal', function (event) {

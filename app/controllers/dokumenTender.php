@@ -167,71 +167,65 @@ class dokumenTender extends \ryan\main {
         }
     }
 
-    public function setDokumenTender(Request $req, Response $res, $args){
+    public function dokumen_add(Request $req, Response $res, $args) {
+        $id_tender = $args['id_tender'];
+        $nama_dokumen = $_POST['nama_dokumen'];
+        $dokumen_syarat = $_POST['dokumen_syarat'];
         $files = $req->getUploadedFiles();
-        $result = [];
-        if(!isset( $_POST['nama_dokumen'] )){
-            if(array_key_exists("dokReq", $files)){
-                foreach ($files['dokReq'] as $id_dokumen => $file){
-                    $fileinfo = pathinfo($file->getClientFilename());
-                    $filename = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
-                    $data = [
-                        "file_dokumen"=>$filename,
-                        "tgl_upload"=>date ("Y-m-d H:i:s"),
-                        "pengupload"=>$req->getAttribute ('active_user_data')[ 'id_user' ],
-                        "approval"=>json_encode([
-                            "direktur"=>[
-                                "status"=>"",
-                                "waktu"=>""
-                            ],
-                            "manajer"=>[
-                                "status"=>"",
-                                "waktu"=>"",
-                            ]
-                        ])
-                    ];
-                    if($this->dokumenModels->setDokumenTender($data, $id_dokumen)){
-                        $file->moveTo("public/content/dokumen/".$filename);
-                        $result = [
-                            "status"=>"success"
-                        ];
-                    }
-                }
+        $data = [
+            'id_tender' => $id_tender, 'nama_dokumen' => $nama_dokumen, 'tgl_upload' => date ("Y-m-d H:i:s"),
+            "pengupload" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+            'dokumen_syarat' => $dokumen_syarat,
+            "approval" => json_encode([ "direktur"=>[ "status"=>"", "waktu"=>"" ], "manajer"=>[ "status"=>"", "waktu"=>"" ] ])
+        ];
+        if(sizeof($files)){
+            $file = $files['file_dokumen'];
+            $fileinfo = pathinfo($file->getClientFilename());
+            $file_dokumen = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
+            $data['file_dokumen'] = $file_dokumen;
+            if($this->dokumenModels->setDokumenTender($data)){
+                $file->moveTo("public/content/dokumen/".$file_dokumen);
+                return $res->withJson([
+                    "status"=>"success"
+                ]);
             }
         }else{
-            if(array_key_exists("dokOpt", $files)){
-                foreach ($files['dokOpt'] as $id_dokumen => $file){
-                    if($id_dokumen == 0){
-                        $fileinfo = pathinfo($file->getClientFilename());
-                        $filename = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
-                        $data = [
-                            "id_tender"=>$_POST['id_tender'],
-                            "nama_dokumen"=>$_POST['nama_dokumen'],
-                            "file_dokumen"=>$filename,
-                            "tgl_upload"=>date ("Y-m-d H:i:s"),
-                            "pengupload"=>$req->getAttribute ('active_user_data')[ 'id_user' ],
-                            "approval"=>json_encode([
-                                "direktur"=>[
-                                    "status"=>"",
-                                    "waktu"=>""
-                                ],
-                                "manajer"=>[
-                                    "status"=>"",
-                                    "waktu"=>"",
-                                ]
-                            ])
-                        ];
-                        if($this->dokumenModels->setDokumenTender($data)){
-                            $file->moveTo("public/content/dokumen/".$filename);
-                            $result = [
-                                "status"=>"success"
-                            ];
-                        }
-                    }
-                }
+            if($this->dokumenModels->setDokumenTender($data)){
+                return $res->withJson([
+                    "status"=>"success"
+                ]);
             }
         }
-        return $res->withJson($result);
     }
 
+    public function dokumen_edit(Request $req, Response $res, $args){
+        $id_tender = $args['id_tender'];
+        $id_dokumen = $_POST['id_dokumen'];
+        $nama_dokumen = $_POST['nama_dokumen'];
+        $files = $req->getUploadedFiles();
+        $data = [
+            'nama_dokumen' => $nama_dokumen,
+            "approval" => json_encode([ "direktur"=>[ "status"=>"", "waktu"=>"" ], "manajer"=>[ "status"=>"", "waktu"=>"" ] ])
+        ];
+        if(sizeof($files)){
+            $file = $files['file_dokumen'];
+            $fileinfo = pathinfo($file->getClientFilename());
+            $file_dokumen = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
+            $data['file_dokumen'] = $file_dokumen;
+            $data['tgl_upload'] = date ("Y-m-d H:i:s");
+            $data["pengupload"] = $req->getAttribute ('active_user_data')[ 'id_user' ];
+            if($this->dokumenModels->setDokumenTender($data, $id_dokumen)){
+                $file->moveTo("public/content/dokumen/".$file_dokumen);
+                return $res->withJson([
+                    "status"=>"success"
+                ]);
+            }
+        }else{
+            if($this->dokumenModels->setDokumenTender($data, $id_dokumen)){
+                return $res->withJson([
+                    "status"=>"success"
+                ]);
+            }
+        }
+    }
 }
