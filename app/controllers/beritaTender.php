@@ -21,6 +21,7 @@
         protected $dokumenModels;
         protected $unitkerjaModels;
         protected $BOQModels;
+        protected $historyModels;
 
         public function __construct (Container $container) {
             parent::__construct ($container);
@@ -32,6 +33,7 @@
             $this->dokumenModels = new \ryan\models\dokumenTender($container);
             $this->unitkerjaModels = new \ryan\models\unitKerja($container);
             $this->BOQModels = new \ryan\models\BOQ($container);
+            $this->historyModels = new \ryan\models\history($container);
         }
 
         public function tambahBeritaTender (Req $req, Res $res, $args) {
@@ -146,6 +148,7 @@
                     'rks'=>json_encode($tender['rks']),
                 ];
                 if($this->tenderModels->setBeritaTender($data, $args['id_tender'])){
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_tender', $args['id_tender']);
                     foreach($this->BOQModels->getBOQByTender($args['id_tender']) as $boq){
                         $this->BOQModels->setBOQ(['approval'=>''], $boq['id_penawaran']);
                         echo 'lala';
@@ -167,6 +170,16 @@
                         }
                     }
                     return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$args['id_tender']]));
+                }
+            }
+        }
+
+        public function beritaTender_delete (Req $req, Res $res, $args) {
+            if(isset($_POST['id_tender'])){
+                if($this->tenderModels->updateBeritaTender($_POST['id_tender'], ['deleted'=>'1'])){
+                    return $res->withJson([
+                       'status'=>'success'
+                    ]);
                 }
             }
         }
@@ -200,6 +213,8 @@
             $beritaTender = $this->tenderModels->getBeritaTender ($args[ 'id_tender' ]);
             $beritaTender['dokumen_syarat'] = $this->dokumenModels->getDokumenByTender($args[ 'id_tender' ]);
             $beritaTender['unit_kerja'] = $this->unitkerjaModels->getUnitKerjaByTender($args[ 'id_tender' ]);
+            $beritaTender['last_edit'] = $this->historyModels->getLastEditTender($args[ 'id_tender' ]);
+            $beritaTender['history'] = $this->historyModels->get_history($args[ 'id_tender' ]);
             $req = $req->withAttribute ('tender', $beritaTender);
             $req = $req->withAttribute ('menu', ['tender'=>['detail']]);
             $req = $req->withAttribute ('approval', $route->getName() == 'beritaTender_detailApproval');

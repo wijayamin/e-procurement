@@ -11213,6 +11213,9 @@ li.L9 {
   padding-left: -webkit-calc(50% + 45px);
   padding-left: calc(50% + 45px);
 }
+.timeline-variant.mod .timeline-item.right {
+  padding-left: 15%;
+}
 @media (max-width: 767px) {
   .timeline-variant .timeline-item.right {
     padding: 0;
@@ -11475,6 +11478,11 @@ li.L9 {
 }
 .timeline-variant:before {
   left: 50%;
+  z-index: -1;
+  top: 70px;
+}
+.timeline-variant.mod:before {
+  left: 6%;
   z-index: -1;
   top: 70px;
 }
