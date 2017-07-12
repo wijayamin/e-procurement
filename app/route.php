@@ -24,9 +24,11 @@ $app->group('', function () {
 
     $this->group('/tender', function () {
         $this->get('/list', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('beritaTender_daftar');
+        $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':detailBeritaTender')->setName('beritaTender_detail');
+
+        $this->get('/history/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':historyBeritaTender')->setName('beritaTender_history');
         $this->map(['GET', 'POST'], '/add', \ryan\controllers\beritaTender::class . ':tambahBeritaTender')->setName('beritaTender_tambah');
         $this->map(['GET', 'POST'], '/edit/{id_tender}', \ryan\controllers\beritaTender::class . ':beritaTender_edit')->setName('beritaTender_edit');
-        $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':detailBeritaTender')->setName('beritaTender_detail');
         $this->post('/delete', \ryan\controllers\beritaTender::class . ':beritaTender_delete')->setName('beritaTender_hapus');
 
         $this->get('/approval', \ryan\controllers\beritaTender::class . ':daftarBeritaTender')->setName('beritaTender_daftarApproval');

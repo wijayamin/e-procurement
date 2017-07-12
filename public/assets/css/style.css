@@ -11452,6 +11452,11 @@ li.L9 {
   text-align: center;
   margin-bottom: 40px;
 }
+.timeline-variant.mod .timeline-loadmore {
+  text-align: left;
+  margin-left: 30px;
+  margin-bottom: 40px;
+}
 .timeline-variant .timeline-loadmore .load-more-btn {
   position: relative;
   left: initial;

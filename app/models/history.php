@@ -50,15 +50,7 @@ class history extends \ryan\main{
     }
 
     public function get_history($id_tender){
-        $histories = $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->execute()->fetchAll();
-        foreach($histories as &$history){
-            switch ($history['perubahan']){
-                case 'u_tender':
-                    $history['detail'] = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                    break;
-            }
-        }
-        return $histories;
+        return $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->orderBy('id_history', 'DESC')->execute()->fetchAll();
     }
 
 }

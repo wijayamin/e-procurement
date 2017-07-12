@@ -21,6 +21,7 @@ class acaraRKS extends \ryan\main {
     protected $tenderModels;
     protected $userModels;
     protected $notifikasiModels;
+    protected $historyModels;
 
     public function __construct (Container $container) {
         parent::__construct ($container);
@@ -29,6 +30,7 @@ class acaraRKS extends \ryan\main {
         $this->tenderModels = new \ryan\models\tender($container);
         $this->userModels = new \ryan\models\users($container);
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
+        $this->historyModels = new \ryan\models\history($container);
     }
 
     public function daftarBeritaTender(Req $req, Res $res, $args){
@@ -64,6 +66,7 @@ class acaraRKS extends \ryan\main {
     public function uploadAcaraRKS(Req $req, Res $res, $args){
         $files = $req->getUploadedFiles();
         $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+        $isNull = $tender[$args['type']];
         $tender[$args['type']] = json_decode($tender[$args['type']], true);
 
         $fileinfo = pathinfo($files[$args['type']]->getClientFilename());
@@ -86,6 +89,19 @@ class acaraRKS extends \ryan\main {
             $args['type']=>json_encode($tender[$args['type']])
         ];
         if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
+            if($args['type'] == 'rks'){
+                if($isNull){
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_rks', $args['id_tender']);
+                }else{
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_rks', $args['id_tender']);
+                }
+            }else{
+                if($isNull){
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_acara', $args['id_tender']);
+                }else{
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_acara', $args['id_tender']);
+                }
+            }
             $files[$args['type']]->moveTo("public/content/dokumen/".$filename);
             return $res->withJson([
                 "status"=>"success"

@@ -274,27 +274,7 @@
                 </div>
                 <ul class="timeline timeline-variant mod">
                     <li class="timeline-month"><span>History Perubahan</span></li>
-                    <?php foreach ($tender['history'] as $history): ?>
-                        <li class="timeline-item right">
-                            <div class="timeline-content timeline-type file">
-                                <div class="timeline-icon"><i class="icon mdi mdi-file"></i></div>
-                                <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload ($history[ 'id_user' ])[ 'image' ] ?>" alt="Avatar" class="circle"></div>
-                                <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload ($history[ 'id_user' ])[ 'nama' ] ?></span>
-                                    <p class="timeline-activity">
-                                        <?php switch($history['perubahan']):
-                                            case 'u_tender': ?>
-                                                Mengubah berita tender
-                                                <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$tender['id_tender']]) ?>">
-                                                    <?= $history['detail']['judul_tender'] ?>
-                                                </a>
-                                                <?php break;?>
-                                        <?php endswitch; ?>
-                                    </p>
-                                    <span class="timeline-time"><?= $this->indDateTime ($history['waktu']) ?></span>
-                                </div>
-                            </div>
-                        </li>
-                    <?php endforeach; ?>
+
                 </ul>
             </div>
             <div class="col-md-12 <?= $tender['deleted'] ? 'hidden' : '' ?>">
@@ -460,9 +440,24 @@
     $this->start ('js');
 ?>
     <!--tempat js-->
-
+    <script src="public/assets/lib/moment.js/min/moment-with-locales.min.js" type="text/javascript"></script>
     <script>
+        Twig.extendFunction("inDateTime", function(value) {
+            return moment(value).format("D MMM YYYY  HH:mm");
+        });
+        Twig.extendFunction("inFromNow", function(value) {
+            return moment(value).fromNow();
+        });
         $(document).ready(function () {
+            moment.locale('id');
+            $.getJSON('<?= $this->pathFor('beritaTender_history', ['id_tender'=>$tender['id_tender']]) ?>', function (data) {
+
+                var history = Twig.twig({
+                    href: "app/views/berita-tender/history.twig",
+                    async: false,
+                });
+                $('.timeline-variant.mod').html(history.render({histories:data}));
+            });
             $('#modal-hapus').on('show.bs.modal', function (event) {
                 var modal = $(this);
                 modal.find('.btn-hapus').on('click', function(){
