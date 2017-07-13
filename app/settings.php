@@ -12,6 +12,7 @@ return [
         "server" => "192.168.100.8",
         "views"=>"views",
         'debug' => true,
-        'whoops.editor' => 'sublime'
+        'whoops.editor' => 'sublime',
+		'determineRouteBeforeAppMiddleware' => true
     ],
 ];
