@@ -48,7 +48,7 @@ class unitKerja extends \ryan\main{
         $this->view->registerFunction('getUserUpload', function($id_user){
             return $this->userModels->getUserDetail($id_user);
         });
-        $beritaTender = $this->tenderModels->getBeritaTender();
+        $beritaTender = $this->tenderModels->getBeritaTenderApprovedRKS();
         $req = $req->withAttribute('beritaTender', $beritaTender);
         $req = $req->withAttribute ('approval', $route->getName() == 'rksAcara_daftarApproval');
         return $this->view->render ("unit-kerja/daftar", $req->getAttributes ());

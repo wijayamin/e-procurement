@@ -39,7 +39,7 @@ class acaraRKS extends \ryan\main {
             $penyelenggara = $this->penyelenggaraModels->getPenyelenggara($id_penyelenggara);
             return $penyelenggara['nama_penyelenggara'];
         });
-        $beritaTender = $this->tenderModels->getBeritaTender();
+        $beritaTender = $this->tenderModels->getBeritaTenderApproved();
         $req = $req->withAttribute('beritaTender', $beritaTender);
         $req = $req->withAttribute ('approval', $route->getName() == 'rksAcara_daftarApproval');
         return $this->view->render ("rks-acara/daftar", $req->getAttributes ());

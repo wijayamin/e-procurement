@@ -47,7 +47,7 @@ class BOQ extends \ryan\main{
             $user = $this->userModels->getUserDetail($id_user);
             return $user;
         });
-        $beritaTender = $this->tenderModels->getBeritaTender ();
+        $beritaTender = $this->tenderModels->getBeritaTenderApprovedRKS ();
         $req = $req->withAttribute ('beritaTender', $beritaTender);
         $req = $req->withAttribute ('approval', $route->getName() == 'BOQTender_daftarApproval');
         return $this->view->render ("boq/daftar", $req->getAttributes ());

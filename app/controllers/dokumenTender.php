@@ -42,7 +42,7 @@ class dokumenTender extends \ryan\main {
                 $count = $this->dokumenModels->countDokumenTender($id_tender, 1);
                 return $count;
             });
-            $beritaTender = $this->tenderModels->getBeritaTender ();
+            $beritaTender = $this->tenderModels->getBeritaTenderApprovedRKS ();
             $req = $req->withAttribute ('beritaTender', $beritaTender);
             $req = $req->withAttribute ('approval', $route->getName() == 'dokumenTender_daftarApproval');
             return $this->view->render ("dokumen/daftar", $req->getAttributes ());

@@ -57,6 +57,39 @@
             }
         }
 
+        public function getBeritaTenderApproved(){
+            $tenders = $this->db->query("select * from tender where DELETED = 0")->fetchAll();
+            foreach ($tenders as $key => $tender){
+                $approval = json_decode($tender['approval'], true);
+                if($approval){
+                    if($approval['direktur']['status'] != 'diterima' && $approval['direktur']['status'] != 'diterima'){
+                        unset($tenders[$key]);
+                    }
+                }
+            }
+            return $tenders;
+        }
+
+        public function getBeritaTenderApprovedRKS(){
+            $tenders = $this->db->query("select * from tender where DELETED = 0")->fetchAll();
+            foreach ($tenders as $key => $tender){
+                $approval = json_decode($tender['approval'], true);
+                $rks = json_decode($tender['rks'], true);
+                if($approval){
+                    if($approval['direktur']['status'] != 'diterima' && $approval['direktur']['status'] != 'diterima'){
+                        unset($tenders[$key]);
+                    }else{
+                        if($rks){
+                            if($rks['approval']['direktur']['status'] != 'diterima' && $rks['approval']['direktur']['status'] != 'diterima'){
+                                unset($tenders[$key]);
+                            }
+                        }
+                    }
+                }
+            }
+            return $tenders;
+        }
+
         public function getDokumenPersyaratanTender($id_tender = null){
             if($id_tender == null){
                 return $this->db->query("select UPLOAD from tender")->fetchAll();
