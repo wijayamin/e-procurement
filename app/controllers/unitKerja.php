@@ -24,6 +24,7 @@ class unitKerja extends \ryan\main{
     protected $userModels;
     protected $notifikasiModels;
     protected $unitKerjaModels;
+    protected $historyModels;
 
     public function __construct ($container) {
         parent::__construct ($container);
@@ -33,6 +34,7 @@ class unitKerja extends \ryan\main{
         $this->tenderModels = new \ryan\models\tender($container);
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
         $this->unitKerjaModels = new \ryan\models\unitKerja($container);
+        $this->historyModels = new \ryan\models\history($container);
     }
 
     public function unitKerja_daftar(Request $req, Response $res, $args){
@@ -90,7 +92,9 @@ class unitKerja extends \ryan\main{
                     ]
                 ])
             ];
-            if($this->unitKerjaModels->setUnitKerja($data)){
+            $insert = $this->unitKerjaModels->setUnitKerja($data);
+            if($insert){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_unit', $insert);
                 $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
                 $notification_data = [
                     'by_user'=>$req->getAttribute ('active_user_data')[ 'id_user' ],
@@ -126,6 +130,7 @@ class unitKerja extends \ryan\main{
 
     public function unitKerja_delete(Request $req, Response $res, $args){
         if($this->unitKerjaModels->deleteUnitKerja($_POST['id_unitkerja'])){
+            $this->historyModels->add_history($_POST['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'd_unit', $_POST['id_unitkerja']);
             return $res->withJson([
                'status'=>'success'
             ]);

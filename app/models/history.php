@@ -31,7 +31,13 @@ class history extends \ryan\main{
     }
 
     /**
-     * @param $data [id_user, tentang, waktu]
+     * tambah history
+     * @param      $id_tender       id tender
+     * @param      $id_user         user yang merubah
+     * @param      $perubahan       kode perubahan
+     * @param      $id_perubahan    id yang dirubah
+     * @param null $meta            keterangan tambahan
+     * @return int    last inserted id | e => false
      */
     public function add_history($id_tender, $id_user, $perubahan, $id_perubahan, $meta = null){
         $data = [
@@ -45,10 +51,24 @@ class history extends \ryan\main{
         return $this->pdo->insert(array_keys($data))->into('history')->values(array_values($data))->execute(true);
     }
 
+    public function history_set($data){
+        return $this->pdo->insert(array_keys($data))->into('history')->values(array_values($data))->execute(true);
+    }
+
+    /**
+     * last edited info tender
+     * @param $id_tender
+     * @return mixed    e => null
+     */
     public function getLastEditTender($id_tender){
         return $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->where('perubahan', '=', 'u_tender')->orderBy('id_history', 'DESC')->execute()->fetch();
     }
 
+    /**
+     * list history
+     * @param $id_tender
+     * @return mixed    e => null
+     */
     public function get_history($id_tender){
         return $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->orderBy('id_history', 'DESC')->execute()->fetchAll();
     }

@@ -61,7 +61,7 @@
             return $res;
         }
 
-        public function helperIndDate(){
+        function helperIndDate(){
             $this->view->registerFunction('indDate', function($dateString){
                 return date('d M Y', strtotime($dateString));
             });
@@ -71,7 +71,7 @@
 
         }
 
-        public function helperDateIsGreaterThanNow(){
+        function helperDateIsGreaterThanNow(){
             $this->view->registerFunction('dateAboveNow', function($dateString){
                 return (strtotime($dateString) >= time() ? true : false);
             });

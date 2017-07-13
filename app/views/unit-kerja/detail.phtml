@@ -256,7 +256,10 @@ $this->start('js');
                 modal.find('h3').html("Hapus Unit Kerja?");
                 modal.find('p').html('Apakah anda yakin akan menghapus unit kerja <strong><mark>'+mData.rowdata.pegawai.nama+'</mark></strong> yang ditugaskan untuk <b><mark>'+mData.rowdata.penugasan+'</mark></b>');
                 modal.find('.btn-hapus').on('click', function(){
-                    $.post('<?= $this->pathFor('unitKerja_hapus') ?>', {id_unitkerja:mData.rowdata.id_unitkerja}, function (res) {
+                    $.post('<?= $this->pathFor('unitKerja_hapus') ?>', {
+                        id_unitkerja: mData.rowdata.id_unitkerja,
+                        id_tender: '<?= $tender['id_tender'] ?>',
+                    }, function (res) {
                         if(res.status == 'success'){
                             unitKerja.ajax.reload();
                             modal.modal('hide');
