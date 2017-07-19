@@ -28,10 +28,10 @@
         }
 
         public function getUserDetail($id_user){
-            $user = $this->db->prepare("select * from user where id_user=:id_user");
-            $user->bindParam(':id_user', $id_user);
-            $user->execute();
-            return $user->fetch();
+            $select = $this->db->prepare("select id_user, nama, image, jabatan, previledge  from user where id_user=:id_user");
+            $select->bindParam(':id_user', $id_user);
+            $select->execute();
+            return $select->fetch();;
         }
 
         public function getUserWithPreviledge($previledge) {

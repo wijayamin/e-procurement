@@ -22,6 +22,7 @@
         protected $unitkerjaModels;
         protected $BOQModels;
         protected $historyModels;
+        protected $dokumenMasterModels;
 
         public function __construct (Container $container) {
             parent::__construct ($container);
@@ -34,6 +35,7 @@
             $this->unitkerjaModels = new \ryan\models\unitKerja($container);
             $this->BOQModels = new \ryan\models\BOQ($container);
             $this->historyModels = new \ryan\models\history($container);
+            $this->dokumenMasterModels = new \ryan\models\dokumenMaster($container);
         }
 
         /**
@@ -107,6 +109,12 @@
                             'nama_dokumen'=>$dokumen,
                             'dokumen_syarat'=>'1'
                         ];
+                        $dokMaster = $this->dokumenMasterModels->searchDokumenMaster($dokumen);
+                        if($dokMaster){
+                            $dataDok['file_dokumen'] = $dokMaster['file_dokumen'];
+                            $dataDok['tgl_upload'] = $dokMaster['waktu'];
+                            $dataDok['pengupload'] = $dokMaster['diupload_oleh'];
+                        }
                         $insertDok = $this->dokumenModels->setDokumenTender($dataDok);
                     }
                     $this->notifikasiModels->sendNotificationByPreviledge(['1', '2', '3'], [

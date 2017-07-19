@@ -90,51 +90,13 @@ $app->group('', function () {
         $this->get('/approve[/{id_dokumen:[0-9]+}[/{status}]]', \ryan\controllers\dokumenTender::class . ':approvalTenderDokumen')->setName('dokumenTender_Approval');
     });
 
-    $this->group('/approval', function () {
-//        $this->group('/tender', function () {
-//            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTender')->setName('daftarApprovalBeritaTender');
-////            $this->any('/detail/{id_tender}[/{status}]', \ryan\controllers\approval::class . ':approvalBeritaTender')->setName('approvalBeritaTender');
-//            $this->any('/detail/{id_tender}', \ryan\controllers\approval::class . ':approvalBeritaTender')->setName('approvalBeritaTender');
-//
-//        });
-//
-//        // group proses approval rks
-//        $this->group('/acara-rks', function () {
-//
-//            // ghalaman daftar berita yang sudah di input rks
-//            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTenderRKS')->setName('daftarApprovalRKSTender');
-//
-//            // halaman approval rks
-//            $this->any('/detail/{id_tender}[/{status}]', \ryan\controllers\approval::class . ':approvalBeritaTenderRKS')->setName('approvalRKSTender');
-//
-//        });
+    $this->group('/dokumen-master', function(){
+        $this->get('/daftar', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_daftar')->setName('dokumenMaster_daftar');
 
-//        // group proses approval BOQ
-//        $this->group('/boq', function () {
-//
-//            // ghalaman daftar berita yang sudah di input rks
-//            $this->any('/daftar', \ryan\controllers\approval::class . ':beritaTenderBOQ')->setName('daftarApprovalBOQTender');
-//
-//            // halaman approval rks
-//            $this->any('/detail/{id_tender}', \ryan\controllers\approval::class . ':detaiTenderBOQ')->setName('DetailApprovalBOQTender');
-//
-//            // halaman approval rks
-//            $this->post('/approve', \ryan\controllers\approval::class . ':approvalTenderBOQ')->setName('ApprovalBOQTender');
-//
-//        });
-
-        // group proses approval rks
-//        $this->group('/dokumen', function () {
-//
-//            // ghalaman daftar berita yang sudah di input rks
-//            $this->any('/daftar', \ryan\controllers\approval::class . ':daftarTenderDokumen')->setName('daftarApprovalDokumenTender');
-//
-//            // halaman approval rks
-//            $this->any('/detail/{id_tender}', \ryan\controllers\approval::class . ':detailTenderDokumen')->setName('detailApprovalTenderDokumen');
-//            $this->get('/approve[/{id_dokumen}[/{status}]]', \ryan\controllers\approval::class . ':approvalTenderDokumen')->setName('ApproveTenderDokumen');
-//
-//        });
-
+        $this->get('/get[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_get')->setName('dokumenMaster_get');
+        $this->post('/add', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_add')->setName('dokumenMaster_add');
+        $this->post('/edit/{id_dokumen:[0-9]+}', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_edit')->setName('dokumenMaster_edit');
+        $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_delete')->setName('dokumenMaster_delete');
     });
 
 })->add(new \ryan\controllers\login($container));

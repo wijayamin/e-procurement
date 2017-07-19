@@ -29,4 +29,20 @@
             }
         }
 
+        public function setDokumenMaster($data, $id_dokumen = null){
+            if($id_dokumen == null){
+                return $this->pdo->insert(array_keys($data))->into('dokumen_master_administrasi')->values(array_values($data))->execute(true);
+            }else{
+                return $this->pdo->update($data)->table('dokumen_master_administrasi')->where('id_dokumen_master', '=', $id_dokumen)->execute();
+            }
+        }
+
+        public function searchDokumenMaster($nama){
+            return $this->pdo->select()->from('dokumen_master_administrasi')->whereLike('nama_dokumen', '%'.$nama.'%')->execute()->fetch();
+        }
+
+        public function deleteDokumenMaster($id_dokumen){
+            return $this->pdo->delete()->from('dokumen_master_administrasi')->where('id_dokumen_master', '=', $id_dokumen)->execute();
+        }
+
     }
