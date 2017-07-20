@@ -52,6 +52,14 @@
             }
         }
 
+        public function getUserByToken($token) {
+            return $this->pdo->select()->from('user')->where('token', '=', $token)->execute()->fetch();
+        }
+
+        public function getUserByUsername($username) {
+            return $this->pdo->select()->from('user')->where('username', '=', $username)->execute()->fetch();
+        }
+
         public function getDirektur(){
             return $this->pdo->select()->from('user')->where('previledge', '=', 2)->execute()->fetch();
         }

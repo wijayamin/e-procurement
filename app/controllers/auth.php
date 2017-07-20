@@ -4,7 +4,7 @@
     use \Slim\Http\Request as Req;
     use \Slim\Http\Response as Res;
 
-    class login extends \ryan\main {
+    class auth extends \ryan\main {
 
         protected $container;
         protected $userModels;
@@ -89,5 +89,20 @@
                 return $res;
             }
 
+        }
+
+        public function signUpPage(Req $req, Res $res, $args){
+            $req = $req->withAttribute ('sign_data', $this->userModels->getUserByToken($args['token']));
+            return $this->view->render ("signup", $req->getAttributes());
+        }
+
+        public function check(Req $req, Res $res, $args){
+            if(isset($_GET['username'])){
+                if($this->userModels->getUserByUsername($_GET['username'])){
+                    return $res->withStatus(404);
+                }else{
+                    return $res->withStatus(200);
+                }
+            }
         }
     }

@@ -1,0 +1,1 @@
+INSERT INTO `user` (`ID_USER`, `USERNAME`, `PASSWORD`, `NAMA`, `ALAMAT`, `TANGGAL_LAHIR`, `EMAIL`, `TELEFON`, `JABATAN`, `PREVILEDGE`, `IMAGE`) VALUES (NULL, 'superadmin', MD5('superadmin'), 'Admin with Super Saiyan Mode', 'Surga', '2017-07-20 00:00:00', 'drak_nes@yahoo.com', '085649411233', 'Super Admin', '0', 'saiyan.png');

@@ -5,16 +5,12 @@
 
 // Group Login -> untuk authentifikasi
 $app->group('/auth', function () {
+    $this->get('-login', \ryan\controllers\auth::class . ':loginPage')->setName('loginPage');
+    $this->post('-dologin', \ryan\controllers\auth::class . ':doLogin')->setName('doLogin');
+    $this->get('-logout', \ryan\controllers\auth::class . ':doLogout')->setName('doLogout');
+    $this->get('-sign-up/{token}', \ryan\controllers\auth::class . ':signUpPage')->setName('signUpPage');
 
-    // Halaman Login
-    $this->get('-login', \ryan\controllers\login::class . ':loginPage')->setName('loginPage');
-
-    // Proses Login
-    $this->post('-dologin', \ryan\controllers\login::class . ':doLogin')->setName('doLogin');
-
-    // Proses Logout
-    $this->get('-logout', \ryan\controllers\login::class . ':doLogout')->setName('doLogout');
-
+    $this->get('/check', \ryan\controllers\auth::class . ':check')->setName('checkAuth');
 });
 
 // Group Root
@@ -99,7 +95,7 @@ $app->group('', function () {
         $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_delete')->setName('dokumenMaster_delete');
     });
 
-})->add(new \ryan\controllers\login($container));
+})->add(new \ryan\controllers\auth($container));
 
 $app->group('/api', function () {
 
@@ -133,5 +129,5 @@ $app->group('/api', function () {
     $this->group('/dokumen', function(){
     });
 
-})->add(new \ryan\controllers\login($container));
+})->add(new \ryan\controllers\auth($container));
 

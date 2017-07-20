@@ -68,6 +68,9 @@
             $this->view->registerFunction('indDateTime', function($dateString){
                 return date('d M Y H:i', strtotime($dateString));
             });
+            $this->view->registerFunction('copyDate', function(){
+                return date('Y');
+            });
 
         }
 

@@ -56,8 +56,8 @@
                     $progress = 25;
                 }
                 $count_dokumen = $this->dokumenModels->countDokumenReqDetail($id_tender);
-                $progress=$progress+(($count_dokumen['uploaded']/$count_dokumen['total'])*25);
-                $progress=$progress+(($count_dokumen['approved']/$count_dokumen['total'])*25);
+                $progress=$progress+(($count_dokumen['total'] ? ($count_dokumen['uploaded']/$count_dokumen['total']) : 0)*25);
+                $progress=$progress+(($count_dokumen['total'] ? ($count_dokumen['approved']/$count_dokumen['total']) : 0)*25);
                 if($progress == 100){
                     $process = 'Semua Proses Selesai';
                 }
