@@ -56,9 +56,8 @@
                                             <div class="user-name"><?= $this->e($active_user_data['nama']); ?></div>
                                         </div>
                                     </li>
-                                    <li><a href="#"><span class="icon mdi mdi-face"></span> Account</a></li>
-                                    <li><a href="#"><span class="icon mdi mdi-settings"></span> Settings</a></li>
-                                    <li><a href="<?=$this->pathFor('doLogout')?>"><span class="icon mdi mdi-power"></span> Logout</a></li>
+                                    <li><a href="<?= $this->pathFor('users_profile') ?>"><span class="icon mdi mdi-face"></span> Pengaturan Akun</a></li>
+                                    <li><a href="<?=$this->pathFor('doLogout')?>"><span class="icon mdi mdi-power"></span> Keluar</a></li>
                                 </ul>
                             </li>
                         </ul>

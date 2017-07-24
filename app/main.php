@@ -22,6 +22,7 @@
         protected $flash;
         protected $uri;
         protected $pdo;
+        protected $mailer;
 
         function __construct (Container $container) {
             $this->container = $container;
@@ -41,6 +42,21 @@
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            $this->mailer = new \PHPMailerOAuth();
+            $this->mailer->isSMTP();
+            $this->mailer->SMTPDebug = 2;
+            $this->mailer->Debugoutput = 'html';
+            $this->mailer->Host = 'smtp.gmail.com';
+            $this->mailer->Port = 587;
+            $this->mailer->SMTPSecure = 'tls';
+            $this->mailer->SMTPAuth = true;
+            $this->mailer->AuthType = 'XOAUTH2';
+            $this->mailer->oauthUserEmail = "kartunamapal@gmail.com";
+            $this->mailer->oauthClientId = "415435901048-edelac3m5bndr0v2e2qv0ssoh9e4t3mb.apps.googleusercontent.com";
+            $this->mailer->oauthClientSecret = "_8cVQNtmn3C2HD5Ixw_uM11A";
+            $this->mailer->oauthRefreshToken = "1/J3GOSF9i_kq4uCIffGAVhz6ITF--KUXX563UyZW1l9E";
+            $this->mailer->setFrom('no-reply@kencana-alam.com', 'PT. Kencana Alam Putra(No Reply)');
         }
 
         public function __invoke ($req, $res, $next) {

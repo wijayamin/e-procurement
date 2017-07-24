@@ -1164,5 +1164,58 @@
             "oauth2",
             "single sign on"
         ]
+    },
+    {
+        "name": "league/oauth2-google",
+        "version": "2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/thephpleague/oauth2-google.git",
+            "reference": "1001ecf1f00d657cc12e70e7a7a647e623194fd2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/thephpleague/oauth2-google/zipball/1001ecf1f00d657cc12e70e7a7a647e623194fd2",
+            "reference": "1001ecf1f00d657cc12e70e7a7a647e623194fd2",
+            "shasum": ""
+        },
+        "require": {
+            "league/oauth2-client": "^2.0"
+        },
+        "require-dev": {
+            "eloquent/phony": "^0.14.6",
+            "phpunit/phpunit": "^5.7",
+            "satooshi/php-coveralls": "dev-master as 2.0.0",
+            "squizlabs/php_codesniffer": "^2.0"
+        },
+        "time": "2017-06-14T14:06:56+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "League\\OAuth2\\Client\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Woody Gilk",
+                "email": "woody.gilk@gmail.com",
+                "homepage": "http://shadowhand.me"
+            }
+        ],
+        "description": "Google OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+        "keywords": [
+            "Authentication",
+            "authorization",
+            "client",
+            "google",
+            "oauth",
+            "oauth2"
+        ]
     }
 ]

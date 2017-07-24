@@ -48,7 +48,7 @@
                 $user = $this->db->prepare("select * from user where ID_USER=:ID_USER");
                 $user->bindParam(':ID_USER', $id_user);
                 $user->execute();
-                return $user->fetchAll();
+                return $user->fetch();
             }
         }
 
@@ -66,5 +66,13 @@
 
         public function getManajer(){
             return $this->pdo->select()->from('user')->where('previledge', '=', 3)->execute()->fetch();
+        }
+
+        public function setUser($data, $id_user = null){
+            if($id_user == null){
+                return $this->pdo->insert(array_keys($data))->into('user')->values(array_values($data))->execute(true);
+            }else{
+                return $this->pdo->update($data)->table('user')->where('id_user', '=', $id_user)->execute();
+            }
         }
     }

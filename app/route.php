@@ -11,6 +11,7 @@ $app->group('/auth', function () {
     $this->get('-sign-up/{token}', \ryan\controllers\auth::class . ':signUpPage')->setName('signUpPage');
 
     $this->get('/check', \ryan\controllers\auth::class . ':check')->setName('checkAuth');
+    $this->get('/check-email', \ryan\controllers\auth::class . ':coba')->setName('coba');
 });
 
 // Group Root
@@ -93,6 +94,14 @@ $app->group('', function () {
         $this->post('/add', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_add')->setName('dokumenMaster_add');
         $this->post('/edit/{id_dokumen:[0-9]+}', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_edit')->setName('dokumenMaster_edit');
         $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_delete')->setName('dokumenMaster_delete');
+    });
+
+    $this->group('/users', function(){
+        $this->get('/list', \ryan\controllers\usersMan::class . ':users_daftar')->setName('users_daftar');
+        $this->get('/get', \ryan\controllers\usersMan::class . ':users_get')->setName('users_get');
+
+        $this->get('/profile', \ryan\controllers\usersMan::class . ':users_profile')->setName('users_profile');
+        $this->post('/profile/update-common', \ryan\controllers\usersMan::class . ':user_updateCommon')->setName('user_updateCommon');
     });
 
 })->add(new \ryan\controllers\auth($container));

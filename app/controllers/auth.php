@@ -105,4 +105,13 @@
                 }
             }
         }
+
+        public function coba(Req $req, Res $res, $args){
+            $uri = $req->getUri();
+            $this->mailer->addAddress('genthowijaya@gmail.com', 'Amin Wijaya');
+            $this->mailer->Subject = 'Undangan penggunaan aplikasi';
+            $this->mailer->isHTML(true);
+            $this->mailer->Body = $this->view->render ("email", $req->getAttributes());
+            $this->mailer->send();
+        }
     }
