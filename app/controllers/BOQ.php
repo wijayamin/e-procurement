@@ -168,19 +168,15 @@ class BOQ extends \ryan\main{
     }
 
     public function BOQ_set(Request $req, Response $res, $args){
-        $result = [
-            'status'=>'failed'
-        ];
-
         $data = $_POST;
-        $data['ukuran_satuan'] = $data['ukuran_satuan'][0];
         $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $data['id_tender'] = $args['id_tender'];
         $data['waktu'] = date ("Y-m-d H:i:s");
         if($this->BOQModels->setBOQ($data)){
-            $result['status']='success';
+            return $res->withJson([
+                'status'=>'success'
+            ]);
         }
-        return $res->withJson($result);
     }
 
     public function BOQ_delete(Request $req, Response $res, $args){

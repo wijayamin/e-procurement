@@ -80,7 +80,7 @@ $this->start('contents');
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
             <div class="panel-heading">Daftar Unit Kerja
                 <div class="tools">
-                    <button class="btn btn-rounded btn-space btn-primary btn-sm" data-toggle="modal" data-target="#form-unitkerja">
+                    <button class="btn btn-rounded btn-space btn-primary btn-sm open-modal-tambah">
                         <i class="mdi mdi-account-add"></i>
                         &nbsp; Tambah Unit Kerja
                     </button>
@@ -102,54 +102,51 @@ $this->start('contents');
             </div>
         </div>
     </div>
+    <div id="modal-tambah" class="modal-container colored-header colored-header-primary modal-effect-9">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
+                <h3 class="modal-title">Form Penentuan Unit Kerja</h3>
+            </div>
+            <div class="modal-body form">
+                <div class="form-group">
+                    <label>Pengawai</label>
+                    <select multiple="" id="select-pegawai">
+                        <option></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Penugasan</label>
+                    <input type="text" placeholder="Penugasan" id="input-penugasan" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary modal-close btn-simpan">Tambahkan</button>
+                <button type="button" class="btn btn-default modal-close">Batal</button>
+            </div>
+        </div>
+    </div>
+    <div id="modal-hapus" class="modal-container modal-effect-1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
+                    <h3>Hapus Unit Kerja!</h3>
+                    <p>Apakah anda yakin akan menghapus unit kerja <q><strong class="nama-pegawai"></strong></q> yang ditugaskan untuk <q><strong class="penugasan"></strong></q></p>
+                    <div class="xs-mt-50">
+                        <button type="button" data-dismiss="modal" class="btn btn-danger btn-space modal-close btn-hapus">Hapus</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-default btn-space modal-close">Batal</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
     <div class="modal-overlay"></div>
-    <div id="form-unitkerja" tabindex="-1" role="dialog" class="modal fade colored-header colored-header-primary">
-        <div class="modal-dialog custom-width">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
-                    <h3 class="modal-title">Form Penentuan Unit Kerja</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Pengawai</label>
-                        <select multiple="" id="modal-pegawai">
-                            <option></option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Penugasan</label>
-                        <input type="text" placeholder="Penugasan" id="modal-penugasan" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary form-unitkerja-simpan">Tambahkan</button>
-                    <button type="button" data-dismiss="modal" class="btn btn-default md-close">Batal</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="hapus-unitkerja" tabindex="-1" role="dialog" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
-                        <h3>Danger!</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Fusce ultrices euismod lobortis.</p>
-                        <div class="xs-mt-50">
-                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Cancel</button>
-                            <button type="button" data-dismiss="modal" class="btn btn-space btn-danger btn-hapus">Hapus</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer"></div>
-            </div>
-        </div>
-    </div>
+
 
     <!--akhir tempat konten-->
 <?php
@@ -185,7 +182,7 @@ $this->start('js');
                 language: {
 
                     emptyTable: '<h4>Belum ada unit kerja</h4>' +
-                    '<button class="btn btn-rounded btn-space btn-primary btn-sm" data-toggle="modal" data-target="#form-unitkerja"><i class="mdi mdi-account-add"></i>&nbsp; Tambah Unit Kerja </button>',
+                    '<button class="btn btn-rounded btn-space btn-primary btn-sm open-modal-tambah"><i class="mdi mdi-account-add"></i>&nbsp; Tambah Unit Kerja </button>',
                     lengthMenu: "_MENU_ &nbsp; data per halaman",
                     "zeroRecords": "Tidak ada data yang cocok dengan pencarian anda",
                     "info": "Hal _PAGE_ dari _PAGES_ halaman",
@@ -226,7 +223,7 @@ $this->start('js');
                         className:'text-right',
                         render: function (data, type, row, meta) {
                             delete data.rowData;
-                            return  '<button class="btn btn-space btn-danger btn-hapus" data-toggle="modal" data-target="#hapus-unitkerja" data-rowdata=\''+JSON.stringify(data)+'\'><i class="mdi mdi-delete"></i></button>'
+                            return  '<button class="btn btn-space btn-danger open-modal-hapus" data-rowdata=\''+JSON.stringify(data)+'\'><i class="mdi mdi-delete"></i></button>'
                         }
                     }
                 ],
@@ -246,34 +243,7 @@ $this->start('js');
                     } );
                 }
             });
-
-
-
-            $('#hapus-unitkerja').on('show.bs.modal', function (event) {
-                var mBtn = $(event.relatedTarget) // Button that triggered the modal
-                var mData = mBtn.data() // Extract info from data-* attributes
-                var modal = $(this)
-                modal.find('h3').html("Hapus Unit Kerja?");
-                modal.find('p').html('Apakah anda yakin akan menghapus unit kerja <strong><mark>'+mData.rowdata.pegawai.nama+'</mark></strong> yang ditugaskan untuk <b><mark>'+mData.rowdata.penugasan+'</mark></b>');
-                modal.find('.btn-hapus').on('click', function(){
-                    $.post('<?= $this->pathFor('unitKerja_hapus') ?>', {
-                        id_unitkerja: mData.rowdata.id_unitkerja,
-                        id_tender: '<?= $tender['id_tender'] ?>',
-                    }, function (res) {
-                        if(res.status == 'success'){
-                            unitKerja.ajax.reload();
-                            modal.modal('hide');
-                        }
-                    }, 'json');
-                    return false;
-                })
-            });
-
-            $('#form-unitkerja').on('show.bs.modal', function (event) {
-                var mBtn = $(event.relatedTarget) // Button that triggered the modal
-                var mData = mBtn.data() // Extract info from data-* attributes
-                var modal = $(this)
-
+            $('.open-modal-tambah').on('click', function(){
                 function formatState (state) {
                     if (!state.id) { return state.text; }
                     console.log(state);
@@ -282,53 +252,75 @@ $this->start('js');
                     );
                     return $state;
                 }
-
-                $.getJSON('<?= $this->pathFor('unitKerja_tersedia', ['id_tender'=>$tender['id_tender']]) ?>', function (jData) {
-                    modal.find("#modal-pegawai").html('<option></option>')
-                    $.each(jData, function (i, val) {
-                        var opt = $('<option></option>');
-                        opt.attr('data-image', val.image)
-                        opt.val(val.id_user)
-                        if(val.available == false){
-                            opt.attr('disabled', 'disabled')
-                            opt.text(val.nama+' (sudah terdaftar)')
-                        }else{
-                            opt.text(val.nama)
-                        }
-                        modal.find("#modal-pegawai").append(opt)
-                    })
-                    modal.find("#modal-pegawai").select2({
-                        placeholder: 'Pilih Pegawai',
-                        templateResult: formatState,
-                        templateSelection: formatState,
-                        width: '100%',
-                    });
-                    modal.find('.form-unitkerja-simpan').on('click', function () {
-                        var pegawai = modal.find('#modal-pegawai').val()
-                        var penugasan = modal.find('#modal-penugasan').val()
-                        $.ajax({
-                            type: "POST",
-                            url: '<?= $this->pathFor('unitKerja_tambah', ['id_tender'=>$tender['id_tender']]) ?>',
-                            data: {
-                                pegawai:pegawai,
-                                penugasan:penugasan
-                            },
-                            success: function (result) {
-                                if(result.status == 'success'){
-                                    unitKerja.ajax.reload();
-                                    modal.find('#modal-pegawai').val('');
-                                    modal.find('#modal-penugasan').val('');
-                                    $('#form-unitkerja').modal('hide')
+                $('#modal-tambah').niftyModal({
+                    buttons: [
+                        {
+                            class: 'btn-simpan',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                var data = {
+                                    pegawai: modal.find('#select-pegawai').val(),
+                                    penugasan: modal.find('#input-penugasan').val()
                                 }
-                            },
-                            dataType: "JSON"
+                                $.post('<?= $this->pathFor('unitKerja_tambah', ['id_tender'=>$tender['id_tender']]) ?>', data, function(result){
+                                    if(result.status == 'success') {
+                                        unitKerja.ajax.reload();
+                                    }
+                                }, 'json');
+                                return true;
+                            }
+                        },
+                    ],
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('#select-pegawai').html('');
+                        $.getJSON('<?= $this->pathFor('unitKerja_tersedia', ['id_tender'=>$tender['id_tender']]) ?>', function (res) {
+                            $.each(res, function (key, val) {
+                                modal.find('#select-pegawai').append(
+                                    '<option data-image="' + val.image + '" ' + (val.available ? '' : 'disabled') + ' value="' + val.id_user + '">' +
+                                    (val.available ? val.nama : val.nama + '(Sudah Terdaftar)') +
+                                    '</option>'
+                                );
+                            });
+                            modal.find("#select-pegawai").select2({
+                                placeholder: 'Pilih Pegawai',
+                                templateResult: formatState,
+                                templateSelection: formatState,
+                                width: '100%',
+                            });
+                            modal.find('#input-penugasan').val('');
                         });
-
-
-                    })
-                })
-            })
-
+                    }
+                });
+            });
+            $('#unit-kerja tbody').on('click', '.open-modal-hapus', function () {
+                var data = $(this).data('rowdata');
+                $('#modal-hapus').niftyModal({
+                    buttons: [
+                        {
+                            class: 'btn-hapus',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                var pData = {
+                                    id_unitkerja: data.id_unitkerja,
+                                    id_tender: '<?= $tender['id_tender'] ?>',
+                                };
+                                $.post('<?= $this->pathFor('unitKerja_hapus') ?>', pData, function (res) {
+                                    if(res.status == 'success'){
+                                        unitKerja.ajax.reload();
+                                    }
+                                }, 'json');
+                                return true;
+                            }
+                        },
+                    ],
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('.nama-pegawai').html(data.pegawai.nama);
+                        modal.find('.penugasan').html(data.penugasan);
+                    }
+                });
+            });
         })
 
     </script>

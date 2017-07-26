@@ -107,11 +107,13 @@
         }
 
         public function coba(Req $req, Res $res, $args){
-            $uri = $req->getUri();
-            $this->mailer->addAddress('genthowijaya@gmail.com', 'Amin Wijaya');
-            $this->mailer->Subject = 'Undangan penggunaan aplikasi';
-            $this->mailer->isHTML(true);
-            $this->mailer->Body = $this->view->render ("email", $req->getAttributes());
-            $this->mailer->send();
+//            $uri = $req->getUri();
+//            $this->mailer->addAddress('genthowijaya@gmail.com', 'Amin Wijaya');
+//            $this->mailer->Subject = 'Undangan penggunaan aplikasi';
+//            $this->mailer->isHTML(true);
+//            $this->mailer->Body = $this->view->render ("email", $req->getAttributes());
+//            $this->mailer->send();
+            $data = $this->pdo->select()->from('user')->where('id_user', '=', 1)->count('*', 'count')->execute()->fetch();
+            return $res->withJson($data);
         }
     }

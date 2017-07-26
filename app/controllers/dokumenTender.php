@@ -176,7 +176,16 @@ class dokumenTender extends \ryan\main {
             'id_tender' => $id_tender, 'nama_dokumen' => $nama_dokumen, 'tgl_upload' => date ("Y-m-d H:i:s"),
             "pengupload" => $req->getAttribute ('active_user_data')[ 'id_user' ],
             'dokumen_syarat' => $dokumen_syarat,
-            "approval" => json_encode([ "direktur"=>[ "status"=>"", "waktu"=>"" ], "manajer"=>[ "status"=>"", "waktu"=>"" ] ])
+            "approval" => json_encode([
+                "direktur"=>[
+                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
+                ],
+                "manajer"=>[
+                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
+                ]
+            ])
         ];
         if(sizeof($files)){
             $file = $files['file_dokumen'];
@@ -205,7 +214,16 @@ class dokumenTender extends \ryan\main {
         $files = $req->getUploadedFiles();
         $data = [
             'nama_dokumen' => $nama_dokumen,
-            "approval" => json_encode([ "direktur"=>[ "status"=>"", "waktu"=>"" ], "manajer"=>[ "status"=>"", "waktu"=>"" ] ])
+            "approval" => json_encode([
+                "direktur"=>[
+                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
+                ],
+                "manajer"=>[
+                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
+                ]
+            ])
         ];
         if(sizeof($files)){
             $file = $files['file_dokumen'];

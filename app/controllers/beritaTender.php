@@ -63,12 +63,12 @@
                     'tgl_upload' => date ("Y-m-d H:i:s"),
                     'approval'=>json_encode([
                         'direktur'=>[
-                            'status'=>'',
-                            'waktu'=>''
+                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
                         ],
                         'manajer'=>[
-                            'status'=>'',
-                            'waktu'=>''
+                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
                         ]
                     ]),
                     'berita_acara'=>json_encode([
@@ -155,12 +155,12 @@
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
                     'approval'=>json_encode([
                         'direktur'=>[
-                            'status'=>'',
-                            'waktu'=>''
+                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
                         ],
                         'manajer'=>[
-                            'status'=>'',
-                            'waktu'=>''
+                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
                         ]
                     ]),
                 ];

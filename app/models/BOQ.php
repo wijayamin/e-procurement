@@ -29,10 +29,14 @@ class BOQ extends \ryan\main{
      * @return int
      */
     public function countBOQTender($id_tender){
-        $select  = $this->db->prepare('select count(ID_PENAWARAN) from penawaran where ID_TENDER=:id_tender');
-        $select->bindParam(':id_tender', $id_tender);
-        $select->execute();
-        return $select->fetchColumn();
+        $select = $this->pdo->select()->from('penawaran')->whereMany([
+            'id_tender'=> $id_tender,
+            'deleted'=> 0
+        ], '=')->count('*', 'count')->execute()->fetch();
+//        $select  = $this->db->prepare('select count(ID_PENAWARAN) from penawaran where ID_TENDER=:id_tender');
+//        $select->bindParam(':id_tender', $id_tender);
+//        $select->execute();
+        return $select['count'];
     }
 
     /**
@@ -40,10 +44,14 @@ class BOQ extends \ryan\main{
      * @return array
      */
     public function getBOQByTender($id_tender){
-        $select = $this->db->prepare('select * from penawaran where ID_TENDER=:id_tender and INPUTAN_MANAJER is null');
-        $select->bindParam(':id_tender', $id_tender);
-        $select->execute();
-        return $select->fetchAll();
+        return $this->pdo->select()->from('penawaran')->whereMany([
+            'id_tender'=> $id_tender,
+            'deleted'=> 0
+        ], '=')->execute()->fetchAll();
+//        $select = $this->db->prepare('select * from penawaran where ID_TENDER=:id_tender and INPUTAN_MANAJER is null');
+//        $select->bindParam(':id_tender', $id_tender);
+//        $select->execute();
+//        return $select->fetchAll();
     }
 
     /**
@@ -51,10 +59,14 @@ class BOQ extends \ryan\main{
      * @return array
      */
     public function getBOQManajer($id_penawaran){
-        $select = $this->db->prepare('select * from penawaran where INPUTAN_MANAJER=:id_penawaran');
-        $select->bindParam(':id_penawaran', $id_penawaran);
-        $select->execute();
-        return $select->fetch();
+        return $this->pdo->select()->from('penawaran')->whereMany([
+            'inputan_manajer'=> $id_penawaran,
+            'deleted'=> 0
+        ], '=')->execute()->fetch();
+//        $select = $this->db->prepare('select * from penawaran where INPUTAN_MANAJER=:id_penawaran');
+//        $select->bindParam(':id_penawaran', $id_penawaran);
+//        $select->execute();
+//        return $select->fetch();
     }
 
     /**
@@ -65,6 +77,10 @@ class BOQ extends \ryan\main{
         if($id_penawaran == null){
             return false;
         }else{
+            return $this->pdo->select()->from('penawaran')->whereMany([
+                'id_penawaran'=> $id_penawaran,
+                'deleted'=> 0
+            ], '=')->execute()->fetchAll();
             $select = $this->db->prepare('select * from penawaran where id_penawaran=:id_penawaran');
             $select->bindParam(':id_penawaran', $id_penawaran);
             $select->execute();

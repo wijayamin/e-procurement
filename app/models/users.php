@@ -35,10 +35,8 @@
         }
 
         public function getUserWithPreviledge($previledge) {
-            $user = $this->db->prepare("select * from user where PREVILEDGE=:previledge");
-            $user->bindParam(':previledge', $previledge);
-            $user->execute();
-            return $user->fetchAll();
+            $select = ['id_user', 'nama', 'image'];
+            return $this->pdo->select($select)->from('user')->where('PREVILEDGE', '=', $previledge)->execute()->fetchAll();
         }
 
         public function getUser($id_user = null) {
@@ -61,11 +59,13 @@
         }
 
         public function getDirektur(){
-            return $this->pdo->select()->from('user')->where('previledge', '=', 2)->execute()->fetch();
+            $select = ['id_user', 'nama', 'image'];
+            return $this->pdo->select($select)->from('user')->where('previledge', '=', 2)->execute()->fetch();
         }
 
         public function getManajer(){
-            return $this->pdo->select()->from('user')->where('previledge', '=', 3)->execute()->fetch();
+            $select = ['id_user', 'nama', 'image'];
+            return $this->pdo->select($select)->from('user')->where('previledge', '=', 3)->execute()->fetch();
         }
 
         public function setUser($data, $id_user = null){

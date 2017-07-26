@@ -26,5 +26,10 @@ E-PROC Ryan
     d_dok | hapus dokumen
     a_dok | approval dokumen
 
+## bug
+- BOQ,
+
+## improvement
+- automaticaly approval newly added tender, rks, and doc from manajer and/or direktur
 
 

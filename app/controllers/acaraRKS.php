@@ -77,12 +77,12 @@ class acaraRKS extends \ryan\main {
         $tender[$args['type']]['user_id'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $tender[$args['type']]['approval'] = [
             "direktur"=>[
-                "status"=>"",
-                "waktu"=>""
+                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+                'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
             ],
             "manajer"=>[
-                "status"=>"",
-                "waktu"=>""
+                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+                'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
             ]
         ];
         $data = [

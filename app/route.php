@@ -102,6 +102,7 @@ $app->group('', function () {
 
         $this->get('/profile', \ryan\controllers\usersMan::class . ':users_profile')->setName('users_profile');
         $this->post('/profile/update-common', \ryan\controllers\usersMan::class . ':user_updateCommon')->setName('user_updateCommon');
+        $this->post('/profile/update-password', \ryan\controllers\usersMan::class . ':user_updatePassword')->setName('user_updatePassword');
     });
 
 })->add(new \ryan\controllers\auth($container));
@@ -133,9 +134,6 @@ $app->group('/api', function () {
 //        $this->get('/available/{id_tender}', \ryan\controllers\unitKerja::class . ':getAvailableUnitKerja')->setName('isUnitKerjaAvailable');
 
 
-    });
-
-    $this->group('/dokumen', function(){
     });
 
 })->add(new \ryan\controllers\auth($container));

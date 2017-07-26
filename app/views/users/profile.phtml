@@ -198,7 +198,7 @@ $this->start ('contents');
             <h3 class="modal-title">Pengaturan Password</h3>
         </div>
         <div class="modal-body form"  style="padding-top: 0px !important;">
-            <form data-toggle="validator" class="form-horizontal" method="post" action="<?= $this->pathFor('user_updateCommon'); ?>" enctype="multipart/form-data">
+            <form data-toggle="validator" class="form-horizontal" method="post" action="<?= $this->pathFor('user_updatePassword'); ?>" enctype="multipart/form-data">
                 <div class="form-group has-feedback">
                     <label class="col-md-3 control-label"><strong>Password Lama</strong></label>
                     <div class="col-md-9">
@@ -310,7 +310,35 @@ $this->start ('js');
         });
 
         $('.open-password-modal').on('click', function() {
-            $('#password-modal').niftyModal()
+            $('#password-modal').niftyModal({
+                buttons: [
+                    {
+                        class: 'btn-simpan',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            modal.find('form').ajaxSubmit({
+                                dataType: 'json',
+                                beforeSubmit: function (formData, jqForm, options) {
+                                    var form = jqForm[0];
+                                    if(!form.old_password.value || !form.new_password.value || !form.re_password.value){
+                                        modal.find('form').validator('validate');
+                                        return false;
+                                    }
+                                },
+                                success: function (res, status, xhr, $form) {
+                                    console.log(res)
+                                    if(res.status == 'success'){
+                                        window.location.reload();
+                                    }else{
+                                        alert(res.reason);
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    }
+                ],
+            })
         });
 
 

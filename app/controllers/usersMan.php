@@ -69,4 +69,29 @@ class usersMan extends \ryan\main{
             }
         }
     }
+    public function user_updatePassword(Request $req, Response $res, $args){
+        $user = $this->userModels->getUser($_POST['id_user']);
+        if(isset($_POST['old_password']) and md5($_POST['old_password']) == $user['password']){
+            if(isset($_POST['new_password']) and isset($_POST['re_password']) and $_POST['new_password'] == $_POST['re_password']){
+                $data = [
+                    'password'=>md5($_POST['new_password'])
+                ];
+                if($this->userModels->setUser($data, $_POST['id_user'])){
+                    return $res->withJson([
+                        'status'=>'success'
+                    ]);
+                }
+            }else{
+                return $res->withJson([
+                    'status'=>'failed',
+                    'reason'=>'Password baru dan ulangi password tidak sama!'
+                ]);
+            }
+        }else{
+            return $res->withJson([
+                'status'=>'failed',
+                'reason'=>'Password lama salah!'
+            ]);
+        }
+    }
 }
