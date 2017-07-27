@@ -19,6 +19,7 @@ class dokumenTender extends \ryan\main {
     protected $notifikasiModels;
     protected $dokumenModels;
     protected $unitKerjaModels;
+    protected $historyModels;
 
     public function __construct($container) {
         parent::__construct($container);
@@ -29,6 +30,7 @@ class dokumenTender extends \ryan\main {
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
         $this->dokumenModels = new \ryan\models\dokumenTender($container);
         $this->unitKerjaModels = new \ryan\models\unitKerja($container);
+        $this->historyModels = new \ryan\models\history($container);
     }
 
     public function daftarBeritaTender(Request $req, Response $res, $args){
@@ -106,6 +108,7 @@ class dokumenTender extends \ryan\main {
             'approval'=>json_encode($approval)
         ];
         if($this->dokumenModels->setDokumenTender($update, $args['id_dokumen'])){
+            $this->historyModels->add_history($select['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_dok', $args['id_dokumen']);
             return $res->withJson([
                 'status'=>'success'
             ]);
@@ -192,14 +195,18 @@ class dokumenTender extends \ryan\main {
             $fileinfo = pathinfo($file->getClientFilename());
             $file_dokumen = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
             $data['file_dokumen'] = $file_dokumen;
-            if($this->dokumenModels->setDokumenTender($data)){
+            $insert = $this->dokumenModels->setDokumenTender($data);
+            if($insert){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_dok', $insert);
                 $file->moveTo("public/content/dokumen/".$file_dokumen);
                 return $res->withJson([
                     "status"=>"success"
                 ]);
             }
         }else{
-            if($this->dokumenModels->setDokumenTender($data)){
+            $insert = $this->dokumenModels->setDokumenTender($data);
+            if($insert){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_dok', $insert);
                 return $res->withJson([
                     "status"=>"success"
                 ]);
@@ -227,19 +234,34 @@ class dokumenTender extends \ryan\main {
         ];
         if(sizeof($files)){
             $file = $files['file_dokumen'];
+            $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
             $fileinfo = pathinfo($file->getClientFilename());
             $file_dokumen = $fileinfo['filename'].'_'.time().'.'.$fileinfo['extension'];
             $data['file_dokumen'] = $file_dokumen;
             $data['tgl_upload'] = date ("Y-m-d H:i:s");
             $data["pengupload"] = $req->getAttribute ('active_user_data')[ 'id_user' ];
             if($this->dokumenModels->setDokumenTender($data, $id_dokumen)){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_dok', $id_dokumen);
                 $file->moveTo("public/content/dokumen/".$file_dokumen);
+                $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
+                    "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                    "tentang" => 'Mengganti Dokumen dari berita tender "' . $tender['judul_tender'] . '". Anda perlu melakukan approval Dokumen kembali',
+                    "waktu" => date ("Y-m-d H:i:s"),
+                    "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
+                ]);
                 return $res->withJson([
                     "status"=>"success"
                 ]);
             }
         }else{
             if($this->dokumenModels->setDokumenTender($data, $id_dokumen)){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_dok', $id_dokumen);
+                $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
+                    "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                    "tentang" => 'Mengganti Dokumen dari berita tender "' . $data['judul_tender'] . '". Anda perlu melakukan approval Dokumen kembali',
+                    "waktu" => date ("Y-m-d H:i:s"),
+                    "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
+                ]);
                 return $res->withJson([
                     "status"=>"success"
                 ]);

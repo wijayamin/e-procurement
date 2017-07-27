@@ -23,7 +23,7 @@ $app->group('', function () {
         $this->get('/list', \ryan\controllers\beritaTender::class . ':beritaTender_daftar')->setName('beritaTender_daftar');
         $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':beritaTender_detail')->setName('beritaTender_detail');
 
-        $this->get('/history/{id_tender:[0-9]+}', \ryan\controllers\beritaTender::class . ':beritaTender_getHistory')->setName('beritaTender_history');
+        $this->get('/history/{id_tender:[0-9]+}', \ryan\controllers\history::class . ':history_daftar')->setName('beritaTender_history');
         $this->map(['GET', 'POST'], '/add', \ryan\controllers\beritaTender::class . ':beritaTender_add')->setName('beritaTender_tambah');
         $this->map(['GET', 'POST'], '/edit/{id_tender}', \ryan\controllers\beritaTender::class . ':beritaTender_edit')->setName('beritaTender_edit');
         $this->post('/delete', \ryan\controllers\beritaTender::class . ':beritaTender_delete')->setName('beritaTender_hapus');

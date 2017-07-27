@@ -77,7 +77,11 @@ $this->start ('contents');
                                 <?php if( $approval ): ?>
                                     <a href="<?= $this->pathFor('BOQTender_detailApproval' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-space btn-primary"><i class="icon icon-left mdi mdi-check-circle" style="color:#fff;"></i> Approve</a>
                                 <?php else: ?>
-                                    <a href="<?= $this->pathFor('BOQTender_detail' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-space btn-primary"><i class="icon icon-left mdi mdi-eye" style="color:#fff;"></i> Detail</a>
+                                    <?php if($this->checkPenugasan($tender['id_tender'], $active_user_data['id_user'])): ?>
+                                        <a href="<?= $this->pathFor('BOQTender_detail' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-space btn-primary"><i class="icon icon-left mdi mdi-eye" style="color:#fff;"></i> Detail</a>
+                                    <?php else: ?>
+                                        Bukan Tugas Anda
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -133,7 +137,9 @@ $this->start ('js');
             },
         });
 
-        var beritaTable = $('#table-berita-tender').dataTable();
+        var beritaTable = $('#table-berita-tender').dataTable({
+
+        });
 
 //        $('#table-berita-tender tbody tr td.detail-modal').on('click', function () {
 //            alert($(this).data('id'));

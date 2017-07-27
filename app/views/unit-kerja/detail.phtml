@@ -117,7 +117,10 @@ $this->start('contents');
                 </div>
                 <div class="form-group">
                     <label>Penugasan</label>
-                    <input type="text" placeholder="Penugasan" id="input-penugasan" class="form-control">
+                    <select id="input-penugasan">
+                        <option value="Penawaran">Penawaran</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
@@ -288,7 +291,10 @@ $this->start('js');
                                 templateSelection: formatState,
                                 width: '100%',
                             });
-                            modal.find('#input-penugasan').val('');
+                            modal.find("#input-penugasan").select2({
+                                placeholder: 'Penugasan',
+                                width: '100%',
+                            });
                         });
                     }
                 });

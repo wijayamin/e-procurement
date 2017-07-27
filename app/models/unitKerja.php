@@ -30,8 +30,7 @@ class unitKerja extends \ryan\main {
 //            return $this->db->query("select * from unit_kerja")->fetchAll();
         } else {
             return $this->pdo->select()->from('unit_kerja')->whereMany([
-                'id_unitkerja'=> $id_unitkerja,
-                'deleted'=> 0
+                'id_unitkerja'=> $id_unitkerja
             ], '=')->execute()->fetch();
 //            $select = $this->db->prepare("select * from unit_kerja WHERE ID_UNITKERJA=:id_unitkerja");
 //            $select->bindParam(':id_unitkerja', $id);
@@ -88,6 +87,20 @@ class unitKerja extends \ryan\main {
             'id_tender'=> $id_tender,
             'deleted'=> 0
         ], '=')->orderBy('penugasan')->execute()->fetchAll();
+//        $select = $this->db->prepare("select * from unit_kerja where ID_TENDER=:id_tender order by PENUGASAN");
+//        $select->bindParam(':id_tender', $id_tender);
+//        $select->execute();
+//
+//        return $select->fetchAll();
+    }
+
+    public function getUnitForPenawaran($id_tender, $id_user) {
+        return $this->pdo->select()->from('unit_kerja')->whereMany([
+            'id_tender'=> $id_tender,
+            'id_user'=> $id_user,
+            'penugasan'=>'Penawaran',
+            'deleted'=> 0
+        ], '=')->execute()->fetchAll();
 //        $select = $this->db->prepare("select * from unit_kerja where ID_TENDER=:id_tender order by PENUGASAN");
 //        $select->bindParam(':id_tender', $id_tender);
 //        $select->execute();

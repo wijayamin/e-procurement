@@ -119,11 +119,10 @@
                     }
                     $this->notifikasiModels->sendNotificationByPreviledge(['1', '2', '3'], [
                         "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
-                        "tentang" => 'Menambahkan berita tender baru: "' . $data[ 'judul_tender' ] . '"',
+                        "tentang" => 'Menambahkan berita tender baru: "' . $data['judul_tender'] . '"',
                         "waktu" => date ("Y-m-d H:i:s"),
                         "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $insert])
                     ]);
-
                     return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$insert]));
                 }
             }
@@ -178,7 +177,7 @@
                     $data['rks'] = json_encode($tender['rks']);
                 }
                 if($this->tenderModels->setBeritaTender($data, $args['id_tender'])){
-                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_tender', $args['id_tender']);
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_tender', $args['id_tender']);
                     foreach($this->BOQModels->getBOQByTender($args['id_tender']) as $boq){
                         $this->BOQModels->setBOQ(['approval'=>''], $boq['id_penawaran']);
                         echo 'lala';
@@ -199,6 +198,12 @@
                             $this->dokumenModels->setDokumenTender(['approval'=>$approval], $dok['id_dokumen']);
                         }
                     }
+                    $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
+                        "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                        "tentang" => 'Mengubah Berita Tender "' . $data['judul_tender'] . '". Anda perlu melakukan approval Berita Tender, RKS, BOQ, dan Dokumen Tender kembali',
+                        "waktu" => date ("Y-m-d H:i:s"),
+                        "meta" => $this->router->pathFor ('beritaTender_detailApproval', ['id_tender' => $args['id_tender']])
+                    ]);
                     return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$args['id_tender']]));
                 }
             }
@@ -268,7 +273,7 @@
             $beritaTender['dokumen_syarat'] = $this->dokumenModels->getDokumenByTender($args[ 'id_tender' ]);
             $beritaTender['unit_kerja'] = $this->unitkerjaModels->getUnitKerjaByTender($args[ 'id_tender' ]);
             $beritaTender['last_edit'] = $this->historyModels->getLastEditTender($args[ 'id_tender' ]);
-            $beritaTender['history'] = $this->historyModels->get_history($args[ 'id_tender' ]);
+            $beritaTender['history'] = $this->beritaTender_getHistory($args['id_tender']);
             $req = $req->withAttribute ('tender', $beritaTender);
             $req = $req->withAttribute ('menu', ['tender'=>['detail']]);
             $req = $req->withAttribute ('approval', $route->getName() == 'beritaTender_detailApproval');
@@ -292,7 +297,7 @@
                 'approval'=>json_encode($tender['approval'])
             ];
             if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
-                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_tender', $args['id_tender']);
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_tender', $args['id_tender'], $_POST['status']);
                 return $res->withJson([
                     "status"=>"success"
                 ]);
@@ -310,99 +315,34 @@
          * @param     $args
          * @return static
          */
-        public function beritaTender_getHistory(Req $req, Res $res, $args){
-            $histories = $this->historyModels->get_history($args['id_tender']);
-            foreach ($histories as &$history){
-                $user = $this->userModels->getUserDetail($history['id_user']);
-                $history['user'] = [
-                    'image'=>$user['image'],
-                    'nama'=>$user['nama']
-                ];
-                foreach($histories as &$history){
-                    switch ($history['perubahan']){
-                        case 'u_tender':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'comment';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Mengubah Berita Tender';
-                            $history['detail'] = '';
-                            $history['target'] = $this->router->pathFor('beritaTender_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'i_tender':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'file';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Menambah Berita Tender Ini';
-                            $history['detail'] = '';
-                            $history['target'] = $this->router->pathFor('beritaTender_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'a_tender':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'gallery';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Menyetujui Berita Tender Ini';
-                            $history['detail'] = '';
-                            $history['target'] = $this->router->pathFor('beritaTender_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'd_tender':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'quote';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Menghapus Berita Tender Ini';
-                            $history['detail'] = '';
-                            $history['target'] = $this->router->pathFor('beritaTender_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'i_rks':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'file';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Menambahkan Dokumen RKS';
-                            $history['detail'] = json_decode($tender['rks'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'u_rks':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'comment';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Mengganti Dokumen RKS';
-                            $history['detail'] = json_decode($tender['rks'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'i_acara':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'file';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Menambahkan Dokumen Berita Acara';
-                            $history['detail'] = json_decode($tender['berita_acara'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'u_acara':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'comment';
-                            $history['icon'] = 'mdi-assignment';
-                            $history['messages'] = 'Mengganti Dokumen Berita Acara';
-                            $history['detail'] = json_decode($tender['berita_acara'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'i_unit':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'file';
-                            $history['icon'] = 'mdi-assignment-account';
-                            $history['messages'] = 'Menambahkan ';
-                            $history['detail'] = json_decode($tender['berita_acara'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                        case 'd_unit':
-                            $tender = $this->tenderModels->getBeritaTender($history['id_perubahan']);
-                            $history['color'] = 'quote';
-                            $history['icon'] = 'mdi-assignment-account';
-                            $history['messages'] = 'Mengganti Dokumen Berita Acara';
-                            $history['detail'] = json_decode($tender['berita_acara'], true)['file'];
-                            $history['target'] = $this->router->pathFor('rksAcara_detail', ['id_tender'=>$tender['id_tender']]);
-                            break;
-                    }
+        public function beritaTender_getHistory($id_tender){
+            $histories = $this->historyModels->get_history($id_tender);
+            foreach($histories as &$history){
+                switch ($history['perubahan']){
+                    case 'i_tender':
+                    case 'e_tender':
+                    case 'a_tender':
+                    case 'd_tender':
+                    case 'i_rks':
+                    case 'e_rks':
+                    case 'a_rks':
+                    case 'i_acara':
+                    case 'e_acara':
+                        $history['detail'] = $this->tenderModels->getBeritaTender($history['id_perubahan']);
+                        break;
+                    case 'i_unit':
+                    case 'd_unit':
+                        $history['detail'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
+                        break;
+                    case 'i_dok':
+                    case 'u_dok':
+                    case 'e_dok':
+                    case 'd_dok':
+                        $history['detail'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
+                        break;
                 }
             }
-            return $res->withJson($histories);
+            return $histories;
+            unset($history);
         }
     }

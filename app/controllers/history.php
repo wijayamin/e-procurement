@@ -16,7 +16,7 @@ use \Slim\Container as Container;
 use \Slim\Http\Request as Req;
 use \Slim\Http\Response as Res;
 
-class history {
+class history extends \ryan\main{
     protected $container;
     protected $penyelenggaraModels;
     protected $tenderModels;
@@ -26,6 +26,7 @@ class history {
     protected $unitkerjaModels;
     protected $BOQModels;
     protected $historyModels;
+    protected $tenderController;
 
     public function __construct (Container $container) {
         parent::__construct ($container);
@@ -38,12 +39,19 @@ class history {
         $this->unitkerjaModels = new \ryan\models\unitKerja($container);
         $this->BOQModels = new \ryan\models\BOQ($container);
         $this->historyModels = new \ryan\models\history($container);
+        $this->tenderController = new \ryan\controllers\beritaTender($container);
     }
 
-    public function tender_add($id_tender){
-        $data = [
-            
-        ]
-        return $this->historyModels->history_set($data);
+    public function history_daftar(Req $req, Res $res, $args){
+        $beritaTender = $this->tenderModels->getBeritaTender ($args[ 'id_tender' ]);
+        $this->view->registerFunction ('getUserUpload', function ($id_user) {
+            return $this->userModels->getUserDetail ($id_user);
+        });
+        $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+            return $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara)[ 'nama_penyelenggara' ];
+        });
+        $beritaTender['history'] = $this->tenderController->beritaTender_getHistory($args['id_tender']);
+        $req = $req->withAttribute ('tender', $beritaTender);
+        return $this->view->render ("history/detail", $req->getAttributes ());
     }
 }

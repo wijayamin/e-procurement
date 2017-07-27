@@ -91,13 +91,19 @@ class acaraRKS extends \ryan\main {
         if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
             if($args['type'] == 'rks'){
                 if($isNull){
-                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_rks', $args['id_tender']);
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_rks', $args['id_tender']);
+                    $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
+                        "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                        "tentang" => 'Mengganti RKS dari berita tender "' . $tender['judul_tender'] . '". Anda perlu melakukan approval RKS kembali',
+                        "waktu" => date ("Y-m-d H:i:s"),
+                        "meta" => $this->router->pathFor ('rksAcara_detailApproval', ['id_tender' => $args['id_tender']])
+                    ]);
                 }else{
                     $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_rks', $args['id_tender']);
                 }
             }else{
                 if($isNull){
-                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_acara', $args['id_tender']);
+                    $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_acara', $args['id_tender']);
                 }else{
                     $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_acara', $args['id_tender']);
                 }
@@ -119,13 +125,12 @@ class acaraRKS extends \ryan\main {
         $tender['rks']['approval'][$_POST['who']]['status'] = $_POST['status'];
         $tender['rks']['approval'][$_POST['who']]['waktu'] = date("Y-m-d H:i:s");
         $tender['berita_acara'] = json_decode($tender['berita_acara'], true);
-        $tender['berita_acara']['approval'][$_POST['who']]['status'] = $_POST['status'];
-        $tender['berita_acara']['approval'][$_POST['who']]['waktu'] = date("Y-m-d H:i:s");
         $data = [
             'rks'=>json_encode($tender['rks']),
             'berita_acara'=>json_encode($tender['berita_acara'])
         ];
         if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
+            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_rks', $args['id_tender']);
             return $res->withJson([
                 "status"=>"success"
             ]);

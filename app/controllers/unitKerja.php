@@ -96,14 +96,12 @@ class unitKerja extends \ryan\main{
             if($insert){
                 $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_unit', $insert);
                 $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
-                $notification_data = [
-                    'by_user'=>$req->getAttribute ('active_user_data')[ 'id_user' ],
-                    'for_user'=>$pegawai,
-                    'tentang'=>'Anda telah dipilih menjadi unitkerja <mark>'.$_POST['penugasan'].'</mark> pada tender "'.$tender['judul_tender'].'"',
-                    'waktu'=>$waktu,
-                    'meta'=>$this->router->pathFor('beritaTender_detail', ['id_tender'=>$args['id_tender']])
-                ];
-                $this->notifikasiModels->sendNotification($notification_data);
+                $this->notifikasiModels->sendNotificationToUser($pegawai, [
+                    "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                    "tentang" => 'Menunjuk anda sebagai Unit Kerja Berita Tender "' . $tender['judul_tender'] . '" dengan penugasan "'.$_POST['penugasan'].'"',
+                    "waktu" => date ("Y-m-d H:i:s"),
+                    "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
+                ]);
                 $result['status']='success';
             }
         }

@@ -59,6 +59,12 @@
             }
         }
 
+        public function sendNotificationToUser($id_user, $data){
+            $user = $this->userModels->getUser($id_user);
+            $data['for_user'] = $user['id_user'];
+            $this->pdo->insert(array_keys($data))->into('notifikasi')->values(array_values($data))->execute(true);
+        }
+
         public function sendNotificationByPreviledge($array_previledge, $data){
             foreach ($array_previledge as $previledge){
                 foreach ($this->userModels->getUserWithPreviledge($previledge) as $user){

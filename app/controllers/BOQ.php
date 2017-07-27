@@ -23,6 +23,7 @@ class BOQ extends \ryan\main{
     protected $userModels;
     protected $notifikasiModels;
     protected $BOQModels;
+    protected $unitKerjaModels;
 
     public function __construct ($container) {
         parent::__construct ($container);
@@ -32,6 +33,7 @@ class BOQ extends \ryan\main{
         $this->tenderModels = new \ryan\models\tender($container);
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
         $this->BOQModels = new \ryan\models\BOQ($container);
+        $this->unitKerjaModels = new \ryan\models\unitKerja($container);
     }
 
     public function BOQ_daftar(Request $req, Response $res, $args) {
@@ -46,6 +48,14 @@ class BOQ extends \ryan\main{
         $this->view->registerFunction('getUserUpload', function($id_user){
             $user = $this->userModels->getUserDetail($id_user);
             return $user;
+        });
+        $this->view->registerFunction('checkPenugasan', function($id_tender, $id_user){
+            $unitKerja = $this->unitKerjaModels->getUnitForPenawaran($id_tender, $id_user);
+            if($unitKerja){
+                return true;
+            }else{
+                return false;
+            }
         });
         $beritaTender = $this->tenderModels->getBeritaTenderApprovedRKS ();
         $req = $req->withAttribute ('beritaTender', $beritaTender);
@@ -139,6 +149,7 @@ class BOQ extends \ryan\main{
                 "approval" => json_encode($dataApproval),
             ];
             if ($this->BOQModels->setBOQ($approval, $pdata['id_penawaran'])) {
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_boq', $pdata['id_penawaran']);
                 $result['status'] = 'success';
             }
         }
@@ -172,7 +183,9 @@ class BOQ extends \ryan\main{
         $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $data['id_tender'] = $args['id_tender'];
         $data['waktu'] = date ("Y-m-d H:i:s");
-        if($this->BOQModels->setBOQ($data)){
+        $insert = $this->BOQModels->setBOQ($data);
+        if($insert){
+            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_boq', $insert);
             return $res->withJson([
                 'status'=>'success'
             ]);
@@ -182,6 +195,7 @@ class BOQ extends \ryan\main{
     public function BOQ_delete(Request $req, Response $res, $args){
         if(isset($_POST['id_penawaran'])){
             if($this->BOQModels->deleteBOQ($_POST['id_penawaran'])){
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'd_boq', $_POST['id_penawaran']);
                 return $res->withJson([
                    'status'=>'success'
                 ]);

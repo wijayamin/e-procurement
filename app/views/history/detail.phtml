@@ -1,0 +1,88 @@
+<?php
+$parent_data = [
+    'active_user_data' => $active_user_data,
+    'active_notification_list' => $active_notification_list,
+    'aside' => true
+];
+$this->layout('base', $parent_data);
+$this->start('style');
+?>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/dropzone/dist/dropzone.css"/>
+    <!--tempat css/style-->
+<?php
+$this->stop();
+$this->start('page-title');
+?>
+    RKS dan Berita Acara
+<?php
+$this->stop();
+$this->start('contents');
+?>
+    <!--tempat konten-->
+    <aside class="page-aside">
+        <div class="be-scroller">
+            <div class="nano-content">
+                <div class="content">
+                    <h3>Detail Berita Tender</h3><br>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Judul Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['judul_tender'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Tanggal Pelaksanaan</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_mulai']) ?></span>
+                            &nbsp; s/d &nbsp;
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_selesai']) ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Nama Penyelenggara</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Lokasi Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['wilayah'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Link Website</label>
+                        <div class="well well-sm aside-well">
+                            <a href="<?= $tender['link_website'] ?>" target="_blank">
+                                <strong><?= substr($tender['link_website'], 0, 35) ?></strong>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Diupload Oleh</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-primary"><?= $this->getUserUpload($tender['id_user'])['nama'] ?></span>
+                            <span class="label label-default"><?= $this->indDateTime($tender['tgl_upload']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+            </div>
+            <div class="ps-scrollbar-y-rail" style="top: 0px; right: 0px;">
+                <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+            </div>
+        </div>
+    </aside>
+    <div class="main-content container-fluid">
+        <?= $this->insert('berita-tender/history', ['histories'=>$tender['history'], 'full'=>true]) ?>
+    </div>
+    <!--akhir tempat konten-->
+<?php
+$this->stop();
+$this->start('js');
+?>
+<?php $this->stop() ?>

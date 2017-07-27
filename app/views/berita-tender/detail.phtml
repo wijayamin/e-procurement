@@ -272,6 +272,7 @@
                         </table>
                     </div>
                 </div>
+                <?= $this->insert('berita-tender/history', ['histories'=>$tender['history'], 'full'=>false]) ?>
                 <ul class="timeline timeline-variant mod">
                     <li class="timeline-month"><span>History Perubahan</span></li>
 
@@ -450,14 +451,14 @@
         });
         $(document).ready(function () {
             moment.locale('id');
-            $.getJSON('<?= $this->pathFor('beritaTender_history', ['id_tender'=>$tender['id_tender']]) ?>', function (data) {
-
-                var history = Twig.twig({
-                    href: "app/views/berita-tender/history.twig",
-                    async: false,
-                });
-                $('.timeline-variant.mod').html(history.render({histories:data}));
-            });
+//            $.getJSON('<?//= $this->pathFor('beritaTender_history', ['id_tender'=>$tender['id_tender']]) ?>//', function (data) {
+//
+//                var history = Twig.twig({
+//                    href: "app/views/berita-tender/history.twig",
+//                    async: false,
+//                });
+//                $('.timeline-variant.mod').html(history.render({histories:data}));
+//            });
             $('#modal-hapus').on('show.bs.modal', function (event) {
                 var modal = $(this);
                 modal.find('.btn-hapus').on('click', function(){
