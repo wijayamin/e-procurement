@@ -338,7 +338,14 @@
                     case 'u_dok':
                     case 'e_dok':
                     case 'd_dok':
+                    case 'a_dok':
                         $history['detail'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
+                        break;
+                    case 'i_boq':
+                    case 'e_boq':
+                    case 'd_boq':
+                    case 'a_boq':
+                        $history['detail'] = $this->BOQModels->getBOQ('38');
                         break;
                 }
             }

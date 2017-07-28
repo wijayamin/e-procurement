@@ -112,7 +112,7 @@ $this->start('contents');
                 <h3 class="modal-title">Form Input BOQ</h3>
             </div>
             <div class="modal-body form">
-                <form method="post" action="<?= $this->pathFor('BOQTender_set', ['id_tender'=>$tender['id_tender']]) ?>">
+                <form method="post" action="<?= $this->pathFor('BOQTender_add', ['id_tender'=>$tender['id_tender']]) ?>">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -202,27 +202,149 @@ $this->start('contents');
             </div>
         </div>
     </div>
-    <div id="modal-delete" tabindex="-1" role="dialog" class="modal fade in">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
-                        <h3>Hapus Penawaran BOQ!</h3>
-                        <p>Apakah anda yakin akan menghapus barang <strong class="barang"></strong> dari <strong class="vendor"></strong>?</p>
-                        <div class="xs-mt-50">
-                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>
-                            <button type="button" data-dismiss="modal" class="btn btn-space btn-danger btn-hapus">Hapus</button>
+
+    <div id="modal-edit" class="modal-container colored-header colored-header-primary modal-effect-9">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
+                <h3 class="modal-title">Edit BOQ</h3>
+            </div>
+            <div class="modal-body form">
+                <form method="post" action="<?= $this->pathFor('BOQTender_set', ['id_tender'=>$tender['id_tender']]) ?>">
+                    <input type="hidden" name="id_penawaran">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Vendor</label>
+                                <input type="text" placeholder="PT. XYZ" id="input-vendor" class="form-control" name="nama_vendor">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Barang</label>
+                                <input type="text" placeholder="GWS 55m" id="input-barang" class="form-control" name="nama_barang">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Harga Barang Satuan</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">Rp</span>
+                                    <input type="number" class="form-control" id="input-harga" name="harga_persatuan">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" class="form-control" id="input-volume" name="volume_barang">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Ukuran Satuan</label>
+                                <select multiple="" id="select-satuan" name="ukuran_satuan">
+                                    <optgroup label="Panjang">
+                                        <option value="mm">mm</option>
+                                        <option value="cm">cm</option>
+                                        <option value="m">m</option>
+                                        <option value="km">km</option>
+                                        <option value="inch">inch(&ldquo;)</option>
+                                        <option value="feet">feet</option>
+                                        <option value="mile">mile</option>
+                                    </optgroup>
+                                    <optgroup label="Luas">
+                                        <option value="mm&sup2;">mm&sup2;</option>
+                                        <option value="cm&sup2;">cm&sup2;</option>
+                                        <option value="m&sup2;">m&sup2;</option>
+                                        <option value="km&sup2;">km&sup2;</option>
+                                    </optgroup>
+                                    <optgroup label="Volume">
+                                        <option value="mm&sup3;">mm&sup3;</option>
+                                        <option value="cm&sup3;">cm&sup3;</option>
+                                        <option value="m&sup3;">m&sup3;</option>
+                                        <option value="km&sup3;">km&sup3;</option>
+                                    </optgroup>
+                                    <optgroup label="Berat">
+                                        <option value="g">g</option>
+                                        <option value="ons">ons</option>
+                                        <option value="kg">kg</option>
+                                        <option value="pound">pound</option>
+                                    </optgroup>
+                                    <optgroup label="Volume Cairan">
+                                        <option value="cc">cc</option>
+                                        <option value="ml">ml</option>
+                                        <option value="l">l</option>
+                                        <option value="galon">galon</option>
+                                    </optgroup>
+                                    <optgroup label="Unit">
+                                        <option value="Unit">Unit</option>
+                                        <option value="pcs">pcs</option>
+                                        <option value="lot">lot</option>
+                                        <option value="dus">dus</option>
+                                        <option value="kotak">kotak</option>
+                                        <option value="rol">rol</option>
+                                        <option value="kodi">kodi</option>
+                                        <option value="rim">rim</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary modal-close btn-simpan">Simpan</button>
+                <button type="button" class="btn btn-default modal-close">Batal</button>
             </div>
         </div>
     </div>
+
+    <div id="modal-delete" class="modal-container modal-effect-9">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
+            </div>
+            <div class="modal-body form">
+                <div class="text-center">
+                    <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>
+                    <h3>Hapus Penawaran BOQ!</h3>
+                    <p>Apakah anda yakin akan menghapus barang <strong class="barang"></strong> dari <strong class="vendor"></strong>?</p>
+                    <div class="xs-mt-50">
+                        <button type="button" class="btn btn-space modal-close btn-default">Batal</button>
+                        <button type="button" class="btn btn-space modal-close btn-danger btn-hapus">Hapus</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+<!--    <div id="modal-delete" tabindex="-1" role="dialog" class="modal fade in">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="text-center">-->
+<!--                        <div class="text-danger"><span class="modal-main-icon mdi mdi-delete"></span></div>-->
+<!--                        <h3>Hapus Penawaran BOQ!</h3>-->
+<!--                        <p>Apakah anda yakin akan menghapus barang <strong class="barang"></strong> dari <strong class="vendor"></strong>?</p>-->
+<!--                        <div class="xs-mt-50">-->
+<!--                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>-->
+<!--                            <button type="button" data-dismiss="modal" class="btn btn-space btn-danger btn-hapus">Hapus</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="modal-footer"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="modal-overlay"></div>
 
     <!--akhir tempat konten-->
 <?php
@@ -325,11 +447,88 @@ $this->start('js');
                         className: 'text-right',
                         render: function (data, type, row, meta) {
                             delete data.rowData;
-                            return '<button class="btn btn-space btn-danger btn-delete" data-toggle="modal" data-target="#modal-delete" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>';
+                            return  '<div class="btn-group btn-space">'+
+                                    '   <button class="btn btn-primary open-modal-edit" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-edit"></i></button>' +
+                                    '   <button class="btn btn-danger btn-delete open-modal-delete" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>' +
+                                    '</div>'
                         },
                     },
                 ],
             });
+
+            $('#unit-kerja tbody').on('click', '.open-modal-edit', function () {
+                var rowData = $(this).data('rowdata');
+                $('#modal-edit').niftyModal({
+                    buttons: [
+                        {
+                            class: 'btn-simpan',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                modal.find('form').ajaxSubmit({
+                                    dataType: 'json',
+                                    beforeSubmit: function (formData, jqForm, options) {
+                                        for (var i=0; i < formData.length; i++) {
+                                            if (!formData[i].value) {
+                                                return false;
+                                            }
+                                        }
+                                    },
+                                    success: function (res, status, xhr, $form) {
+                                        if(res.status == 'success'){
+                                            unitKerja.ajax.reload();
+                                        }
+                                    }
+                                });
+                                return true;
+                            }
+                        },
+                    ],
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('input[name="id_penawaran"]').val(rowData.id_penawaran);
+                        modal.find('input[name="nama_vendor"]').val(rowData.nama_vendor);
+                        modal.find('input[name="nama_barang"]').val(rowData.nama_barang);
+                        modal.find('input[name="harga_persatuan"]').val(rowData.harga_persatuan);
+                        modal.find('input[name="volume_barang"]').val(rowData.volume_barang);
+                        modal.find('#select-satuan').select2({
+                            placeholder: 'Meter',
+                            width: '100%',
+                            maximumSelectionLength: 1,
+                            tags: true
+                        });
+                        modal.find('#select-satuan').val(rowData.ukuran_satuan).trigger('change');
+                    }
+                });
+            });
+
+            $('#unit-kerja tbody').on('click', '.open-modal-delete', function () {
+                var rowData = $(this).data('rowdata');
+                $('#modal-delete').niftyModal({
+                    buttons: [
+                        {
+                            class: 'btn-hapus',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                var post_data = {
+                                    id_penawaran:rowData.id_penawaran,
+                                    id_tender:rowData.id_tender
+                                };
+                                $.post('<?= $this->pathFor('BOQTender_delete') ?>', post_data, function (data) {
+                                    if(data.status == 'success'){
+                                        unitKerja.ajax.reload();
+                                    }
+                                }, 'json')
+                                return true;
+                            }
+                        },
+                    ],
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('p strong.barang').html(rowData.nama_barang);
+                        modal.find('p strong.vendor').html(rowData.nama_vendor);
+                    }
+                });
+            })
             
             $('.open-modal-tambah').on('click', function () {
                 $('#modal-tambah').niftyModal({
@@ -368,61 +567,6 @@ $this->start('js');
                     }
                 });
             })
-
-            $('#modal-delete').on('show.bs.modal', function (event) {
-                var mBtn = $(event.relatedTarget);
-                var modal = $(this);
-                var rowData = mBtn.data('rowdata');
-                modal.find('p strong.barang').html(rowData.nama_barang);
-                modal.find('p strong.vendor').html(rowData.nama_vendor);
-                modal.find('.btn-hapus').on('click', function () {
-                    $.post('<?= $this->pathFor('BOQTender_delete') ?>', {id_penawaran:rowData.id_penawaran}, function (data) {
-                        if(data.status == 'success'){
-                            unitKerja.ajax.reload();
-                            $('#modal-delete').modal('hide')
-                        }
-                    }, 'json')
-                })
-            });
-
-            $('#form-unitkerja').on('show.bs.modal', function (event) {
-                var mBtn = $(event.relatedTarget) // Button that triggered the modal
-                var mData = mBtn.data() // Extract info from data-* attributes
-                var modal = $(this)
-
-                modal.find("#modal-satuan").select2({
-                    placeholder: 'Meter',
-                    width: '100%',
-                    maximumSelectionLength: 1,
-                    tags: true
-                });
-
-                modal.find('.form-unitkerja-simpan').on('click', function () {
-                    var pegawai = modal.find('#modal-pegawai').val()
-                    var penugasan = modal.find('#modal-penugasan').val()
-                    $.ajax({
-                        type: "POST",
-                        url: '<?= $this->pathFor('BOQTender_set', ['id_tender'=>$tender['id_tender']]) ?>',
-                        data: {
-                            nama_vendor:modal.find('#modal-vendor').val(),
-                            nama_barang:modal.find('#modal-barang').val(),
-                            harga_persatuan:modal.find('#modal-harga').val(),
-                            volume_barang:modal.find('#modal-volume').val(),
-                            ukuran_satuan:modal.find('#modal-satuan').val(),
-                        },
-                        success: function (result) {
-                            if(result.status == 'success'){
-                                unitKerja.ajax.reload();
-                                modal.find('input').val('');
-                                modal.find('select').val('');
-                                $('#form-unitkerja').modal('hide')
-                            }
-                        },
-                        dataType: "JSON"
-                    });
-                })
-            })
-
         })
 
     </script>

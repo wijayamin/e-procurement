@@ -113,7 +113,13 @@
 //            $this->mailer->isHTML(true);
 //            $this->mailer->Body = $this->view->render ("email", $req->getAttributes());
 //            $this->mailer->send();
-            $data = $this->pdo->select()->from('user')->where('id_user', '=', 1)->count('*', 'count')->execute()->fetch();
-            return $res->withJson($data);
+//            $data = $this->pdo->select()->from('user')->where('id_user', '=', 1)->count('*', 'count')->execute()->fetch();
+//            return $res->withJson($data);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=mientz&pass=1412dk&no=085649411233&isi=halooooooooo'
+            ));
+            return $res->write(curl_exec($curl));
         }
     }

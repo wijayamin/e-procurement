@@ -107,11 +107,9 @@ $this->start('contents');
                         <button type="button" class="btn btn-success mass-terima" disabled>
                             <i class="icon mdi mdi-check" style="color: white"></i> Terima
                         </button>
-                        <?php if (in_array ($active_user_data[ 'previledge' ], ['2'])): ?>
                         <button type="button" class="btn btn-danger mass-tolak" disabled>
                             <i class="icon mdi mdi-close" style="color: white"></i> Tolak
                         </button>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -271,20 +269,7 @@ $this->start('js');
                         },
                     ],
                     initComplete: function(settings, json) {
-                        tBOQ.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
-                            var data = this.data();
-                            if(data.inputan_manajer){
-//                                tBOQ.row(rowIdx).nodes().to$().addClass('online')
-                                data.inputan_manajer.pegawai.time = moment(data.inputan_manajer.pegawai.time).fromNow()
-                                data.inputan_manajer.approval = JSON.parse(data.inputan_manajer.approval)
-                                data.inputan_manajer.active_user_priv = <?= $active_user_data[ 'previledge' ] ?>;
-                                var rowChildTmp = Twig.twig({
-                                    href: "app/views/boq/custom-render-child.twig",
-                                    async: false,
-                                })
-                                tBOQ.row(rowIdx).child($(rowChildTmp.render(data))).show()
-                            }
-                        });
+
                     }
                 });
             }
@@ -297,11 +282,7 @@ $this->start('js');
             $('#unit-kerja tbody').on('click', 'td .btn-tolak', function () {
                 var rowData = $(this).data('rowdata');
                 var activeUser = <?= $active_user_data[ 'previledge' ] ?>;
-                if(activeUser == '3'){
-                    approvalModal({rowData:[rowData]}, 'ditolak', populateTable, true);
-                }else{
-                    approvalModal({rowData:[rowData]}, 'ditolak', populateTable);
-                }
+                approvalModal({rowData:[rowData]}, 'ditolak', populateTable);
             });
             $('#unit-kerja tbody').on('change', 'input[type="checkbox"]', function(){
                 var row = tBOQ.row( $(this).parents('tr') )
@@ -334,11 +315,7 @@ $this->start('js');
                 $('#unit-kerja tbody input[type="checkbox"]:checked').each(function () {
                     selectedData.push(JSON.parse($(this).val()));
                 })
-                if(activeUser == 3){
-                    approvalModal({rowData:selectedData}, 'ditolak', true);
-                }else{
-                    approvalModal({rowData:selectedData}, 'ditolak');
-                }
+                approvalModal({rowData:selectedData}, 'ditolak');
             })
             $.getJSON('<?= $this->pathFor('BOQTender_get', ['id_tender'=>$tender['id_tender']]) ?>', function (data) {
 
@@ -374,20 +351,6 @@ $this->start('js');
                     if(typeof isManajer === 'undefined'){
                         $(modal.modalEl).find('.tempat-table').html(approvalTableTmp.render(rowData));
                         $(modal.modalEl).find('.alert').addClass('hidden')
-                    }else{
-                        $(modal.modalEl).find('.tempat-table').html(approvalTableEditableTmp.render(rowData));
-                        $(modal.modalEl).find('#boq-editable a.editable-revisi').editable({
-                            type: 'text',
-                        });
-                        $(modal.modalEl).find('#boq-editable a[data-name="harga_persatuan"]').on('save', function(e, params) {
-                            var total = $(modal.modalEl).find('#boq-editable a[data-name="volume_barang"]').editable('getValue', true)*params.newValue
-                            $(modal.modalEl).find('#boq-editable a[data-name="total"]').editable('setValue', total)
-                        });
-                        $(modal.modalEl).find('#boq-editable a[data-name="volume_barang"]').on('save', function(e, params) {
-                            var total = $(modal.modalEl).find('#boq-editable a[data-name="harga_persatuan"]').editable('getValue', true)*params.newValue
-                            $(modal.modalEl).find('#boq-editable a[data-name="total"]').editable('setValue', total)
-                        });
-                        $(modal.modalEl).find('.alert').removeClass('hidden')
                     }
 //                    approvalTableTmp.render(data);
                 },
@@ -395,19 +358,9 @@ $this->start('js');
                     {
                         class: 'modal-ok',
                         callback: function ( btn, modal, event ) {
-                            if(typeof isManajer != 'undefined'){
-                                var dataRev = [];
-                                dataRev.push($(modal.modalEl).find('#boq-editable a.editable-revisi').editable('getValue', false));
-                                console.log(dataRev)
-                                $.post("<?= $this->pathFor("BOQTender_approval") ?>", {data:dataRev, status:type}, function(data){
-                                    populateTable(true);
-                                }, 'json')
-                            }else{
-//                                console.log(rowData)
-                                $.post("<?= $this->pathFor("BOQTender_approval") ?>", {data:rowData.rowData, status:type}, function(data){
-                                    populateTable(true);
-                                }, 'json')
-                            }
+                            $.post("<?= $this->pathFor("BOQTender_approval") ?>", {data:rowData.rowData, status:type}, function(data){
+                                populateTable(true);
+                            }, 'json')
                         }
                     },
                     {

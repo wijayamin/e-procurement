@@ -57,6 +57,7 @@ $app->group('', function () {
         $this->get('/daftar', \ryan\controllers\BOQ::class . ':BOQ_daftar')->setName('BOQTender_daftar');
         $this->get('/detail/{id_tender:[0-9]+}', \ryan\controllers\BOQ::class . ':BOQ_detail')->setName('BOQTender_detail');
 
+        $this->post('/add/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_add')->setName('BOQTender_add');
         $this->post('/set/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_set')->setName('BOQTender_set');
         $this->get('/get/{id_tender}', \ryan\controllers\BOQ::class . ':BOQ_get')->setName('BOQTender_get');
         $this->post('/delete', \ryan\controllers\BOQ::class . ':BOQ_delete')->setName('BOQTender_delete');

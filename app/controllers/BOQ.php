@@ -24,6 +24,7 @@ class BOQ extends \ryan\main{
     protected $notifikasiModels;
     protected $BOQModels;
     protected $unitKerjaModels;
+    protected $historyModels;
 
     public function __construct ($container) {
         parent::__construct ($container);
@@ -34,6 +35,7 @@ class BOQ extends \ryan\main{
         $this->notifikasiModels = new \ryan\models\notifikasi($container);
         $this->BOQModels = new \ryan\models\BOQ($container);
         $this->unitKerjaModels = new \ryan\models\unitKerja($container);
+        $this->historyModels = new \ryan\models\history($container);
     }
 
     public function BOQ_daftar(Request $req, Response $res, $args) {
@@ -105,32 +107,6 @@ class BOQ extends \ryan\main{
 
     public function BOQ_approval(Request $req, Response $res, $args) {
         $result = [];
-        if ($req->getAttribute('active_user_data')['previledge'] == "3" and $_POST["status"] == "ditolak") {
-            $data = [
-                "id_tender"       => $_POST['data'][0]['id_tender'],
-                "id_user"         => $req->getAttribute('active_user_data')['id_user'],
-                "nama_vendor"     => $_POST['data'][0]['nama_vendor'],
-                "nama_barang"     => $_POST['data'][0]['nama_barang'],
-                "harga_persatuan" => $_POST['data'][0]['harga_persatuan'],
-                "volume_barang"   => $_POST['data'][0]['volume_barang'],
-                "ukuran_satuan"   => $_POST['data'][0]['ukuran_satuan'],
-                "waktu"           => date("Y-m-d H:i:s"),
-                "approval"        => json_encode([
-                    "direktur" => [
-                        "status" => "",
-                        "waktu"  => "",
-                    ],
-                    "manajer"  => [
-                        "status" => "diterima",
-                        "waktu"  => date("Y-m-d H:i:s"),
-                    ],
-                ]),
-                "inputan_manajer" => $_POST['data'][0]['id_penawaran'],
-            ];
-            if ($this->BOQModels->setBOQ($data)) {
-                $result['status'] = 'success';
-            }
-        }
         foreach ($_POST['data'] as $pdata) {
             $data = $this->BOQModels->getBOQ($pdata['id_penawaran']);
             $dataApproval = json_decode($data["approval"], true);
@@ -149,7 +125,7 @@ class BOQ extends \ryan\main{
                 "approval" => json_encode($dataApproval),
             ];
             if ($this->BOQModels->setBOQ($approval, $pdata['id_penawaran'])) {
-                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_boq', $pdata['id_penawaran']);
+                $this->historyModels->add_history($pdata['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_boq', $pdata['id_penawaran'], $_POST["status"]);
                 $result['status'] = 'success';
             }
         }
@@ -178,11 +154,21 @@ class BOQ extends \ryan\main{
         return $res->withJson(['data'=>$BOQs]);
     }
 
-    public function BOQ_set(Request $req, Response $res, $args){
+    public function BOQ_add(Request $req, Response $res, $args){
         $data = $_POST;
         $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $data['id_tender'] = $args['id_tender'];
         $data['waktu'] = date ("Y-m-d H:i:s");
+        $data['approval']=json_encode([
+           'direktur'=>[
+               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+               'waktu'=>date("Y-m-d H:i:s")
+           ],
+           'manajer'=>[
+               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+               'waktu'=>date("Y-m-d H:i:s")
+           ]
+        ]);
         $insert = $this->BOQModels->setBOQ($data);
         if($insert){
             $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_boq', $insert);
@@ -192,10 +178,41 @@ class BOQ extends \ryan\main{
         }
     }
 
+    public function BOQ_set(Request $req, Response $res, $args){
+        $data = $_POST;
+        $id_penawran = $_POST['id_penawaran'];
+        unset($data['id_penawaran']);
+        $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
+        $data['id_tender'] = $args['id_tender'];
+        $data['waktu'] = date ("Y-m-d H:i:s");
+        $data['approval']=json_encode([
+           'direktur'=>[
+               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
+               'waktu'=>date("Y-m-d H:i:s")
+           ],
+           'manajer'=>[
+               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
+               'waktu'=>date("Y-m-d H:i:s")
+           ]
+        ]);
+        if($this->BOQModels->setBOQ($data, $id_penawran)){
+            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_boq', $id_penawran);
+            $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
+                "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
+                "tentang" => 'Mengubah BOQ  "' . $_POST['nama_vendor'] . ' - ' . $_POST['nama_barang'] . '". Anda perlu melakukan approval BOQ ini kembali',
+                "waktu" => date ("Y-m-d H:i:s"),
+                "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
+            ]);
+            return $res->withJson([
+                'status'=>'success'
+            ]);
+        }
+    }
+
     public function BOQ_delete(Request $req, Response $res, $args){
         if(isset($_POST['id_penawaran'])){
             if($this->BOQModels->deleteBOQ($_POST['id_penawaran'])){
-                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'd_boq', $_POST['id_penawaran']);
+                $this->historyModels->add_history($_POST['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'd_boq', $_POST['id_penawaran']);
                 return $res->withJson([
                    'status'=>'success'
                 ]);

@@ -108,7 +108,7 @@ class dokumenTender extends \ryan\main {
             'approval'=>json_encode($approval)
         ];
         if($this->dokumenModels->setDokumenTender($update, $args['id_dokumen'])){
-            $this->historyModels->add_history($select['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_dok', $args['id_dokumen']);
+            $this->historyModels->add_history($select['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_dok', $args['id_dokumen'], $args['status']);
             return $res->withJson([
                 'status'=>'success'
             ]);

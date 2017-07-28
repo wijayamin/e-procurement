@@ -81,6 +81,9 @@
             $this->view->registerFunction('indDate', function($dateString){
                 return date('d M Y', strtotime($dateString));
             });
+            $this->view->registerFunction('indMonthYear', function($dateString){
+                return date('F, Y', strtotime($dateString));
+            });
             $this->view->registerFunction('indDateTime', function($dateString){
                 return date('d M Y H:i', strtotime($dateString));
             });

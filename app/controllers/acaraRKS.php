@@ -130,7 +130,7 @@ class acaraRKS extends \ryan\main {
             'berita_acara'=>json_encode($tender['berita_acara'])
         ];
         if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
-            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_rks', $args['id_tender']);
+            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_rks', $args['id_tender'], $_POST['status']);
             return $res->withJson([
                 "status"=>"success"
             ]);

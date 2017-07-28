@@ -73,19 +73,9 @@ class BOQ extends \ryan\main{
      * @param null $id_penawaran
      * @return boolean|array
      */
-    public function getBOQ($id_penawaran = null){
-        if($id_penawaran == null){
-            return false;
-        }else{
-            return $this->pdo->select()->from('penawaran')->whereMany([
-                'id_penawaran'=> $id_penawaran,
-                'deleted'=> 0
-            ], '=')->execute()->fetchAll();
-            $select = $this->db->prepare('select * from penawaran where id_penawaran=:id_penawaran');
-            $select->bindParam(':id_penawaran', $id_penawaran);
-            $select->execute();
-            return $select->fetch();
-        }
+    public function getBOQ($id_penawaran){
+            return $this->pdo->select()->from('penawaran')->where('id_penawaran', '=', $id_penawaran)->execute()->fetch();
+
     }
 
     /**
@@ -108,7 +98,7 @@ class BOQ extends \ryan\main{
      * @return boolean
      */
     public function deleteBOQ($id_penawaran){
-        return $this->pdo->delete()->from('penawaran')->where('id_penawaran', '=', $id_penawaran)->execute();
+        return $this->pdo->update(['deleted'=>1])->table('penawaran')->where('id_penawaran', '=', $id_penawaran)->execute();
     }
 
     /**
