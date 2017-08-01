@@ -23,6 +23,7 @@
         protected $uri;
         protected $pdo;
         protected $mailer;
+        protected $notFoundHandler;
 
         function __construct (Container $container) {
             $this->container = $container;
@@ -31,6 +32,7 @@
             $this->session = $container->session;
             $this->router = $container->router;
             $this->flash = $container->flash;
+            $this->notFoundHandler = $container->notFoundHandler;
 
             $settings = $container->get('settings')['database'];
             $this->db = new PDO("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);
@@ -43,20 +45,22 @@
             $this->pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+            $mailer_seting = $container->get('settings')['mailer'];
             $this->mailer = new \PHPMailerOAuth();
+            $this->mailer->CharSet = 'UTF-8';
             $this->mailer->isSMTP();
-            $this->mailer->SMTPDebug = 2;
-            $this->mailer->Debugoutput = 'html';
-            $this->mailer->Host = 'smtp.gmail.com';
-            $this->mailer->Port = 587;
-            $this->mailer->SMTPSecure = 'tls';
-            $this->mailer->SMTPAuth = true;
-            $this->mailer->AuthType = 'XOAUTH2';
-            $this->mailer->oauthUserEmail = "kartunamapal@gmail.com";
-            $this->mailer->oauthClientId = "415435901048-edelac3m5bndr0v2e2qv0ssoh9e4t3mb.apps.googleusercontent.com";
-            $this->mailer->oauthClientSecret = "_8cVQNtmn3C2HD5Ixw_uM11A";
-            $this->mailer->oauthRefreshToken = "1/J3GOSF9i_kq4uCIffGAVhz6ITF--KUXX563UyZW1l9E";
-            $this->mailer->setFrom('no-reply@kencana-alam.com', 'PT. Kencana Alam Putra(No Reply)');
+            $this->mailer->SMTPDebug = $mailer_seting['SMTPDebug'];
+            $this->mailer->Debugoutput = $mailer_seting['Debugoutput'];
+            $this->mailer->Host = $mailer_seting['Host'];
+            $this->mailer->Port = $mailer_seting['Port'];
+            $this->mailer->SMTPSecure = $mailer_seting['SMTPSecure'];
+            $this->mailer->SMTPAuth = $mailer_seting['SMTPAuth'];
+            $this->mailer->AuthType = $mailer_seting['AuthType'];
+            $this->mailer->oauthUserEmail = $mailer_seting['setFrom']['email'];
+            $this->mailer->oauthClientId = $mailer_seting['oauthClientId'];
+            $this->mailer->oauthClientSecret = $mailer_seting['oauthClientSecret'];
+            $this->mailer->oauthRefreshToken = $mailer_seting['oauthRefreshToken'];
+            $this->mailer->setFrom($mailer_seting['setFrom']['email'], $mailer_seting['setFrom']['title']);
         }
 
         public function __invoke ($req, $res, $next) {
@@ -129,6 +133,22 @@
 
                 return $string ? implode (', ', $string) . ' yang lalu' : 'baru saja';
             });
+        }
+
+        public function sendSMS($nomor, $messages){
+            $curl = curl_init();
+            $pesan = urlencode($messages);
+            $settings = $this->container->get('settings')['sms'];
+            curl_setopt_array($curl, array(
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=' . $settings['username'] . '&pass=' . $settings['password'] . '&no=' . $nomor . '&isi=' . $pesan
+            ));
+            $response = curl_exec($curl);
+            if(strpos($response, 'sukses') !== false){
+                return true;
+            }else{
+                return $response;
+            }
         }
 
     }

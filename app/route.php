@@ -9,9 +9,14 @@ $app->group('/auth', function () {
     $this->post('-dologin', \ryan\controllers\auth::class . ':doLogin')->setName('doLogin');
     $this->get('-logout', \ryan\controllers\auth::class . ':doLogout')->setName('doLogout');
     $this->get('-sign-up/{token}', \ryan\controllers\auth::class . ':signUpPage')->setName('signUpPage');
+    $this->post('-do-sign-up/{token}', \ryan\controllers\auth::class . ':doSignUp')->setName('doSignUp');
+    $this->get('-sms-verification/{token}', \ryan\controllers\auth::class . ':verificationSMSPage')->setName('verificationSMSPage');
+    $this->post('-sms-verificate/{token}', \ryan\controllers\auth::class . ':doVerificateSMS')->setName('doVerificateSMS');
+    $this->get('-resend-sms-verification/{token}/{telefon}', \ryan\controllers\auth::class . ':reSendVerificationSMS')->setName('reSendVerificationSMS');
 
     $this->get('/check', \ryan\controllers\auth::class . ':check')->setName('checkAuth');
-    $this->get('/check-email', \ryan\controllers\auth::class . ':coba')->setName('coba');
+    $this->get('/check-email', \ryan\controllers\auth::class . ':check_email')->setName('checkEmail');
+    $this->get('/check-coba', \ryan\controllers\auth::class . ':coba')->setName('coba');
 });
 
 // Group Root
@@ -100,6 +105,7 @@ $app->group('', function () {
     $this->group('/users', function(){
         $this->get('/list', \ryan\controllers\usersMan::class . ':users_daftar')->setName('users_daftar');
         $this->get('/get', \ryan\controllers\usersMan::class . ':users_get')->setName('users_get');
+        $this->post('/invite', \ryan\controllers\usersMan::class . ':users_invite')->setName('users_invite');
 
         $this->get('/profile', \ryan\controllers\usersMan::class . ':users_profile')->setName('users_profile');
         $this->post('/profile/update-common', \ryan\controllers\usersMan::class . ':user_updateCommon')->setName('user_updateCommon');

@@ -123,6 +123,10 @@
                         "waktu" => date ("Y-m-d H:i:s"),
                         "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $insert])
                     ]);
+                    $direktur = $this->userModels->getDirektur();
+                    $this->sendSMS($direktur['telefon'], 'Ada berita tender baru "' . $data['judul_tender'] . '" menunggu approval anda');
+                    $manajer = $this->userModels->getManajer();
+                    $this->sendSMS($manajer['telefon'], 'Ada berita tender baru "' . $data['judul_tender'] . '" menunggu approval anda');
                     return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$insert]));
                 }
             }
@@ -204,6 +208,10 @@
                         "waktu" => date ("Y-m-d H:i:s"),
                         "meta" => $this->router->pathFor ('beritaTender_detailApproval', ['id_tender' => $args['id_tender']])
                     ]);
+                    $direktur = $this->userModels->getDirektur();
+                    $this->sendSMS($direktur['telefon'], 'Berita tender "' . $data['judul_tender'] . '" telah dirubah mohon melakukan approval ulang');
+                    $manajer = $this->userModels->getManajer();
+                    $this->sendSMS($manajer['telefon'], 'Berita tender "' . $data['judul_tender'] . '" telah dirubah mohon melakukan approval ulang');
                     return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('beritaTender_detail', ['id_tender'=>$args['id_tender']]));
                 }
             }

@@ -30,12 +30,47 @@ class usersMan extends \ryan\main{
         foreach ($users as &$user){
             unset($user['password']);
             unset($user['token']);
+            unset($user['smscode']);
         }
         return $res->withJson(['data'=>$users]);
     }
 
     public function users_daftar(Request $req, Response $res, $args){
         return $this->view->render ("users/daftar", $req->getAttributes());
+    }
+
+    public function users_invite(Request $req, Response $res, $args){
+        $token = bin2hex(openssl_random_pseudo_bytes(16));
+        $path = 'http://'. $req->getHeader('Host')[0] . $this->router->pathFor ('signUpPage', ['token'=>$token]);
+        if(isset($_POST['email']) && isset($_POST['previledge'])){
+            $req = $req->withAttribute ('path', $path);
+            $req = $req->withAttribute ('who', $req->getAttribute('active_user_data')['nama']);
+            $req = $req->withAttribute ('jabatan', $_POST['jabatan']);
+            $data = [
+                'email'=>$_POST['email'],
+                'previledge'=>$_POST['previledge'],
+                'jabatan'=>$_POST['jabatan'],
+                'token'=>$token
+            ];
+            $insert = $this->userModels->setUser($data);
+            if($insert){
+                $uri = $req->getUri();
+                $this->mailer->addAddress($_POST['email']);
+                $this->mailer->Subject = 'Undangan penggunaan aplikasi';
+                $this->mailer->isHTML(true);
+                $this->mailer->Body = $this->view->getPlates()->render ("email", $req->getAttributes());
+                if($this->mailer->send()){
+                    return $res->withJson([
+                        'status'=>'success'
+                    ]);
+                }
+            }
+        }else{
+            return $res->withJson([
+                'status'=>'failed',
+                'reason'=>'Mohon isi Email dan Pilih jabatan'
+            ]);
+        }
     }
 
     public function users_profile(Request $req, Response $res, $args){
@@ -83,8 +118,7 @@ class usersMan extends \ryan\main{
                 }
             }else{
                 return $res->withJson([
-                    'status'=>'failed',
-                    'reason'=>'Password baru dan ulangi password tidak sama!'
+                    'status'=>'success'
                 ]);
             }
         }else{
@@ -93,5 +127,8 @@ class usersMan extends \ryan\main{
                 'reason'=>'Password lama salah!'
             ]);
         }
+    }
+
+    public function send_invitationEmail($email, $path){
     }
 }

@@ -41,3 +41,12 @@ $container['session'] = function ($c) {
 $container['flash'] = function () {
 	return new \Slim\Flash\Messages();
 };
+
+$container['notFoundHandler'] = function ($container) {
+	return function ($request, $response) use ($container) {
+		return $container['response']
+			->withStatus(404)
+			->withHeader('Content-Type', 'text/html')
+			->write($container->view->getPlates()->render("404"));
+	};
+};

@@ -231,20 +231,6 @@ $this->start('js');
                     }
                 ],
                 order: [[ 2, 'asc' ]],
-                "drawCallback": function ( settings ) {
-                    var api = this.api();
-                    var rows = api.rows( {page:'current'} ).nodes();
-                    var last=null;
-                    api.column(2, {page:'current'} ).data().each( function ( group, i ) {
-                        if ( last !== group ) {
-                            $(rows).eq( i ).before(
-                                '<tr class="active"><td colspan="4" style="padding-top:5px;padding-bottom: 5px;" class="text-center"><span class="label label-primary"> '+group+' </span></td></tr>'
-                            );
-
-                            last = group;
-                        }
-                    } );
-                }
             });
             $('.open-modal-tambah').on('click', function(){
                 function formatState (state) {

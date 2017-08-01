@@ -27,17 +27,18 @@
 <!--                                <span class="splash-description">Please enter your user information.</span>-->
                             </div>
                             <div class="panel-body">
-                                <form action="index.html" method="get" data-toggle="validator" role="form">
+                                <form action="<?= $this->pathFor('doSignUp', ['token'=>$token]) ?>" method="post" data-toggle="validator" role="form">
                                     <span class="splash-title xs-pb-20">Pendaftaran</span>
                                     <div class="form-group">
                                         <input  class="form-control" type="email" name="email" value="<?= $sign_data['email'] ?>" required readonly>
+                                        <input  type="hidden" name="id_user" value="<?= $sign_data['id_user'] ?>">
                                     </div>
                                     <div class="form-group">
                                         <input class="form-control" type="text" name="username" placeholder="Username" autocomplete="off" data-minlength="5" pattern="^[_A-z0-9]{1,}$" required data-remote="<?= $this->pathFor('checkAuth') ?>" data-required-error="Wajib di-isi" data-remote-error="Username telah digunakan" data-minlength-error="Minimal 5 Karakter" data-pattern-error="Hanya Huruf dan Angka">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" type="tel" name="telefon" placeholder="Username" autocomplete="off" data-minlength="5" pattern="^[0-9]{1,}$" required data-required-error="Wajib di-isi" data-remote-error="Username telah digunakan" data-minlength-error="Minimal 5 Karakter" data-pattern-error="Hanya Huruf dan Angka">
+                                        <input class="form-control" type="tel" name="telefon" placeholder="Nomor Ponsel" autocomplete="off" data-minlength="5" pattern="^[0-9]{1,}$" required data-required-error="Wajib di-isi" data-remote-error="Username telah digunakan" data-minlength-error="Minimal 5 Karakter" data-pattern-error="Hanya Huruf dan Angka">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="form-group row signup-password">

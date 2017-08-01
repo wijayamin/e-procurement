@@ -98,6 +98,10 @@ class acaraRKS extends \ryan\main {
                         "waktu" => date ("Y-m-d H:i:s"),
                         "meta" => $this->router->pathFor ('rksAcara_detailApproval', ['id_tender' => $args['id_tender']])
                     ]);
+                    $direktur = $this->userModels->getDirektur();
+                    $this->sendSMS($direktur['telefon'], 'Dokumen RKS Berita tender "' . $tender['judul_tender'] . '" telah dirubah mohon melakukan approval ulang');
+                    $manajer = $this->userModels->getManajer();
+                    $this->sendSMS($manajer['telefon'], 'Dokumen RKS Berita tender "' . $tender['judul_tender'] . '" telah dirubah mohon melakukan approval ulang');
                 }else{
                     $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_rks', $args['id_tender']);
                 }

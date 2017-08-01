@@ -203,6 +203,11 @@ class BOQ extends \ryan\main{
                 "waktu" => date ("Y-m-d H:i:s"),
                 "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
             ]);
+            $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+            $direktur = $this->userModels->getDirektur();
+            $this->sendSMS($direktur['telefon'], 'BOQ  "' . $_POST['nama_vendor'] . ' - ' . $_POST['nama_barang'] . '" dari tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
+            $manajer = $this->userModels->getManajer();
+            $this->sendSMS($manajer['telefon'], 'BOQ  "' . $_POST['nama_vendor'] . ' - ' . $_POST['nama_barang'] . '" dari tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
             return $res->withJson([
                 'status'=>'success'
             ]);

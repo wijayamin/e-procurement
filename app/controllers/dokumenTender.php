@@ -249,6 +249,10 @@ class dokumenTender extends \ryan\main {
                     "waktu" => date ("Y-m-d H:i:s"),
                     "meta" => $this->router->pathFor ('beritaTender_detail', ['id_tender' => $args['id_tender']])
                 ]);
+                $direktur = $this->userModels->getDirektur();
+                $this->sendSMS($direktur['telefon'], 'Dokumen  "' . $nama_dokumen . '" dari tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
+                $manajer = $this->userModels->getManajer();
+                $this->sendSMS($manajer['telefon'], 'Dokumen  "' . $nama_dokumen . '" dari tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
                 return $res->withJson([
                     "status"=>"success"
                 ]);
