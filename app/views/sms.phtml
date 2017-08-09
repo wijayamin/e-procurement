@@ -37,7 +37,7 @@
                                 </span>
                             </div>
                             <div class="panel-body">
-                                <form action="<?= $this->pathFor('doVerificateSMS', ['token'=>$token]) ?>" method="post">
+                                <form action="<?= $this->pathFor('doVerificateSMS', ['id_user'=>$id_user]) ?>" method="post">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-2 md-pr-5 md-pl-5"><input type="text" class="form-control input-mask" maxlength="1" tabindex="1"></div>
@@ -57,7 +57,7 @@
                                             <button type="button" class="btn btn-success btn-resend" disabled>Kirim Kode Ulang</button>
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <button type="button" class="btn btn-default">Ganti Nomor ?</button>
+                                            <a href="<?= $this->pathFor('users_profile') ?>" type="button" class="btn btn-default">Ganti Nomor ?</a>
                                         </div>
                                     </div>
                                 </form>
@@ -118,7 +118,7 @@
                 }
                 btnReSend();
                 $('.btn-resend').on('click', function () {
-                    $.getJSON('<?= $this->pathFor('reSendVerificationSMS', ['token'=>$token, 'telefon'=>$telefon]) ?>', function (res) {
+                    $.getJSON('<?= $this->pathFor('reSendVerificationSMS', ['id_user'=>$id_user, 'telefon'=>$telefon]) ?>', function (res) {
                         if(res.status == 'success'){
                             btnReSend();
                             $.gritter.add({

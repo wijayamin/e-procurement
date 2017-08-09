@@ -14,6 +14,8 @@ namespace ryan\controllers;
 
 use \Slim\Http\Request;
 use \Slim\Http\Response;
+use \GuzzleHttp\Psr7;
+use \GuzzleHttp\Client;
 
 class usersMan extends \ryan\main{
 
@@ -26,8 +28,8 @@ class usersMan extends \ryan\main{
     }
 
     public function users_get(Request $req, Response $res, $args){
-        $users = $this->userModels->getUser();
-        foreach ($users as &$user){
+        $users = $this->userModels->getUserDetail();
+        foreach ($users as $key => &$user){
             unset($user['password']);
             unset($user['token']);
             unset($user['smscode']);
@@ -55,15 +57,36 @@ class usersMan extends \ryan\main{
             $insert = $this->userModels->setUser($data);
             if($insert){
                 $uri = $req->getUri();
-                $this->mailer->addAddress($_POST['email']);
-                $this->mailer->Subject = 'Undangan penggunaan aplikasi';
-                $this->mailer->isHTML(true);
-                $this->mailer->Body = $this->view->getPlates()->render ("email", $req->getAttributes());
-                if($this->mailer->send()){
+                $client = new Client([
+                    'base_uri' => 'http://capi-mailer.appspot.com/',
+                    'timeout'  => 2.0,
+                ]);
+                $response = $client->request('POST', 'http://capi-mailer.appspot.com/appspot/no_reply', [
+                    'headers' => [
+                        'X-CAPI-AUTH' => '$2y$10$MsVKU9Eym.muyQA4KwPdguSzGnW8k2WMUubgqRAkr4W9OguJgY8hC'
+                    ],
+                    'form_params'=>[
+                        'send_to'=>$_POST['email'],
+                        'subject'=> 'Undangan penggunaan aplikasi',
+                        'message'=> $this->view->getPlates()->render ("email", $req->getAttributes())
+                    ]
+                ]);
+                $response = json_decode($response->getBody(), true);
+                if($response['status'] == 'success'){
                     return $res->withJson([
                         'status'=>'success'
                     ]);
                 }
+//
+//                $this->mailer->addAddress($_POST['email']);
+//                $this->mailer->Subject = 'Undangan penggunaan aplikasi';
+//                $this->mailer->isHTML(true);
+//                $this->mailer->Body = $this->view->getPlates()->render ("email", $req->getAttributes());
+//                if($this->mailer->send()){
+//                    return $res->withJson([
+//                        'status'=>'success'
+//                    ]);
+//                }
             }
         }else{
             return $res->withJson([
@@ -129,6 +152,63 @@ class usersMan extends \ryan\main{
         }
     }
 
-    public function send_invitationEmail($email, $path){
+    public function user_updateEmail(Request $req, Response $res, $args){
+//        $token = bin2hex(openssl_random_pseudo_bytes(16));
+//        $path = 'http://'. $req->getHeader('Host')[0] . $this->router->pathFor ('signUpPage', ['token'=>$token]);
+        $user = $this->userModels->getUser($_POST['id_user']);
+        if(isset($_POST['email']) and isset($_POST['password']) and $_POST['email'] != $user['email'] and md5($_POST['password']) == $user['password']){
+            $data = [
+                'email'=> $_POST['email'],
+//                'token'=> $token
+            ];
+            if($this->userModels->setUser($data, $_POST['id_user'])){
+                return $res->withJson([
+                    'status'=>'success'
+                ]);
+            }
+        }else{
+            return $res->withJson([
+                'status'=>'failed',
+                'reason'=>'Email telah digunakan atau Password salah!'
+            ]);
+        }
+    }
+
+    public function user_updateTelepon(Request $req, Response $res, $args){
+        $smscode = strtoupper(bin2hex(openssl_random_pseudo_bytes(3)));
+        $user = $this->userModels->getUser($_POST['id_user']);
+        if(isset($_POST['telefon']) and isset($_POST['password']) and $_POST['telefon'] != $user['telefon'] and md5($_POST['password']) == $user['password']){
+            $data = [
+                'telefon'=> $_POST['telefon'],
+                'smscode'=> $smscode
+            ];
+            if($this->userModels->setUser($data, $_POST['id_user'])){
+                return $res->withJson([
+                    'status'=>'success'
+                ]);
+            }
+        }else{
+            return $res->withJson([
+                'status'=>'failed',
+                'reason'=>'Password salah!'
+            ]);
+        }
+    }
+
+    public function user_delete(Request $req, Response $res, $args){
+        if(isset($_POST['id_user'])){
+            $data = [
+                'deleted'=>1
+            ];
+            if($this->userModels->setUser($data, $_POST['id_user'])){
+                return $res->withJson([
+                    'status'=>'success'
+                ]);
+            }else{
+                return $res->withJson([
+                    'status'=>'failed'
+                ]);
+            }
+        }
     }
 }

@@ -3,6 +3,8 @@
 
     use \Slim\Http\Request as Req;
     use \Slim\Http\Response as Res;
+    use \GuzzleHttp\Psr7;
+    use \GuzzleHttp\Client;
 
     class auth extends \ryan\main {
 
@@ -85,7 +87,7 @@
                     return $res->withStatus(405)->withJson(['success'=>false, 'cause'=>'Session Expired']);
                 }
             }else{
-                $userData = $this->userModels->getUserDetail($this->session->id_user);
+                $userData = $this->userModels->getUser($this->session->id_user);
                 $notificationData = $this->notificationModels->getNotificationForUser($this->session->id_user);
                 $req = $req->withAttribute('active_user_data', $userData);
                 $req = $req->withAttribute('active_notification_list', $notificationData);
@@ -117,15 +119,16 @@
                         'telefon' => $_POST['telefon'],
                         'status' => 1,
                         'smscode' => $smscode,
-                        'image' => 'no-photo.jpg'
+                        'image' => 'no-photo.jpg',
+                        'token' => null
                     ];
 //                    return $res->write('http://www.freesms4us.com/kirimsms.php?user=ryanhadiw&pass=ryan721995&no=' . $_POST['telefon'] . '&isi=' . $pesan);
                     if($this->userModels->setUser($data, $_POST['id_user'])){
                         $sms = $this->sendSMS($_POST['telefon'], 'Harap masukkan kode '. $smscode . ' di aplikasi E-Admin Tender');
                         if($sms === true){
-                            return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('verificationSMSPage', ['token'=>$args['token']]));
+                            return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('verificationSMSPage', ['id_user'=>$_POST['id_user']]));
                         }else{
-                            return $res->write($response);
+                            return $res->write($sms);
                         }
                     }
                 }
@@ -139,29 +142,25 @@
 
         public function verificationSMSPage(Req $req, Res $res, $args){
             $req = $req->withAttribute ('codeError', $this->flash->getMessage ('codeError'));
-            $req = $req->withAttribute('token', $args['token']);
-            $req = $req->withAttribute('telefon', $this->userModels->getUserByToken($args['token'])['telefon']);
+            $req = $req->withAttribute('id_user', $args['id_user']);
+            $req = $req->withAttribute('telefon', $this->userModels->getUser($args['id_user'])['telefon']);
             return $this->view->render ("sms", $req->getAttributes());
         }
 
         public function doVerificateSMS(Req $req, Res $res, $args){
-            $user = $this->userModels->getUserByToken($args['token']);
+            $user = $this->userModels->getUser($args['id_user']);
             if($_POST['smscode'] == $user['smscode']){
                 $data = [
-                    'smscode' => ''
+                    'smscode' => null
                 ];
                 if($this->userModels->setUser($data, $user['id_user'])){
                     $this->session->set ('id_user', $user[ 'id_user' ]);
                     $this->session->set ('previledge', $user[ 'previledge' ]);
-                    if($user['previledge'] == '5'){
-                        return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('users_daftar'));
-                    }else{
-                        return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('DashboardPage'));
-                    }
+                    return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('users_profile'));
                 }
             }else{
                 $this->flash->addMessage ('codeError', true);
-                return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('verificationSMSPage', ['token'=>$args['token']]));
+                return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('verificationSMSPage', ['id_user'=>$args['id_user']]));
             }
         }
 
@@ -180,7 +179,7 @@
                 }else{
                     return $res->withJson([
                         'status' => 'failed',
-                        'reason' => $response
+                        'reason' => $sms
                     ]);
                 }
             }else{
@@ -219,12 +218,40 @@
 //            $this->mailer->send();
 //            $data = $this->pdo->select()->from('user')->where('id_user', '=', 1)->count('*', 'count')->execute()->fetch();
 //            return $res->withJson($data);
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=ryanhadiw&pass=ryan721995&no=0895338201953&isi=halooooooooo'
-            ));
-            return $res->write(curl_exec($curl));
+//            $curl = curl_init();
+//            curl_setopt_array($curl, array(
+//                CURLOPT_RETURNTRANSFER => 1,
+//                CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=ryanhadiw&pass=ryan721995&no=0895338201953&isi=halooooooooo'
+//            ));
+//            return $res->write(curl_exec($curl));
+            $path = 'http://'. $req->getHeader('Host')[0] . $this->router->pathFor ('signUpPage', ['token'=>'aaa']);
+            $req = $req->withAttribute ('path', $path);
+            $req = $req->withAttribute ('who', 'astaga');
+            $req = $req->withAttribute ('jabatan', 'taudeh');
+            $client = new Client([
+                // Base URI is used with relative requests
+                'base_uri' => 'http://capi-mailer.appspot.com/',
+                // You can set any number of default request options.
+                'timeout'  => 2.0,
+            ]);
+            try {
+                $response = $client->request('POST', 'http://capi-mailer.appspot.com/appspot/no_reply', [
+                    'headers' => [
+                        'X-CAPI-AUTH' => '$2y$10$MsVKU9Eym.muyQA4KwPdguSzGnW8k2WMUubgqRAkr4W9OguJgY8hC'
+                    ],
+                    'form_params'=>[
+                        'send_to'=>'genthowijaya@gmail.com',
+                        'subject'=>'undangan',
+                        'message'=> $this->view->getPlates()->render ("email", $req->getAttributes())
+                    ]
+                ]);
+                return $res->withJson(json_decode($response->getBody(), true));
+            } catch (RequestException $e) {
+                if ($e->hasResponse()) {
+                    return $res->write(Psr7\str($e->getResponse()));
+                }
+                return $res->write(Psr7\str($e->getRequest()));
+            }
 //            return $res->write(bin2hex(openssl_random_pseudo_bytes(3)));
 //            return $res->withJson($req->getHeader('Host'));
         }

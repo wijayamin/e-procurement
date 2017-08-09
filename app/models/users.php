@@ -25,10 +25,16 @@
             ], '=')->execute()->fetch();
         }
 
-        public function getUserDetail($id_user){
-            return $this->pdo->select([
-                'id_user', 'nama', 'image', 'jabatan', 'previledge','status', 'deleted'
-            ])->from('user')->where('id_user', '=', $id_user)->execute()->fetch();
+        public function getUserDetail($id_user = null){
+            if($id_user == null){
+                return $this->pdo->select([
+                    'id_user', 'nama', 'image', 'jabatan', 'previledge','status', 'deleted'
+                ])->from('user')->where('deleted', '=', 0)->execute()->fetchAll();
+            }else{
+                return $this->pdo->select([
+                    'id_user', 'nama', 'image', 'jabatan', 'previledge','status', 'deleted'
+                ])->from('user')->where('id_user', '=', $id_user)->execute()->fetch();
+            }
 //            $select = $this->db->prepare("select id_user, nama, image, jabatan, previledge  from user where id_user=:id_user");
 //            $select->bindParam(':id_user', $id_user);
 //            $select->execute();

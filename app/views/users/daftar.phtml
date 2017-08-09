@@ -94,7 +94,7 @@ $this->start ('contents');
         </div>
     </div>
 </div>
-<div id="modal-delete-dok" class="modal-container modal-effect-8" style="perspective: 1300px; height: 382px;">
+<div id="modal-delete-user" class="modal-container modal-effect-8" style="perspective: 1300px; height: 382px;">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
@@ -103,7 +103,7 @@ $this->start ('contents');
             <div class="text-center">
                 <span class="modal-main-icon mdi mdi-delete text-danger"></span>
                 <h3>Hapus!</h3>
-                <p>Apakah anda yakin akan menghapus dokumen <strong></strong>?</p>
+                <p>Apakah anda yakin akan menghapus <strong></strong> sebagai pengguna?</p>
                 <div class="xs-mt-50">
                     <button type="button" data-dismiss="modal" class="btn btn-danger btn-space btn-delete modal-close">Hapus</button>
                     <button type="button" data-dismiss="modal" class="btn btn-default btn-space modal-close">Batal</button>
@@ -226,7 +226,7 @@ $this->start ('js');
                     className : "text-right",
                     render: function (data, type, row, meta) {
                         delete data.rowData;
-                        return  '<button type="button" class="btn btn-danger"><i class="icon mdi mdi-delete"></i></button>'
+                        return  '<button type="button" class="btn btn-danger open-modal-hapus" data-rowdata=\''+JSON.stringify(data)+'\'><i class="icon mdi mdi-delete"></i></button>'
                     },
                 },
             ],
@@ -273,6 +273,34 @@ $this->start ('js');
                                 }
                             });
 
+                        }
+                    }
+                ],
+            })
+        })
+
+        $('#table-berita-tender tbody').on('click', '.open-modal-hapus', function () {
+            var rowData = $(this).data('rowdata');
+            $('#modal-delete-user').niftyModal({
+                beforeOpen: function( modals ){
+                    var modal = $(modals.modalEl);
+                    modal.find('strong').html(rowData.nama);
+                },
+                buttons: [
+                    {
+                        class: 'btn-delete',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            $.post('<?= $this->pathFor('user_delete') ?>', {id_user:rowData.id_user}, function (res) {
+                                if(res.status == 'success'){
+                                    $.gritter.add({
+                                        title: 'Berhasil',
+                                        text: 'Pengguna '+rowData.nama+' telah dihapus',
+                                        class_name: 'color success'
+                                    });
+                                    userTable.ajax.reload();
+                                }
+                            }, 'json')
                         }
                     }
                 ],

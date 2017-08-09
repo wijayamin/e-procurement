@@ -105,10 +105,20 @@ $this->start ('contents');
                 </div>
                 <div class="user-info-list panel panel-default">
                     <div class="panel-heading panel-heading-divider">
-                        E-mail dan Telepon
-                        <div class="tools"><button class="btn btn-primary btn-sm">Edit</button></div>
+                        E-mail
+                        <div class="tools">
+                            <button class="btn btn-success btn-sm btn-space <?= !$user['token'] ? 'hidden' : '' ?>">Kirim E-Mail Verifikasi</button>
+                            <button class="btn btn-primary btn-sm btn-space open-email-modal">Edit</button>
+                        </div>
                     </div>
                     <div class="panel-body">
+                        <div role="alert" class="alert alert-warning alert-icon alert-icon-colored alert-dismissible <?= !$user['token'] ? 'hidden' : '' ?>">
+                            <span class="icon mdi mdi-alert-triangle"></span>
+                            <div class="message">
+                                <strong>E-Mail belum ter-verifikasi!</strong> <br>
+                                Cek email yang dikirimkan ke anda untuk melakukan verifikasi. Gunakan tombol <label class="label label-success">Kirim E-Mail Verifikasi</label> untuk mengirim kembali email verifikasi.
+                            </div>
+                        </div>
                         <table class="no-border no-strip skills">
                             <tbody class="no-border-x no-border-y">
                                 <tr>
@@ -116,9 +126,31 @@ $this->start ('contents');
                                     <td class="item" style="width: 20%;">E-mail<span class="icon s7-portfolio"></span></td>
                                     <td><strong><?= $user['email'] ?></strong></td>
                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="user-info-list panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        Telepon
+                        <div class="tools">
+                            <a href="<?= $this->pathFor('verificationSMSPage', ['id_user'=>$user['id_user']]) ?>" class="btn btn-success btn-sm btn-space <?= !$user['smscode'] ? 'hidden' : '' ?>">Verifikasi SMS</a>
+                            <button class="btn btn-primary btn-sm btn-space open-telefon-modal">Edit</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div role="alert" class="alert alert-warning alert-icon alert-icon-colored alert-dismissible <?= !$user['smscode'] ? 'hidden' : '' ?>">
+                            <span class="icon mdi mdi-alert-triangle"></span>
+                            <div class="message">
+                                <strong>Nomor Telepon belum ter-verifikasi!</strong> <br>
+                                Cek kode verifikasi pada sms yang dikirimkan ke anda. Gunakan tombol <label class="label label-success">Verifikasi SMS</label> untuk melakukan verifikasi.
+                            </div>
+                        </div>
+                        <table class="no-border no-strip skills">
+                            <tbody class="no-border-x no-border-y">
                                 <tr>
                                     <td class="icon"><span class="mdi mdi-phone"></span></td>
-                                    <td class="item">Telepon<span class="icon s7-gift"></span></td>
+                                    <td class="item" style="width: 20%;">Telepon<span class="icon s7-gift"></span></td>
                                     <td><strong><?= $user['telefon'] ?></strong></td>
                                 </tr>
                             </tbody>
@@ -191,7 +223,8 @@ $this->start ('contents');
             <button type="button" data-dismiss="modal" class="btn btn-primary btn-simpan modal-close">Simpan</button>
         </div>
     </div>
-</div><div id="password-modal" class="modal-container colored-header colored-header-primary modal-effect-9">
+</div>
+<div id="password-modal" class="modal-container colored-header colored-header-primary modal-effect-9">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
@@ -230,6 +263,80 @@ $this->start ('contents');
     </div>
 </div>
 <div class="modal-overlay"></div>
+<div id="email-modal" class="modal-container colored-header colored-header-primary modal-effect-9">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+            <h3 class="modal-title">Pengaturan E-Mail</h3>
+        </div>
+        <div class="modal-body form"  style="padding-top: 0px !important;">
+            <form data-toggle="validator" class="form-horizontal" method="post" action="<?= $this->pathFor('user_updateEmail'); ?>" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-md-3 control-label"><strong>E-mail Lama</strong></label>
+                    <div class="col-md-9">
+                        <input type="email" placeholder="E-Mail lama" value="<?= $user['email'] ?>" class="form-control" readonly>
+                        <input type="hidden" value="<?= $user['id_user'] ?>" name="id_user">
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-md-3 control-label"><strong>E-mail Baru</strong></label>
+                    <div class="col-md-9">
+                        <input type="email" placeholder="E-mail baru" name="email" class="form-control" data-remote="<?= $this->pathFor('checkEmail') ?>"  required data-type-error="Masukkan format alamat email yang benar!" data-required-error="Wajib di-isi!" data-remote-error="E-mail telah digunakan!">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-md-3 control-label"><strong>Password</strong></label>
+                    <div class="col-md-9">
+                        <input type="password" placeholder="Password" name="password" class="form-control" required data-required-error="Wajib di-isi!">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default modal-close">Cancel</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary btn-simpan modal-close">Simpan</button>
+        </div>
+    </div>
+</div>
+<div id="telefon-modal" class="modal-container colored-header colored-header-primary modal-effect-9">
+    <div class="modal-content">
+        <div class="modal-header">
+<!--            <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>-->
+            <h3 class="modal-title">Pengaturan Telepon</h3>
+        </div>
+        <div class="modal-body form"  style="padding-top: 0px !important;">
+            <form data-toggle="validator" class="form-horizontal" method="post" action="<?= $this->pathFor('user_updateTelepon'); ?>" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-md-3 control-label"><strong>Telepon Lama</strong></label>
+                    <div class="col-md-9">
+                        <input type="text" placeholder="E-Mail lama" value="<?= $user['telefon'] ?>" class="form-control" readonly>
+                        <input type="hidden" value="<?= $user['id_user'] ?>" name="id_user">
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-md-3 control-label"><strong>Telepon Baru</strong></label>
+                    <div class="col-md-9">
+                        <input type="text" placeholder="Telepon baru" name="telefon" class="form-control" required pattern="^[_0-9]{1,}$" data-pattern-error="Format telepon salah!" data-required-error="Wajib di-isi!">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-md-3 control-label"><strong>Password</strong></label>
+                    <div class="col-md-9">
+                        <input type="password" placeholder="Password" name="password" class="form-control" required data-required-error="Wajib di-isi!">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default modal-close">Cancel</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary btn-simpan modal-close">Simpan</button>
+        </div>
+    </div>
+</div>
 <!--akhir tempat konten-->
 <?php
 $this->stop ();
@@ -259,6 +366,70 @@ $this->start ('js');
             overlaySelector: '.modal-overlay',
             closeSelector: '.modal-close',
             classAddAfterOpen: 'modal-show',
+        });
+
+        $('.open-telefon-modal').on('click', function() {
+            $('#telefon-modal').niftyModal({
+                buttons: [
+                    {
+                        class: 'btn-simpan',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            modal.find('form').ajaxSubmit({
+                                dataType: 'json',
+                                beforeSubmit: function (formData, jqForm, options) {
+                                    var form = jqForm[0];
+                                    if(!form.telefon.value || !form.password.value){
+                                        modal.find('form').validator('validate');
+                                        return false;
+                                    }
+                                },
+                                success: function (res, status, xhr, $form) {
+                                    console.log(res)
+                                    if(res.status == 'success'){
+                                        window.location.reload();
+                                    }else{
+                                        alert(res.reason);
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    }
+                ],
+            });
+        });
+
+        $('.open-email-modal').on('click', function() {
+            $('#email-modal').niftyModal({
+                buttons: [
+                    {
+                        class: 'btn-simpan',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            modal.find('form').ajaxSubmit({
+                                dataType: 'json',
+                                beforeSubmit: function (formData, jqForm, options) {
+                                    var form = jqForm[0];
+                                    if(!form.email.value || !form.password.value){
+                                        modal.find('form').validator('validate');
+                                        return false;
+                                    }
+                                },
+                                success: function (res, status, xhr, $form) {
+                                    console.log(res)
+                                    if(res.status == 'success'){
+                                        window.location.reload();
+                                    }else{
+                                        alert(res.reason);
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    }
+                ],
+            });
         });
 
         $('.open-common-modal').on('click', function(){

@@ -63,6 +63,16 @@
                         </ul>
                         <div class="page-title"><span><?= $this->section('page-title') ?></span></div>
                         <ul class="nav navbar-nav navbar-right be-icons-nav">
+                            <li class="dropdown <?= !$active_user_data['token'] ? 'hidden' : '' ?>">
+                                <a href="<?= $this->pathFor('users_profile') ?>" class="dropdown-toggle">
+                                    <label class="label label-default"><i class="mdi mdi-alert-triangle text-warning"></i> Verifikasi E-mail</label>
+                                </a>
+                            </li>
+                            <li class="dropdown <?= !$active_user_data['smscode'] ? 'hidden' : '' ?>">
+                                <a href="<?= $this->pathFor('users_profile') ?>" class="dropdown-toggle">
+                                    <label class="label label-default"><i class="mdi mdi-alert-triangle text-warning"></i> Verifikasi Nomor Telepon</label>
+                                </a>
+                            </li>
                             <li class="dropdown">
                                 <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><span class="icon mdi mdi-notifications"></span><span class="indicator"></span></a>
                                 <ul class="dropdown-menu be-notifications">
@@ -125,6 +135,8 @@
             var active_user = {
                 user_id:'<?= $active_user_data['id_user'] ?>',
                 previledge:'<?= $active_user_data['previledge'] ?>',
+                token:'<?= $active_user_data['token'] ?>',
+                smscode:'<?= $active_user_data['smscode'] ?>',
             };
             $(document).ready(function () {
                 //initialize the javascript
@@ -132,7 +144,7 @@
                 //Runs prettify
                 prettyPrint();
                 moment.locale('id');
-                $('[data-toggle="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip();
             });
         </script>
         <?= $this->section ('js') ?>
