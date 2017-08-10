@@ -1,0 +1,312 @@
+<?php
+$parent_data = [
+    'active_user_data' => $active_user_data,
+    'active_notification_list' => $active_notification_list
+];
+$this->layout ('base', $parent_data);
+$this->start ('style');
+?>
+<link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+<!--tempat css/style-->
+<?php
+$this->stop ();
+$this->start ('page-title');
+?>
+Manajemen Pengguna
+<?php
+$this->stop();
+$this->start ('contents');
+?>
+<!--tempat konten-->
+<div class="main-content container-fluid">
+    <div class="panel panel-default panel-table">
+        <div class="panel-heading">
+            Daftar Pengguna
+            <div class="tools">
+                <a role="button" class="btn btn-space btn-primary open-modal-add-user">
+                    <i class="icon icon-left mdi mdi-account-add" style="color:#fff"></i>
+                    Undang Pengguna
+                </a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table id="table-berita-tender" class="table table-hover table-fw-widget" style="border-top: 0px !important;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nama Pengguna</th>
+                        <th>Kontak</th>
+                        <th>Status</th>
+                        <th>Previledge</th>
+                        <th class="actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modal-add-user" class="modal-container colored-header colored-header-primary modal-effect-1">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+            <h3 class="modal-title">Undang Pengguna</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" data-toggle="validator" method="post" action="<?= $this->pathFor('users_invite') ?>">
+                <input type="hidden" name="jabatan">
+                <div class="form-group has-feedback">
+                    <label class="col-sm-3 control-label">Email Pengguna</label>
+                    <div class="col-sm-9">
+                        <input type="email" name="email" placeholder="direktur@email.com" class="form-control" data-remote="<?= $this->pathFor('checkEmail') ?>" required data-remote-error="Email telah terdaftar!" data-required-error="Wajib di-isi!" data-type-error="Mohon masukkan email!">
+                        <span class="help-block with-errors"></span>
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-sm-3 control-label">Jabatan</label>
+                    <div class="col-sm-9">
+                        <select class="select2" name="previledge" required="" data-required-error="Mohon pilih jabatan!">
+                            <option value=""></option>
+                            <optgroup label="Administrasi">
+                                <option value="1">Admin</option>
+                                <option value="4">Unit Kerja</option>
+                            </optgroup>
+                            <optgroup label="Manajerial">
+                                <option value="2">Direktur</option>
+                                <option value="3">Manajer</option>
+                            </optgroup>
+                            <optgroup label="Super Admin">
+                                <option value="5">Super Admin</option>
+                            </optgroup>
+                        </select>
+                        <span class="help-block with-errors"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-cancel modal-close">Cancel</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary btn-ok modal-close">Proceed</button>
+        </div>
+    </div>
+</div>
+<div id="modal-delete-user" class="modal-container modal-effect-8" style="perspective: 1300px; height: 382px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center">
+                <span class="modal-main-icon mdi mdi-delete text-danger"></span>
+                <h3>Hapus!</h3>
+                <p>Apakah anda yakin akan menghapus <strong></strong> sebagai pengguna?</p>
+                <div class="xs-mt-50">
+                    <button type="button" data-dismiss="modal" class="btn btn-danger btn-space btn-delete modal-close">Hapus</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-default btn-space modal-close">Batal</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"></div>
+    </div>
+</div>
+<div class="modal-overlay"></div>
+<!--akhir tempat konten-->
+<?php
+$this->stop ();
+$this->start ('js');
+?>
+<!--tempat js-->
+
+<script src="public/assets/lib/jquery.niftymodals/dist/jquery.niftymodals.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/dataTables.buttons.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/buttons.html5.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/buttons.flash.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/buttons.print.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
+<script src="public/assets/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
+<script src="public/assets/js/app-tables-datatables.js" type="text/javascript"></script>
+<script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+<script src="public/assets/js/jquery.form.min.js" type="text/javascript"></script>
+<script src="public/assets/js/validator.min.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+        //We use this to apply style to certain elements
+        $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+        $.fn.niftyModal('setDefaults', {
+            overlaySelector: '.modal-overlay',
+            closeSelector: '.modal-close',
+            classAddAfterOpen: 'modal-show',
+        });
+        $.extend( true, $.fn.dataTable.defaults, {
+            dom:
+            "<'row be-datatable-header'<'col-sm-6'l><'col-sm-6'f>>" +
+            "<'row be-datatable-body'<'col-sm-12'tr>>" +
+            "<'row be-datatable-footer'<'col-sm-5'i><'col-sm-7'p>>",
+            language: {
+
+                emptyTable: "Tidak ada data tersedia",
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                "zeroRecords": "Tidak ada data yang cocok dengan pencarian anda",
+                "info": "Hal _PAGE_ dari _PAGES_ halaman",
+                "infoEmpty": "Tidak ada data tersedia",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "first": '<i class="mdi mdi-caret-left-circle"></i>',
+                    "last": '<i class="mdi mdi-caret-right-circle"></i>',
+                    "next": '<i class="mdi mdi-caret-right-circle"></i>',
+                    "previous": '<i class="mdi mdi-caret-left-circle"></i>'
+                },
+                "search": '<i class="mdi mdi-search" style="padding-right:5px; font-size:20px"></i>',
+                "searchPlaceholder": 'Cari',
+            },
+        });
+
+        var userTable = $('#table-berita-tender').DataTable({
+            ajax:"<?= $this->pathFor('users_get') ?>",
+            columns:[
+                {
+                    data: "id_penawaran",
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: null,
+                    className: 'user-avatar cell-detail user-info',
+                    render: function (data, type, row, meta) {
+                        return '<img src="public/profile/' + (data.image ? data.image : 'default.png') + '" alt="Avatar"><span>' + (data.nama ? data.nama : 'Belum Mendaftar') + '</span><span class="cell-detail-description">' + (data.jabatan ? data.jabatan : 'Belum Mendaftar') + '</span>';
+                    },
+                },
+                {
+                    data:null,
+                    className : "cell-detail",
+                    render: function (data, type, row, meta) {
+                        return  '<span>' + data.email + '</span>' +
+                                '<span class="cell-detail-description">' + (data.telefon ? data.telefon : '') + '</span>'
+                    },
+                },
+                {
+                    data:'status',
+                    className : "cell-detail",
+                    render: function (data, type, row, meta) {
+                        if(data == 1){
+                            return  '<span class="label label-primary">Aktif</span>'
+                        }else if(data == 0){
+                            return  '<span class="label label-default">Belum Aktif</span>'
+                        }
+                    },
+                },
+                {
+                    data: 'previledge',
+                    className : "cell-detail",
+                    render: function (data, type, row, meta) {
+                        if(data == 0){
+                            return  '<span class="badge">Belum Aktif</span>'
+                        }else if(data == 1){
+                            return  '<span class="badge badge-warning">Admin</span>'
+                        }else if(data == 2){
+                            return  '<span class="badge badge-primary">Direktur</span>'
+                        }else if(data == 3){
+                            return  '<span class="badge badge-success">Manajer</span>'
+                        }else if(data == 4){
+                            return  '<span class="badge badge-danger">Unit Kerja</span>'
+                        }else if(data == 5){
+                            return  '<span class="badge" style="color:#5f99f5 !important;">Super Admin</span>'
+                        }
+                    },
+                },
+                {
+                    data:null,
+                    className : "text-right",
+                    render: function (data, type, row, meta) {
+                        delete data.rowData;
+                        return  '<button type="button" class="btn btn-danger open-modal-hapus" data-rowdata=\''+JSON.stringify(data)+'\'><i class="icon mdi mdi-delete"></i></button>'
+                    },
+                },
+            ],
+        });
+
+        $('.open-modal-add-user').on('click', function () {
+            $('#modal-add-user').niftyModal({
+                beforeOpen: function( modals ){
+                    var modal = $(modals.modalEl);
+                    modal.find('.select2').select2({
+                        placeholder: 'Pilih Pegawai',
+                        width: '100%',
+                    });
+                    modal.find('.select2').on('change', function () {
+                        modal.find('input[name="jabatan"]').val($(this).find('option:selected').text());
+                    });
+                },
+                buttons: [
+                    {
+                        class: 'btn-ok',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            modal.find('form').ajaxSubmit({
+                                dataType: 'json',
+                                clearForm: true,
+                                resetForm: true,
+                                beforeSubmit: function (formData, jqForm, options) {
+                                    for (var i=0; i < formData.length; i++) {
+                                        if (!formData[i].value) {
+                                            modal.find('form').validator('validate');
+                                            return false;
+                                        }
+                                    }
+                                },
+                                success: function (res, status, xhr, $form) {
+                                    if(res.status == 'success'){
+                                        $.gritter.add({
+                                            title: 'Berhasil',
+                                            text: 'Email undangan telah terkirim',
+                                            class_name: 'color success'
+                                        });
+                                        userTable.ajax.reload();
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                ],
+            })
+        })
+
+        $('#table-berita-tender tbody').on('click', '.open-modal-hapus', function () {
+            var rowData = $(this).data('rowdata');
+            $('#modal-delete-user').niftyModal({
+                beforeOpen: function( modals ){
+                    var modal = $(modals.modalEl);
+                    modal.find('strong').html(rowData.nama);
+                },
+                buttons: [
+                    {
+                        class: 'btn-delete',
+                        callback: function ( btn, modals, event ) {
+                            var modal = $(modals.modalEl);
+                            $.post('<?= $this->pathFor('user_delete') ?>', {id_user:rowData.id_user}, function (res) {
+                                if(res.status == 'success'){
+                                    $.gritter.add({
+                                        title: 'Berhasil',
+                                        text: 'Pengguna '+rowData.nama+' telah dihapus',
+                                        class_name: 'color success'
+                                    });
+                                    userTable.ajax.reload();
+                                }
+                            }, 'json')
+                        }
+                    }
+                ],
+            })
+        })
+    })
+</script>
+<?php $this->stop () ?>
+

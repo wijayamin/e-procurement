@@ -1,0 +1,40 @@
+<table id="boq-terima" class="table table-bordered table-fw-widget" style="width: 100% !important;">
+    <thead>
+        <tr>
+            <td>No</td>
+            <td>Vendor</td>
+            <td>Barang</td>
+            <td>Harga</td>
+            <td>Jumlah</td>
+            <td>Total</td>
+            <td>Diajukan Oleh</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in rowData %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                {{data.nama_vendor}}
+            </td>
+            <td>
+                {{data.nama_barang}}
+            </td>
+            <td>
+                Rp. {{data.harga_persatuan|number_format(0, '.', ',')}}
+            </td>
+            <td>
+                {{data.volume_barang}} {{data.ukuran_satuan}}
+            </td>
+            <td>
+                Rp. {{data.total|number_format(0, '.', ',')}}
+            </td>
+            <td class="user-avatar cell-detail user-info">
+                <img src="public/profile/{{data.pegawai.who.image}}" alt="Avatar">
+                <span>{{data.pegawai.who.nama}}</span>
+                <span class="cell-detail-description">{{data.pegawai.time}}</span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

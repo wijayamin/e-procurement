@@ -1,0 +1,33 @@
+{% if rowData.active_user_priv != 3 %}
+    {% if rowData.approval %}
+        <div class="btn-group btn-space">
+            <button type="button" class="btn btn-success btn-terima" data-rowData='{{ rowData|json_encode() }}' {{ rowData.approval.direktur.status == "diterima" ? "disabled" }}>
+                <i class="icon mdi mdi-check"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-tolak" data-rowData='{{ rowData|json_encode() }}' {{ rowData.approval.direktur.status == "ditolak" ? "disabled" }}>
+                <i class="icon mdi mdi-close"></i>
+            </button>
+        </div>
+    {% else %}
+        <div class="btn-group btn-space">
+            <button type="button" class="btn btn-success btn-terima" data-rowData='{{ rowData|json_encode() }}'><i class="icon mdi mdi-check"></i></button>
+            <button type="button" class="btn btn-danger btn-tolak" data-rowData='{{ rowData|json_encode() }}'><i class="icon mdi mdi-close"></i></button>
+        </div>
+    {% endif %}
+{% else %}
+    {% if rowData.approval %}
+        <div class="btn-group btn-space">
+            <button type="button" class="btn btn-success btn-terima" data-rowData='{{ rowData|json_encode() }}' {{ rowData.approval.manajer.status == "diterima" ? "disabled" }}>
+                <i class="icon mdi mdi-check"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-tolak" data-rowData='{{ rowData|json_encode() }}' {{ rowData.approval.manajer.status == "ditolak" ? "disabled" }}>
+                <i class="icon mdi mdi-close"></i>
+            </button>
+        </div>
+    {% else %}
+        <div class="btn-group btn-space">
+            <button type="button" class="btn btn-success btn-terima" data-rowData='{{ rowData|json_encode() }}'><i class="icon mdi mdi-check"></i></button>
+            <button type="button" class="btn btn-danger btn-tolak" data-rowData='{{ rowData|json_encode() }}'><i class="icon mdi mdi-close"></i></button>
+        </div>
+    {% endif %}
+{% endif %}

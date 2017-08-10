@@ -1,0 +1,17 @@
+
+    <li class="timeline-month"><span>History Perubahan</span></li>
+    {% for history in histories|slice(0, 5) %}
+        <li class="timeline-item right">
+            <div class="timeline-content timeline-type {{ history.color }}">
+                <div class="timeline-icon"><i class="icon mdi {{ history.icon }}"></i></div>
+                <div class="timeline-avatar"><img src="public/profile/{{ history.user.image }}" alt="Avatar" class="circle"></div>
+                <div class="timeline-header"><span class="timeline-autor">{{ history.user.nama }}</span>
+                    <p class="timeline-activity">
+                        {{ history.messages }} <a href="{{ history.target }}">{{ history.detail }}</a>
+                    </p>
+                    <span class="timeline-time">{{ inFromNow(history.waktu) }} - {{ inDateTime(history.waktu) }}</span>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    <li class="timeline-item timeline-loadmore"><a href="#" class="load-more-btn">Lihat Lainnya</a></li>

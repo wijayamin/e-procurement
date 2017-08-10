@@ -6,9 +6,9 @@
 
     require 'vendor/autoload.php';
 
-    $settings = require 'settings.php';
+    $settings = require 'app/settings.php';
     $app = new \Slim\App($settings);
-    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
+//    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
     $app->add (new \Slim\Middleware\Session([
         'name' => 'dummy_session',
@@ -17,14 +17,14 @@
     ]));
 
     $container = $app->getContainer ();
-    require 'container.php';
-    require 'main.php';
+    require 'app/container.php';
+    require 'app/main.php';
 
     $app->add (new \ryan\main($container));
 
     spl_autoload_register (function ($classname) {
         $parts = explode ('\\', $classname);
-        $classes = "models/" . end ($parts);
+        $classes = "app/models/" . end ($parts);
         if (file_exists ($classes . '.php')) {
             require $classes . '.php';
         }
@@ -32,13 +32,13 @@
 
     spl_autoload_register (function ($classname) {
         $parts = explode ('\\', $classname);
-        $classes = "controllers/" . end ($parts);
+        $classes = "app/controllers/" . end ($parts);
         if (file_exists ($classes . '.php')) {
             require $classes . '.php';
         }
     });
 
-    require 'route.php';
+    require 'app/route.php';
 
     $app->get ('/', function ($req, $res, $args) {
         return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('loginPage'));

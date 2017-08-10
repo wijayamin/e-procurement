@@ -1,0 +1,355 @@
+<?php
+$parent_data = [
+    'active_user_data' => $active_user_data,
+    'active_notification_list' => $active_notification_list,
+    'aside' => true
+];
+$this->layout('base', $parent_data);
+$this->start('style');
+?>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/select2/css/select2.min.css"/>
+    <link rel="stylesheet" type="text/css" href="public/assets/lib/dropzone/dist/dropzone.css"/>
+    <!--tempat css/style-->
+<?php
+$this->stop();
+$this->start('page-title');
+?>
+    RKS dan Berita Acara
+<?php
+$this->stop();
+$this->start('contents');
+?>
+    <!--tempat konten-->
+    <aside class="page-aside">
+        <div class="be-scroller">
+            <div class="nano-content">
+                <div class="content">
+                    <h3>Detail Berita Tender</h3><br>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Judul Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['judul_tender'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Tanggal Pelaksanaan</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_mulai']) ?></span>
+                            &nbsp; s/d &nbsp;
+                            <span class="label label-default"><?= $this->indDate($tender['tgl_selesai']) ?></span>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Nama Penyelenggara</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Lokasi Tender</label>
+                        <div class="well well-sm aside-well">
+                            <strong><?= $tender['wilayah'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Link Website</label>
+                        <div class="well well-sm aside-well">
+                            <a href="<?= $tender['link_website'] ?>" target="_blank">
+                                <strong><?= substr($tender['link_website'], 0, 35) ?></strong>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Diupload Oleh</label>
+                        <div class="well well-sm aside-well">
+                            <span class="label label-primary"><?= $this->getUserUpload($tender['id_user'])['nama'] ?></span>
+                            <span class="label label-default"><?= $this->indDateTime($tender['tgl_upload']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+            </div>
+            <div class="ps-scrollbar-y-rail" style="top: 0px; right: 0px;">
+                <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+            </div>
+        </div>
+    </aside>
+    <div class="main-content container-fluid">
+        <?php $rks = json_decode($tender['rks'], true); ?>
+        <?php $berita_acara = json_decode($tender['berita_acara'], true); ?>
+        <?php if ($approval): ?>
+            <div role="alert" class="alert alert-primary alert-icon alert-icon-colored ">
+                <div class="icon"><span class="mdi mdi-info-outline"></span></div>
+                <div class="message">
+                    <span style="margin-top:660px;">
+                        <strong>Approval!</strong>
+                        Lakukan Approval terhadap berita tender ini
+                    </span>
+                    <div aria-label="Close" class="close" style="top:20px; opacity: 1;">
+                        <button data-toggle="modal" data-target="#mod-approval" class="btn btn-rounded btn-space btn-sm btn-success" <?= $rks['approval'][$this->thisPriviledge()]['status'] == 'diterima' ? 'disabled' : '' ?> data-type="diterima" data-id="<?= $tender['id_tender'] ?>" data-judul="<?= $this->e($tender['judul_tender']) ?>">
+                            <i class="icon icon-left mdi mdi-check"></i>
+                            Setujui
+                        </button>
+                        <button data-toggle="modal" data-target="#mod-approval" class="btn btn-rounded btn-space btn-sm btn-danger" <?= $rks['approval'][$this->thisPriviledge()]['status'] == 'ditolak' ? 'disabled' : '' ?>  data-type="ditolak" data-id="<?= $tender['id_tender'] ?>" data-judul="<?= $this->e($tender['judul_tender']) ?>">
+                            <i class="icon icon-left mdi mdi-close"></i>
+                            Tolak
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
+            <div class="panel-heading">RKS Berita Tender
+                <div class="tools">
+                    <button class="btn btn-space btn-primary btn-sm upload-rks" >
+                        <i class="mdi mdi-cloud-upload"></i>
+                        &nbsp; <?= $rks['file'] != '' ? 'Ganti' : 'Upload' ?> RKS
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form id="rksdropzone" class="dropzone <?= $rks['file'] != '' ? 'hidden' : '' ?>">
+                    <div class="dz-message">
+                        <div class="icon"><span class="mdi mdi-cloud-upload"></span></div>
+                        <h3>Tarik dan Lepaskan file Berita Acara ke sini untuk mengupload</h3>
+                    </div>
+                </form>
+                <?php if($rks['file'] != ''): ?>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="public/content/dokumen/<?= $rks['file'] ?>"></iframe>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php if($rks['file'] != ''): ?>
+                <div class="panel-footer">
+                    <table class="table table-borderless">
+                        <tbody class="no-border-x">
+                            <tr>
+                                <td width="20%"><b>Diupload Oleh</b></td>
+                                <td class="user-avatar cell-detail user-info">
+                                    <img src="public/profile/<?= $this->getUserUpload($rks['user_id'])['image'] ?>" alt="Avatar">
+                                    <span><?= ($rks[ 'user_id' ] == $active_user_data['id_user'] ? 'Anda Sendiri' : $this->getUserUpload ($rks[ 'user_id' ])[ 'nama' ]) ?></span>
+                                    <span class="cell-detail-description"><?= $this->indDateTime($rks['waktu']) ?></span>
+                                </td>
+                                <td width="20%"><b>Status Approval</b></td>
+                                <td>
+                                    <?php if ($rks['approval']['direktur']['status'] == ''): ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
+                                            <button type="button" class="btn btn-default">Direktur</button>
+                                            <button type="button" class="btn btn-default">Belum</button>
+                                        </div>
+                                    <?php elseif ($rks['approval']['direktur']['status'] == 'diterima'): ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+                                            <button type="button" class="btn btn-default">Direktur</button>
+                                            <button type="button" class="btn btn-default"><?= $this->indDateTime($rks['approval']['manajer']['waktu']) ?></button>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-danger"><i class="icon mdi mdi-close-circle-o"></i></button>
+                                            <button type="button" class="btn btn-default">Direktur</button>
+                                            <button type="button" class="btn btn-default"><?= $this->indDateTime($rks['approval']['manajer']['waktu']) ?></button>
+                                        </div>
+                                    <?php endif; ?>
+                                    <br>
+                                    <?php if ($rks['approval']['manajer']['status'] == ''): ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
+                                            <button type="button" class="btn btn-default">Manajer</button>
+                                            <button type="button" class="btn btn-default">Belum</button>
+                                        </div>
+                                    <?php elseif ($rks['approval']['manajer']['status'] == 'diterima'): ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+                                            <button type="button" class="btn btn-default">Manajer</button>
+                                            <button type="button" class="btn btn-default"><?= $this->indDateTime($rks['approval']['manajer']['waktu']) ?></button>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="btn-group btn-group-xs btn-space">
+                                            <button type="button" class="btn btn-danger"><i class="icon mdi mdi-close-circle-o"></i></button>
+                                            <button type="button" class="btn btn-default">Manajer</button>
+                                            <button type="button" class="btn btn-default"><?= $this->indDateTime($rks['approval']['manajer']['waktu']) ?></button>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
+            <div class="panel-heading">Berita Acara Tender
+                <div class="tools">
+                    <button class="btn btn-space btn-primary btn-sm upload-berita">
+                        <i class="mdi mdi-cloud-upload"></i>
+                        &nbsp; <?= $berita_acara['file'] != '' ? 'Ganti' : 'Upload' ?> Berita Acara
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form id="beritadropzone" class="dropzone <?= $berita_acara['file'] != '' ? 'hidden' : '' ?>">
+                    <div class="dz-message">
+                        <div class="icon"><span class="mdi mdi-cloud-upload"></span></div>
+                        <h3>Tarik dan Lepaskan file Berita Acara ke sini untuk mengupload</h3>
+                    </div>
+                </form>
+                <?php if($berita_acara['file'] != ''): ?>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="public/content/dokumen/<?= $berita_acara['file'] ?>"></iframe>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php if($berita_acara['file'] != ''): ?>
+                <div class="panel-footer">
+                    <table class="table table-borderless">
+                        <tbody class="no-border-x">
+                            <tr>
+                                <td width="20%"><b>Diupload Oleh</b></td>
+                                <td class="user-avatar cell-detail user-info" colspan="3">
+                                    <img src="public/profile/<?= $this->getUserUpload($berita_acara['user_id'])['image'] ?>" alt="Avatar">
+                                    <span><?= ($berita_acara[ 'user_id' ] == $active_user_data['id_user'] ? 'Anda Sendiri' : $this->getUserUpload ($berita_acara[ 'user_id' ])[ 'nama' ]) ?></span>
+                                    <span class="cell-detail-description"><?= $this->indDateTime($berita_acara['waktu']) ?></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div id="mod-approval" tabindex="-1" role="dialog" style="display: none;" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="mod-icon"><span class="modal-main-icon mdi mdi-check"></span></div>
+                        <h3>Awesome!</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Fusce ultrices euismod lobortis.</p>
+                        <div class="xs-mt-50">
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-action">Proceed</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <!--akhir tempat konten-->
+<?php
+$this->stop();
+$this->start('js');
+?>
+    <!--tempat js-->
+    <script src="public/assets/lib/jquery.niftymodals/dist/jquery.niftymodals.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/dataTables.buttons.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.html5.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.flash.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.print.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
+    <script src="public/assets/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
+    <script src="public/assets/js/app-tables-datatables.js" type="text/javascript"></script>
+    <script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+    <script src="public/assets/lib/dropzone/dist/dropzone.js" type="text/javascript"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+        $(document).ready(function () {
+            $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+            $.fn.niftyModal('setDefaults', {
+                overlaySelector: '.modal-overlay',
+                closeSelector: '.modal-close',
+                classAddAfterOpen: 'modal-show',
+            });
+
+            $('.upload-rks').on('click', function () {
+                $('#rksdropzone').click();
+            })
+            $('#rksdropzone').dropzone({
+                url: "<?= $this->pathFor('rksAcara_upload', ['id_tender'=>$tender['id_tender'], 'type'=>'rks']) ?>",
+                paramName: "rks", // The name that will be used to transfer the file
+                maxFilesize: 50, // MB
+                createImageThumbnails: false,
+                maxFiles: 1,
+                acceptedFiles: 'application/pdf',
+                success: function (file, response) {
+                    if(response.status == 'success'){
+                        location.reload();
+                    }
+                }
+            });
+
+            $('.upload-berita').on('click', function () {
+                $('#beritadropzone').click();
+            })
+            $('#beritadropzone').dropzone({
+                url: "<?= $this->pathFor('rksAcara_upload', ['id_tender'=>$tender['id_tender'], 'type'=>'berita_acara']) ?>",
+                paramName: "berita_acara", // The name that will be used to transfer the file
+                maxFilesize: 50, // MB
+                createImageThumbnails: false,
+                maxFiles: 1,
+                acceptedFiles: 'application/pdf',
+                success: function (file, response) {
+                    if(response.status == 'success'){
+                        location.reload();
+                    }
+                }
+            });
+
+            $('#mod-approval').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modData = button.data();
+                var modal = $(this);
+                modal.find('p').html(modData.judul);
+                if(modData.type == 'diterima'){
+                    modal.find('h3').html("Setujui RKS Berita Tender Ini ?");
+                    modal.find('.mod-icon').addClass('text-success');
+                    modal.find('.mod-icon').removeClass('text-danger');
+                    modal.find('.btn-action').addClass('btn-success');
+                    modal.find('.btn-action').removeClass('btn-danger');
+                    modal.find('.btn-action').html('Setujui');
+                }
+                if(modData.type == 'ditolak'){
+                    modal.find('h3').html("Tolak RKS Berita Tender Ini ?");
+                    modal.find('.mod-icon').removeClass('text-success');
+                    modal.find('.mod-icon').addClass('text-danger');
+                    modal.find('.btn-action').removeClass('btn-success');
+                    modal.find('.btn-action').addClass('btn-danger');
+                    modal.find('.btn-action').html('Tolak');
+                }
+                modal.find('.btn-action').on('click', function () {
+                    var who = '';
+                    if(active_user.previledge == '2'){
+                        who = 'direktur'
+                    }else if(active_user.previledge == '3'){
+                        who = 'manajer'
+                    }
+                    $.post(
+                        '<?= $this->pathFor('rksAcara_approval', ['id_tender'=>$tender['id_tender']]) ?>',
+                        {
+                            who:who,
+                            status:modData.type
+                        },
+                        function(data){
+                            if(data.status == 'success'){
+                                location.reload();
+                            }
+                        },
+                        "json"
+                    )
+                });
+            });
+        })
+
+    </script>
+<?php $this->stop() ?>

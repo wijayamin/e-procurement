@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),
     'Slim\\Views\\' => array($vendorDir . '/slim/php-view/src'),
+    'Slim\\PDO\\' => array($vendorDir . '/slim/pdo/src/PDO'),
     'Slim\\Flash\\' => array($vendorDir . '/slim/flash/src'),
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
@@ -15,7 +16,11 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Projek\\Slim\\' => array($vendorDir . '/projek-xyz/slim-plates/src'),
     'League\\Plates\\' => array($vendorDir . '/league/plates/src'),
+    'League\\OAuth2\\Client\\' => array($vendorDir . '/league/oauth2-client/src', $vendorDir . '/league/oauth2-google/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
+    'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
+    'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
+    'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     '' => array($vendorDir . '/bryanjhv/slim-session/src'),
 );
