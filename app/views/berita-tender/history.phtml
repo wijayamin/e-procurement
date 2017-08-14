@@ -10,8 +10,6 @@
             <li class="timeline-month"><span><?= $month_group ?></span></li>
         <?php endif; ?>
         <li class="timeline-item <?= $full && $count % 2 == 0 ? 'left' : 'right' ?>">
-
-            <?= 'ID HISTORY : '.$history['id_history'] ?>
             <?php if($history['perubahan'] == 'i_tender'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>

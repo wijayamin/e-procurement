@@ -9,14 +9,28 @@
     class auth extends \ryan\main {
 
         protected $container;
+        protected $penyelenggaraModels;
+        protected $tenderModels;
         protected $userModels;
-        protected $notificationModels;
+        protected $notifikasiModels;
+        protected $dokumenModels;
+        protected $unitkerjaModels;
+        protected $BOQModels;
+        protected $historyModels;
+        protected $dokumenMasterModels;
 
         public function __construct ($container) {
             parent::__construct ($container);
             $this->container = $container;
             $this->userModels = new \ryan\models\users($container);
-            $this->notificationModels = new \ryan\models\notifikasi($container);
+            $this->penyelenggaraModels = new \ryan\models\penyelenggara($container);
+            $this->tenderModels = new \ryan\models\tender($container);
+            $this->notifikasiModels = new \ryan\models\notifikasi($container);
+            $this->dokumenModels = new \ryan\models\dokumenTender($container);
+            $this->unitkerjaModels = new \ryan\models\unitKerja($container);
+            $this->BOQModels = new \ryan\models\BOQ($container);
+            $this->historyModels = new \ryan\models\history($container);
+            $this->dokumenMasterModels = new \ryan\models\dokumenMaster($container);
         }
 
         public function loginPage (Req $req, Res $res, $args) {
@@ -88,9 +102,16 @@
                 }
             }else{
                 $userData = $this->userModels->getUser($this->session->id_user);
-                $notificationData = $this->notificationModels->getNotificationForUser($this->session->id_user);
+                $notificationData = $this->notifikasiModels->getNotificationForUser($this->session->id_user);
+                $this->view->registerFunction ('userDetailHelper', function ($id_user) {
+                    return $this->userModels->getUserDetail ($id_user);
+                });
+
                 $req = $req->withAttribute('active_user_data', $userData);
-                $req = $req->withAttribute('active_notification_list', $notificationData);
+                $req = $req->withAttribute('active_notification_list', [
+                    'notifikasi'=>$notificationData,
+                    'histories'=>$this->histories_helper()
+                ]);
                 $res = $next($req, $res);
                 return $res;
             }
@@ -255,4 +276,43 @@
 //            return $res->write(bin2hex(openssl_random_pseudo_bytes(3)));
 //            return $res->withJson($req->getHeader('Host'));
         }
+
+        public function histories_helper(){
+            $histories = $this->historyModels->get_history();
+            foreach($histories as &$history){
+                switch ($history['perubahan']){
+                    case 'i_tender':
+                    case 'e_tender':
+                    case 'a_tender':
+                    case 'd_tender':
+                    case 'i_rks':
+                    case 'e_rks':
+                    case 'a_rks':
+                    case 'i_acara':
+                    case 'e_acara':
+                        $history['detail'] = $this->tenderModels->getBeritaTender($history['id_perubahan']);
+                        break;
+                    case 'i_unit':
+                    case 'd_unit':
+                        $history['detail'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
+                        break;
+                    case 'i_dok':
+                    case 'u_dok':
+                    case 'e_dok':
+                    case 'd_dok':
+                    case 'a_dok':
+                        $history['detail'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
+                        break;
+                    case 'i_boq':
+                    case 'e_boq':
+                    case 'd_boq':
+                    case 'a_boq':
+                        $history['detail'] = $this->BOQModels->getBOQ('38');
+                        break;
+                }
+            }
+            return $histories;
+            unset($history);
+        }
+
     }

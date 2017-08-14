@@ -69,8 +69,12 @@ class history extends \ryan\main{
      * @param $id_tender
      * @return mixed    e => null
      */
-    public function get_history($id_tender){
-        return $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->orderBy('id_history', 'DESC')->execute()->fetchAll();
+    public function get_history($id_tender = null){
+        if($id_tender == null){
+            return $this->pdo->select()->from('history')->orderBy('id_history', 'DESC')->execute()->fetchAll();
+        }else {
+            return $this->pdo->select()->from('history')->where('id_tender', '=', $id_tender)->orderBy('id_history', 'DESC')->execute()->fetchAll();
+        }
     }
 
 }

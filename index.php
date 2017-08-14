@@ -8,7 +8,7 @@
 
     $settings = require 'app/settings.php';
     $app = new \Slim\App($settings);
-//    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
+    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
     $app->add (new \Slim\Middleware\Session([
         'name' => 'dummy_session',

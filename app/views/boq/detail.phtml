@@ -92,10 +92,9 @@ $this->start('contents');
                         <tr>
                             <th width="5%">No</th>
                             <th>Barang / Vendor</th>
-                            <th>Harga</th>
-                            <th>Jumlah</th>
-                            <th>Total</th>
+                            <th>Harga / Jumlah / Total</th>
                             <th class="text-right" width="20%">Diajukan Oleh</th>
+                            <th>Status</th>
                             <th class="action"></th>
                         </tr>
                     </thead>
@@ -415,21 +414,20 @@ $this->start('js');
                         },
                     },
                     {
-                        data:'harga_persatuan',
-                        render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' ),
-                    },
-                    {
                         data:{
                             _:null,
-                            sort:"volume_barang"
+                            sort:"harga_persatuan"
                         },
+                        className : "cell-detail",
                         render: function (data, type, row, meta) {
-                            return data.volume_barang + ' ' + data.ukuran_satuan
+                            var harga = $('<span>');
+                            harga.money(data.harga_persatuan ,{ commas: false, symbol: "Rp." });
+                            var total = $('<span>');
+                            total.money(data.harga_persatuan * data.volume_barang ,{ commas: false, symbol: "Rp." });
+                            return  '<span>' + harga.html() + '</span>' +
+                                    '<span class="cell-detail-description">' + data.volume_barang + ' ' + data.ukuran_satuan + '</span>' +
+                                    '<span>' + total.html() + '</span>';
                         },
-                    },
-                    {
-                        data:'total',
-                        render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' ),
                     },
                     {
                         data: {
@@ -441,6 +439,17 @@ $this->start('js');
                             var waktu = moment(data.time).fromNow()
                             return '<img src="public/profile/' + data.who.image + '" alt="Avatar"><span>' + data.who.nama + '</span><span class="cell-detail-description">' + waktu + '</span>';
                         },
+                    },
+                    {
+                        data:null,
+                        className: 'text-center',
+                        render: function (data, type, row, meta) {
+                            var dtStatusCol = Twig.twig({
+                                href: "app/views/boq/dt-status-col.twig",
+                                async: false,
+                            })
+                            return  dtStatusCol.render(data.approval)
+                        }
                     },
                     {
                         data: null,
