@@ -33,6 +33,44 @@
             $this->unitkerjaModels = new \ryan\models\unitKerja($container);
         }
 
+        public function homePage (Req $req, Res $res, $args) {
+            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
+                return $penyelenggara[ 'nama_penyelenggara' ];
+            });
+            $this->view->registerFunction ('getProgress', function ($id_tender) {
+                $progress = 0;
+                $tender = $this->tenderModels->getBeritaTender($id_tender);
+                $tender_approval = json_decode($tender['approval'], true);
+                if($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
+                    $process = 'Menuggu Dokumen';
+                    $progress = 50;
+                }elseif($tender_approval['direktur']['status'] == '' && $tender_approval['manajer']['status'] == ''){
+                    $process = 'Menuggu Approval';
+                    $progress = 0;
+                }elseif($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] != 'diterima'){
+                    $process = 'Menuggu Approval Manajer';
+                    $progress = 25;
+                }elseif($tender_approval['direktur']['status'] != 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
+                    $process = 'Menuggu Approval Direktur';
+                    $progress = 25;
+                }
+                $count_dokumen = $this->dokumenModels->countDokumenReqDetail($id_tender);
+                $progress=$progress+(($count_dokumen['total'] ? ($count_dokumen['uploaded']/$count_dokumen['total']) : 0)*25);
+                $progress=$progress+(($count_dokumen['total'] ? ($count_dokumen['approved']/$count_dokumen['total']) : 0)*25);
+                if($progress == 100){
+                    $process = 'Semua Proses Selesai';
+                }
+                return [
+                    'process'=>$process,
+                    'progress'=>$progress
+                ];
+            });
+            $beritaTender = $this->tenderModels->getBeritaTender ();
+            $req = $req->withAttribute ('beritaTender', $beritaTender);
+            return $this->view->render ("login2", $req->getAttributes());
+        }
+
         public function dashboardPage(Req $req, Res $res, $args){
             $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
                 $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);

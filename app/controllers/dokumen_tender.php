@@ -11,7 +11,7 @@ namespace ryan\controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class dokumenTender extends \ryan\main {
+class dokumen_tender extends \ryan\main {
     protected $container;
     protected $penyelenggaraModels;
     protected $tenderModels;

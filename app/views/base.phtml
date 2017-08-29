@@ -100,6 +100,7 @@
         <script src="public/assets/lib/jquery.gritter/js/jquery.gritter.min.js" type="text/javascript"></script>
         <script src="public/assets/lib/jquery.niftymodals/dist/jquery.niftymodals.js" type="text/javascript"></script>
         <script src="public/assets/lib/jQuery-currency-master/money.jquery.js" type="text/javascript"></script>
+        <script src="public/assets/js/list.min.js" type="text/javascript"></script>
         <script type="text/javascript">
             var active_user = {
                 user_id:'<?= $active_user_data['id_user'] ?>',
@@ -114,6 +115,28 @@
                 prettyPrint();
                 moment.locale('id');
                 $('[data-toggle="tooltip"]').tooltip();
+                var history_list = new List('history-list', {
+                    valueNames:[
+                        'timeline-activity',
+                        {  data: ['category'] },
+                        {  data: ['type'] },
+                    ]
+                });
+                $('#history-list .history-search').keyup(function () {
+                    var val = $(this).val();
+                    if(val.length >= 0) {
+                        history_list.search(val, 'timeline-activity');
+                        $('#history-list .clear').removeClass('hidden');
+                    }else{
+                        $('#history-list .clear').addClass('hidden');
+                        history_list.search();
+                    }
+                })
+                $('#history-list .clear').click(function () {
+                    $(this).addClass('hidden');
+                    $('#history-list .history-search').val('');
+                    history_list.search();
+                })
             });
         </script>
         <?= $this->section ('js') ?>
