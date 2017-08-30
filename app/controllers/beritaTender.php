@@ -110,6 +110,7 @@
                             'dokumen_syarat'=>'1'
                         ];
                         $dokMaster = $this->dokumenMasterModels->searchDokumenMaster($dokumen);
+                        
                         if($dokMaster){
                             $dataDok['file_dokumen'] = $dokMaster['file_dokumen'];
                             $dataDok['tgl_upload'] = $dokMaster['waktu'];

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="<?= $this->basePath () ?>/">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="public/assets/img/logo-fav.png">
+        <title>E-Admin Tender</title>
+        <link rel="stylesheet" type="text/css" href="public/assets/lib/perfect-scrollbar/css/perfect-scrollbar.min.css"/>
+        <link rel="stylesheet" type="text/css" href="public/assets/lib/material-design-icons/css/material-design-iconic-font.min.css"/>
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <?= $this->section ('style') ?>
+        <link rel="stylesheet" href="public/assets/css/style.css" type="text/css"/>
+        <style>
+            .carousel-inner,.carousel,.item,.container,.fill {
+                height:100%;
+                width:100%;
+                background-position:center center;
+                background-size:cover;
+            }
+            .slide-wrapper{display:inline;}
+            .slide-wrapper .container{padding:0px;}
+
+            /*------------------------------ vertical bootstrap slider----------------------------*/
+
+            .carousel-inner> .item.next ,  .carousel-inner > .item.active.right{ transform: translate3d(0, 100%, 0); -webkit-transform: translate3d(0, 100%, 0); -ms-transform: translate3d(0, 100%, 0); -moz-transform: translate3d(0, 100%, 0); -o-transform: translate3d(0, 100%, 0);  top: 0;}
+            .carousel-inner > .item.prev ,.carousel-inner > .item.active.left{ transform: translate3d(0,-100%, 0); -webkit-transform: translate3d(0,-100%, 0);  -moz-transform: translate3d(0,-100%, 0);-ms-transform: translate3d(0,-100%, 0); -o-transform: translate3d(0,-100%, 0); top: 0;}
+            .carousel-inner > .item.next.left , .carousel-inner > .item.prev.right , .carousel-inner > .item.active{transform:translate3d(0,0,0); -webkit-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);; -moz-transform:translate3d(0,0,0); -o-transform:translate3d(0,0,0); top:0;}
+
+            /*------------------------------- vertical carousel indicators ------------------------------*/
+            .carousel-indicators{
+                position:absolute;
+                top:0;
+                bottom:0;
+                margin:auto;
+                height:20px;
+                right:10px; left:auto;
+                width:auto;
+            }
+            .carousel-indicators li{display:block; margin-bottom:5px; border:1px solid #00a199; }
+            .carousel-indicators li.active{margin-bottom:5px; background:#00a199;}
+        </style>
+    </head>
+    <body>
+        <div class="be-wrapper be-nosidebar-left">
+            <nav class="navbar navbar-default navbar-fixed-top be-top-header">
+                <div class="container-fluid">
+                    <div class="navbar-header"><a href="index.html" class="navbar-brand"></a></div>
+                    <div class="be-right-navbar">
+                        <ul class="nav navbar-nav navbar-right be-icons-nav">
+                            <li><a href="tables-general.html">Tables</a></li>
+                            <!--                            menu login-->
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="be-content">
+                <div class="main-content container-fluid" style="padding: 0 !important;">
+                    <section class="slide-wrapper">
+                        <div class="container">
+                            <div id="myCarousel" class="carousel slide" data-ride="carousel"  data-interval="1000">
+                                <!-- Indicators -->
+                                <ol class="carousel-indicators">
+                                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                                    <li data-target="#myCarousel" data-slide-to="3"></li>
+                                </ol>
+
+                                <!-- Wrapper for slides -->
+                                <div class="carousel-inner">
+                                    <div class="item active">
+                                        <div class="fill" style=" background-color:#4a4a4a;"> a</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="fill" style="background-color:#9acfea;">b</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="fill" style="background-color:#0c0c0c;">c</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="fill" style="background-color:#2aabd2;">d</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <script src="public/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+        <script src="public/assets/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+        <script src="public/assets/js/main.js" type="text/javascript"></script>
+        <script src="public/assets/js/jquery.form.min.js" type="text/javascript"></script>
+        <script src="public/assets/js/validator.min.js" type="text/javascript"></script>
+        <script src="public/assets/lib/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="public/assets/lib/prettify/prettify.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                //initialize the javascript
+                App.init();
+
+                //Runs prettify
+                prettyPrint();
+                $('.main-content').height($(window).height()-$('.be-top-header').height()-1);
+            });
+            $(window).resize(function() {
+                $('.main-content').height($(window).height()-$('.be-top-header').height()-1);
+            });
+        </script>
+    </body>
+</html>

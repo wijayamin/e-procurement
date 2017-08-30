@@ -104,6 +104,9 @@ $this->start('contents');
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
             <div class="panel-heading">RKS Berita Tender
                 <div class="tools">
+                    <a target="_blank" href="public/content/dokumen/<?= $rks['file'] ?>" class="btn btn-space btn-primary btn-sm" >
+                        <i class="mdi mdi-fullscreen"></i> &nbsp;Lihat
+                    </a>
                     <button class="btn btn-space btn-primary btn-sm upload-rks" >
                         <i class="mdi mdi-cloud-upload"></i>
                         &nbsp; <?= $rks['file'] != '' ? 'Ganti' : 'Upload' ?> RKS
@@ -185,6 +188,9 @@ $this->start('contents');
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
             <div class="panel-heading">Berita Acara Tender
                 <div class="tools">
+                    <a target="_blank" href="public/content/dokumen/<?= $berita_acara['file'] ?>" class="btn btn-space btn-primary btn-sm" >
+                        <i class="mdi mdi-fullscreen"></i> &nbsp;Lihat
+                    </a>
                     <button class="btn btn-space btn-primary btn-sm upload-berita">
                         <i class="mdi mdi-cloud-upload"></i>
                         &nbsp; <?= $berita_acara['file'] != '' ? 'Ganti' : 'Upload' ?> Berita Acara

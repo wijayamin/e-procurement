@@ -15,7 +15,7 @@ namespace ryan\controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class BOQ extends \ryan\main{
+class BOQTender extends \ryan\main{
 
     protected $container;
     protected $penyelenggaraModels;
@@ -162,11 +162,11 @@ class BOQ extends \ryan\main{
         $data['approval']=json_encode([
            'direktur'=>[
                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-               'waktu'=>date("Y-m-d H:i:s")
+               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date("Y-m-d H:i:s") : '')
            ],
            'manajer'=>[
                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-               'waktu'=>date("Y-m-d H:i:s")
+               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date("Y-m-d H:i:s") : '')
            ]
         ]);
         $insert = $this->BOQModels->setBOQ($data);
@@ -188,11 +188,11 @@ class BOQ extends \ryan\main{
         $data['approval']=json_encode([
            'direktur'=>[
                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-               'waktu'=>date("Y-m-d H:i:s")
+               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date("Y-m-d H:i:s") : '')
            ],
            'manajer'=>[
                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-               'waktu'=>date("Y-m-d H:i:s")
+               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date("Y-m-d H:i:s") : '')
            ]
         ]);
         if($this->BOQModels->setBOQ($data, $id_penawran)){

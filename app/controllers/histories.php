@@ -16,7 +16,7 @@ use \Slim\Container as Container;
 use \Slim\Http\Request as Req;
 use \Slim\Http\Response as Res;
 
-class history extends \ryan\main{
+class histories extends \ryan\main{
     protected $container;
     protected $penyelenggaraModels;
     protected $tenderModels;

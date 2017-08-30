@@ -1,6 +1,13 @@
 <?php
     session_start ();
     date_default_timezone_set ('Asia/Jakarta');
+    if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+//        if run on windows machine
+        setlocale(LC_TIME, "Indonesian");
+    }else{
+//        if run on other than windows machine
+        setlocale(LC_TIME, "id_ID");
+    }
     use \Psr\Http\Message\ServerRequestInterface as Request;
     use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -8,7 +15,7 @@
 
     $settings = require 'app/settings.php';
     $app = new \Slim\App($settings);
-//    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
+    $app->add (new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
     $app->add (new \Slim\Middleware\Session([
         'name' => 'dummy_session',
@@ -40,8 +47,8 @@
 
     require 'app/route.php';
 
-    $app->get ('/', function ($req, $res, $args) {
-        return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('loginPage'));
-    });
+//    $app->get ('/', function ($req, $res, $args) {
+//        return $res->withStatus (302)->withHeader ('Location', $this->router->pathFor ('loginPage'));
+//    });
 
     $app->run ();

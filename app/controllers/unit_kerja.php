@@ -16,7 +16,7 @@ namespace ryan\controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class unitKerja extends \ryan\main{
+class unit_kerja extends \ryan\main{
 
     protected $container;
     protected $penyelenggaraModels;
