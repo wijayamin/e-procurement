@@ -38,6 +38,20 @@
                 $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
                 return $penyelenggara[ 'nama_penyelenggara' ];
             });
+            $this->view->registerFunction ('getUnitKerja', function ($id_tender) {
+                $unitKerja = $this->unitkerjaModels->getUnitKerjaByTender($id_tender);
+                foreach ($unitKerja as &$unit){
+                    $unit['user'] = $this->userModels->getUserDetail($unit['id_user']);
+                }
+                return $unitKerja;
+            });
+            $this->view->registerFunction ('getDokumenkelengkapan', function ($id_tender) {
+                $dokumen = $this->dokumenModels->getDokumenByTender($id_tender);
+                foreach ($dokumen as &$dok){
+                    $dok['approval'] = json_decode($dok['approval'], true);
+                }
+                return $dokumen;
+            });
             $this->view->registerFunction ('getProgress', function ($id_tender) {
                 $progress = 0;
                 $tender = $this->tenderModels->getBeritaTender($id_tender);
