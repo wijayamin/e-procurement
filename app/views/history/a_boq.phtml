@@ -1,0 +1,41 @@
+<li class="timeline-item right"  data-category="tender" data-type="add">
+    <div class="timeline-content timeline-type" style="padding: 10px 10px 10px 10px; border-left: 1px solid #34a853;">
+        <div class="timeline-avatar">
+            <img src="public/profile/<?= $this->userDetailHelper($history['id_user'])['image'] ?>" alt="Avatar" class="circle">
+        </div>
+        <div class="timeline-header">
+            <span class="timeline-autor"><?= $this->userDetailHelper($history['id_user'])['nama'] ?></span>
+            <p class="timeline-activity" >
+                Melakukan approval BOQ dari Berita Tender
+                <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$history['id_tender']]) ?>">
+                    <?= substr($history['detail']['judul_tender'],0, 50) ?>
+                </a>
+            </p>
+            <span class="timeline-time"><?= $this->indDateTime($history['waktu']) ?></span>
+        </div>
+        <div class="timeline-summary">
+            <table class="table">
+                <tr>
+                    <td width="50%"><?= $history['extra']['nama_vendor'] ?></td>
+                    <td width="50%"><?= $history['extra']['nama_barang'] ?></td>
+                </tr>
+                <tr>
+                    <td width="50%">Rp. <?= $history['extra']['harga_persatuan'] ?>/<?= $history['extra']['ukuran_satuan'] ?></td>
+                    <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="btn-group btn-group-xs btn-space">
+                            <?php if($history['meta'] == 'diterima'): ?>
+                                <button type="button" class="btn btn-success"><i class="icon mdi mdi-check-circle"></i></button>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-danger"><i class="icon mdi mdi-close-circle-o"></i></button>
+                            <?php endif; ?>
+                            <button type="button" class="btn btn-default"><?= ucfirst($history['meta']) ?></button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</li>

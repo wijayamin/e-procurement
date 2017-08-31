@@ -6,7 +6,7 @@
         <div class="timeline-header">
             <span class="timeline-autor"><?= $this->userDetailHelper($history['id_user'])['nama'] ?></span>
             <p class="timeline-activity" >
-                Menambahkan Berita Tender
+                Mengupload Dokumen Berita Acara Untuk Berita Tender
                 <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$history['id_tender']]) ?>">
                     <?= substr($history['detail']['judul_tender'],0, 50) ?>
                 </a>

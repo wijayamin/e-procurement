@@ -1,17 +1,36 @@
 <li class="timeline-item right" data-category="tender" data-type="edit">
-    <div class="timeline-content timeline-type" style="padding: 10px 10px 10px 10px; border-left: 1px solid #fbbc05;">
+    <div class="timeline-content timeline-type" style="padding: 10px 10px 10px 10px; border-left: 1px solid #ea4335;">
         <div class="timeline-avatar">
             <img src="public/profile/<?= $this->userDetailHelper($history['id_user'])['image'] ?>" alt="Avatar" class="circle">
         </div>
         <div class="timeline-header">
             <span class="timeline-autor"><?= $this->userDetailHelper($history['id_user'])['nama'] ?></span>
             <p class="timeline-activity">
-                Mengubah Berita Tender
+                Menghapus Unit Kerja dari berita tender
                 <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$history['id_tender']]) ?>">
                     <?= substr($history['detail']['judul_tender'],0, 50) ?>
                 </a>
             </p>
             <span class="timeline-time"><?= $this->indDateTime($history['waktu']) ?></span>
+        </div>
+        <div class="timeline-summary">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Nama</td>
+                        <td>Penugasan</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="user-avatar">
+                            <img src="public/profile/<?= $this->userDetailHelper($history['extra']['id_user'])['image'] ?>" alt="Avatar">
+                            <?= $this->userDetailHelper($history['extra']['id_user'])['nama'] ?>
+                        </td>
+                        <td><?= $history['extra']['penugasan'] ?></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </li>

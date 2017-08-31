@@ -294,20 +294,23 @@
                         break;
                     case 'i_unit':
                     case 'd_unit':
-                        $history['detail'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
+                        $history['detail'] = $this->tenderModels->getBeritaTender($history['id_tender']);
+                        $history['extra'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
                         break;
                     case 'i_dok':
                     case 'u_dok':
                     case 'e_dok':
                     case 'd_dok':
                     case 'a_dok':
-                        $history['detail'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
+                        $history['detail'] = $this->tenderModels->getBeritaTender($history['id_tender']);
+                        $history['extra'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
                         break;
                     case 'i_boq':
                     case 'e_boq':
                     case 'd_boq':
                     case 'a_boq':
-                        $history['detail'] = $this->BOQModels->getBOQ('38');
+                        $history['detail'] = $this->tenderModels->getBeritaTender($history['id_tender']);
+                        $history['extra'] = $this->BOQModels->getBOQ('38');
                         break;
                 }
             }
