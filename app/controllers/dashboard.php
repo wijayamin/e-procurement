@@ -54,6 +54,7 @@
             });
             $this->view->registerFunction ('getProgress', function ($id_tender) {
                 $progress = 0;
+                $process = '';
                 $tender = $this->tenderModels->getBeritaTender($id_tender);
                 $tender_approval = json_decode($tender['approval'], true);
                 if($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
