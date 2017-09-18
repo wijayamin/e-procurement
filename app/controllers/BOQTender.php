@@ -225,4 +225,10 @@ class BOQTender extends \ryan\main{
         }
     }
 
+    public function BOQ_printPreview(Request $req, Response $res, $args){
+        $boq = $this->BOQModels->getBOQByTender($args['id_tender']);
+        $req = $req->withAttribute ('BOQS', $boq);
+        return $this->view->render ("boq/print", $req->getAttributes ());
+    }
+
 }

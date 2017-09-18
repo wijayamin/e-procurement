@@ -23,10 +23,12 @@ $this->start('contents');
         <div class="panel panel-default panel-table  panel-border-color panel-border-color-primary">
             <div class="panel-heading">Daftar Dokumen Administrasi
                 <div class="tools">
+                    <?php if (in_array ($active_user_data[ 'previledge' ], ['1'])): ?>
                     <button class="btn btn-space btn-primary btn-sm add-dok">
                         <i class="mdi mdi-file-plus"></i>
                         &nbsp; Tambah Dokumen Administrasi
                     </button>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="panel-body">
@@ -229,10 +231,14 @@ $this->start('js');
                         className: 'text-right',
                         render: function (data, type, row, meta) {
                             delete data.rowData;
-                            return  '   <div class="btn-group">'+
+                            if('<?= $active_user_data[ 'previledge' ] ?>' == '1'){
+                                return  '   <div class="btn-group">'+
                                     '      <button type="button" class="btn btn-primary btn-edit" data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-edit"></i></button>'+
                                     '      <button class="btn btn-danger btn-delete"  data-rowdata=\'' + JSON.stringify(data) + '\'><i class="icon icon-left mdi mdi-delete"></i></button>'+
                                     '   </div>'
+                            }else{
+                                return ''
+                            }
                         }
                     },
                 ],

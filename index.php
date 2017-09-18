@@ -3,9 +3,11 @@
     date_default_timezone_set ('Asia/Jakarta');
     if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
 //        if run on windows machine
+        setlocale(LC_MONETARY, 'Indonesian');
         setlocale(LC_TIME, "Indonesian");
     }else{
 //        if run on other than windows machine
+        setlocale(LC_MONETARY, 'id_ID');
         setlocale(LC_TIME, "id_ID");
     }
     use \Psr\Http\Message\ServerRequestInterface as Request;

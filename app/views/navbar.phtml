@@ -28,7 +28,7 @@
                                     </li>
                                 </ul>
                             </li>
-
+                            <?php if (in_array ($active_user_data[ 'previledge' ], ['1'])): ?>
                             <li class="parent <?= ($this->uri(0, 'rks-acara') && !$this->uri(1, 'approval') ? 'active open':'') ?>">
                                 <a href="#"><i class="icon mdi mdi-assignment"></i><span>RKS dan Berita Acara</span></a>
                                 <ul class="sub-menu">
@@ -40,6 +40,7 @@
                                     </li>
                                 </ul>
                             </li>
+                            <?php endif; ?>
                             <?php if (in_array ($active_user_data[ 'previledge' ], ['3'])): ?>
                                 <li class="<?= $this->uri (0, 'unit-kerja', 'active') ?>">
                                     <a href="<?= $this->pathFor ('unitKerja_daftar') ?>">
@@ -66,7 +67,7 @@
                                 </li>
                             <?php endif; ?>
 
-                            <?php if (in_array ($active_user_data[ 'previledge' ], ['3', '4'])): ?>
+                            <?php if (in_array ($active_user_data[ 'previledge' ], ['4'])): ?>
                                 <li class="<?= ($this->uri(0, 'dokumen') && !$this->uri(1, 'approval') ? 'active open':'') ?>">
                                     <a href="<?= $this->pathFor('dokumenTender_daftar') ?>">
                                         <i class="icon mdi mdi-case-check"></i><span>Dokumen Kelengkapan</span>

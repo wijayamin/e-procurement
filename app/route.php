@@ -67,6 +67,7 @@ $app->group('', function () {
         $this->post('/set/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_set')->setName('BOQTender_set');
         $this->get('/get/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_get')->setName('BOQTender_get');
         $this->post('/delete', \ryan\controllers\BOQTender::class . ':BOQ_delete')->setName('BOQTender_delete');
+        $this->get('/print-preview/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_printPreview')->setName('BOQTender_printPreview');
 
         $this->any('/approval', \ryan\controllers\BOQTender::class . ':BOQ_daftar')->setName('BOQTender_daftarApproval');
         $this->any('/approval/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_detail_approval')->setName('BOQTender_detailApproval');
@@ -95,12 +96,12 @@ $app->group('', function () {
     });
 
     $this->group('/dokumen-master', function(){
-        $this->get('/daftar', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_daftar')->setName('dokumenMaster_daftar');
+        $this->get('/daftar', \ryan\controllers\dokumen_master::class . ':dokumenMaster_daftar')->setName('dokumenMaster_daftar');
 
-        $this->get('/get[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_get')->setName('dokumenMaster_get');
-        $this->post('/add', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_add')->setName('dokumenMaster_add');
-        $this->post('/edit/{id_dokumen:[0-9]+}', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_edit')->setName('dokumenMaster_edit');
-        $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumenMaster::class . ':dokumenMaster_delete')->setName('dokumenMaster_delete');
+        $this->get('/get[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumen_master::class . ':dokumenMaster_get')->setName('dokumenMaster_get');
+        $this->post('/add', \ryan\controllers\dokumen_master::class . ':dokumenMaster_add')->setName('dokumenMaster_add');
+        $this->post('/edit/{id_dokumen:[0-9]+}', \ryan\controllers\dokumen_master::class . ':dokumenMaster_edit')->setName('dokumenMaster_edit');
+        $this->get('/delete[/{id_dokumen:[0-9]+}]', \ryan\controllers\dokumen_master::class . ':dokumenMaster_delete')->setName('dokumenMaster_delete');
     });
 
     $this->group('/users', function(){

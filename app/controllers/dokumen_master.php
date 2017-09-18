@@ -15,7 +15,7 @@ namespace ryan\controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class dokumenMaster extends \ryan\main{
+class dokumen_master extends \ryan\main{
 
     protected $container;
     protected $dokumenMasterModels;

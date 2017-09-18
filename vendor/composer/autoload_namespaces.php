@@ -7,5 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Zeuxisoo\\Whoops\\Provider\\Slim' => array($vendorDir . '/zeuxisoo/slim-whoops/src'),
+    'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
+    'Sabberworm\\CSS' => array($vendorDir . '/sabberworm/php-css-parser/lib'),
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
 );

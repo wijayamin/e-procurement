@@ -9,6 +9,7 @@
         "slim/pdo": "1.10.0",
         "phpmailer/phpmailer": "v5.2.23",
         "league/oauth2-client": "2.2.1",
-        "league/oauth2-google": "^2.0"
+        "league/oauth2-google": "^2.0",
+        "dompdf/dompdf": "^0.8.0"
     }
 }

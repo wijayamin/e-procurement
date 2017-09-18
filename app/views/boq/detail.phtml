@@ -92,7 +92,7 @@ $this->start('contents');
                         <tr>
                             <th width="5%">No</th>
                             <th>Barang / Vendor</th>
-                            <th>Harga / Jumlah / Total</th>
+                            <th>Harga / Jumlah / Total / Jasa</th>
                             <th class="text-right" width="20%">Diajukan Oleh</th>
                             <th>Status</th>
                             <th class="action"></th>
@@ -193,6 +193,17 @@ $this->start('contents');
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Harga Jasa</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">Rp</span>
+                                    <input type="number" class="form-control" id="input-harga" name="harga_jasa">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -289,6 +300,17 @@ $this->start('contents');
                                         <option value="rim">rim</option>
                                     </optgroup>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Harga Jasa</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">Rp</span>
+                                    <input type="number" class="form-control" id="input-harga" name="harga_jasa">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -423,10 +445,13 @@ $this->start('js');
                             var harga = $('<span>');
                             harga.money(data.harga_persatuan ,{ commas: false, symbol: "Rp." });
                             var total = $('<span>');
-                            total.money(data.harga_persatuan * data.volume_barang ,{ commas: false, symbol: "Rp." });
+                            var jasa = $('<span>');
+                            total.money(data.harga_persatuan * data.volume_barang, { commas: false, symbol: "Rp." });
+                            jasa.money(data.harga_jasa, { commas: false, symbol: "Rp." });
                             return  '<span>' + harga.html() + '</span>' +
                                     '<span class="cell-detail-description">' + data.volume_barang + ' ' + data.ukuran_satuan + '</span>' +
-                                    '<span>' + total.html() + '</span>';
+                                    '<span>' + total.html() + '</span>' +
+                                    '<span class="cell-detail-description">' + (data.harga_jasa > 0 ? jasa.html() : 'Rp. ' + data.harga_jasa + '.00') + '</span>';
                         },
                     },
                     {
@@ -499,6 +524,7 @@ $this->start('js');
                         modal.find('input[name="nama_barang"]').val(rowData.nama_barang);
                         modal.find('input[name="harga_persatuan"]').val(rowData.harga_persatuan);
                         modal.find('input[name="volume_barang"]').val(rowData.volume_barang);
+                        modal.find('input[name="harga_jasa"]').val(rowData.harga_jasa);
                         modal.find('#select-satuan').select2({
                             placeholder: 'Meter',
                             width: '100%',
