@@ -1,1 +1,0 @@
-update dokumen_tender SET APPROVAL='{"direktur":{"status":"","waktu":""},"manajer":{"status":"","waktu":""}}' WHERE FILE_DOKUMEN is NOT NULL and APPROVAL is NULL

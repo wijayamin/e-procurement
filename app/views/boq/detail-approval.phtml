@@ -103,6 +103,10 @@ $this->start('contents');
         <div class="panel panel-default panel-table panel-border-color panel-border-color-primary">
             <div class="panel-heading">Daftar BOQ
                 <div class="tools">
+                    <button class="btn btn-space btn-primary open-modal-cetak">
+                        <i class="mdi mdi-print"></i>
+                        &nbsp; Cetak
+                    </button>
                     <div class="btn-group btn-space">
                         <button type="button" class="btn btn-success mass-terima" disabled>
                             <i class="icon mdi mdi-check" style="color: white"></i> Terima
@@ -121,7 +125,7 @@ $this->start('contents');
                             </th>
                             <th>No</th>
                             <th>Vendor / Barang</th>
-                            <th>Harga / Jumlah / total</th>
+                            <th>Harga / Jumlah / Jasa / Total</th>
                             <th>Diajukan Oleh</th>
                             <th>Status</th>
                             <th>Approval</th>
@@ -157,6 +161,37 @@ $this->start('contents');
             </div>
         </div>
     </div>
+    <div id="modal-cetak" class="modal-container full-width modal-effect-9" style="perspective: none; max-height: 95%">
+        <div class="modal-content">
+            <div class="modal-body row" style="padding-top: 20px !important;">
+                <div class="col-md-10 pdf-preview">
+<!--                    <object data='--><?//= $this->pathFor('BOQTender_print', ['id_tender'=>$tender['id_tender']]) ?><!--#scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0' type='application/pdf' width='100%' height='562mm' style="border: 1px solid black;"></object>-->
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="close modal-close"><span class="mdi mdi-close"></span></button>
+                    <div style="width: 100%;">
+                        <h4>Pengaturan Cetak</h4>
+                        <div class="be-checkbox">
+                            <input id="approved" type="checkbox" checked="">
+                            <label for="approved">Disetujui</label>
+                        </div>
+                        <span class="help-block" style="padding-left: 30px;">
+                            Hanya tampilkan item yang telah disetujui.
+                        </span>
+                        <hr>
+                        <button class="btn btn-space btn-primary btn-big  modal-close btn-print"><i class="icon mdi mdi-print"></i> Cetak </button>
+                        <a href="<?= $this->pathFor('BOQTender_print', ['id_tender'=>$tender['id_tender'], 'download'=>true]) ?>?approved" class="btn btn-space btn-success btn-big"><i class="icon mdi mdi-download"></i> Unduh </a>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-primary modal-close btn-simpan">Tambahkan</button>-->
+<!--                <button type="button" class="btn btn-default modal-close">Batal</button>-->
+<!--            </div>-->
+        </div>
+    </div>
+
+    <div class="modal-overlay"></div>
 <?php
 $this->stop();
 $this->start('js');
@@ -178,6 +213,7 @@ $this->start('js');
     <script src="public/assets/js/app-tables-datatables.js" type="text/javascript"></script>
     <script src="public/assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
     <script src="public/assets/lib/bootstrap3-editable/js/bootstrap-editable.min.js" type="text/javascript"></script>
+    <script src="public/assets/js/print.min.js" type="text/javascript"></script>
     <script>
         var tBOQ;
         function populateTable(repopulate) {
@@ -229,7 +265,7 @@ $this->start('js');
                             },
                             className: "cell-detail",
                             render: function (data, type, row, meta) {
-                                return '<span> Rp. '+parseInt(data.harga_persatuan).formatMoney(0)+'</span><span class="cell-detail-description"><strong>'+data.volume_barang+' '+data.ukuran_satuan+'</strong></span><span> Rp. '+parseInt(data.total).formatMoney(0)+'</span>'
+                                return '<span> Rp. '+parseInt(data.harga_persatuan).formatMoney(0)+'</span><span class="cell-detail-description"><strong>'+data.volume_barang+' '+data.ukuran_satuan+'</strong></span><span>Rp. ' + parseInt(data.harga_jasa).formatMoney(0) + '</span><span class="cell-detail-description"> Rp. '+parseInt(data.total).formatMoney(0)+'</span>';
                             }
                         },
                         {
@@ -415,6 +451,40 @@ $this->start('js');
                 },
             });
             populateTable()
+            $('.open-modal-cetak').on('click', function () {
+                $('#modal-cetak').niftyModal({
+                    buttons: [
+                        {
+                            class: 'btn-print',
+                            callback: function ( btn, modals, event ) {
+                                var modal = $(modals.modalEl);
+                                printJS(modal.find('.pdf-preview object').attr('data'));
+                                return false;
+                            }
+                        },
+                    ],
+                    beforeOpen: function( modals ){
+                        var modal = $(modals.modalEl);
+                        modal.find('#approved').attr("checked", true);
+                        var url = '<?= $this->pathFor('BOQTender_print', ['id_tender'=>$tender['id_tender']]) ?>';
+                        var urlDownload = '<?= $this->pathFor('BOQTender_print', ['id_tender'=>$tender['id_tender'], 'download'=>true]) ?>';
+                        modal.find('.pdf-preview').html(
+                            '<object data="' + url + '?approved#scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0" type="application/pdf" width="100%" height="562mm" style="border: 1px solid black;"></object>'
+                        );
+                        modal.find('#approved').change(function() {
+                            if (this.checked) {
+                                modal.find('.pdf-preview').html(
+                                    '<object data="' + url + '?approved#scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0" type="application/pdf" width="100%" height="562mm" style="border: 1px solid black;"></object>'
+                                );
+                            } else {
+                                modal.find('.pdf-preview').html(
+                                    '<object data="' + url + '#scrollbar=0&toolbar=0&statusbar=0&messages=0&navpanes=0" type="application/pdf" width="100%" height="562mm" style="border: 1px solid black;"></object>'
+                                );
+                            }
+                        });
+                    }
+                });
+            })
         })
     </script>
 <?php $this->stop() ?>

@@ -1,12 +1,37 @@
 <html>
     <head>
         <style>
-            body {
-                margin:0;
-                padding:20px 70px;
+            @page {
+                size: 21cm 29.7cm;
+                margin: 30mm 20mm 20mm 20mm; /* change the margins as you want them to be. */
+            }
+            header {
+                position: fixed;
+                top: -25mm;
+                left: 0px;
+                right: 0px;
+                height: 60mm;
+                text-align: center;
+            }
+            footer {
+                position: fixed;
+                bottom: -15mm;
+                left: 0px;
+                right: 0px;
+                height: 20mm;
+                font-size: 11px;
             }
             table{
                 border-collapse: collapse;
+                width: 10cm;
+                max-width: 10cm;
+            }
+            table tr{
+                page-break-inside:avoid;
+                page-break-after:auto
+            }
+            table thead{
+                display:table-header-group
             }
             table thead tr td{
                 border: 1px solid black;
@@ -19,14 +44,22 @@
             }
             table td.curency{
                 text-align: right;
-                padding-right: 10px;
             }
             table tbody tr td{
                 border-left: 1px solid black;
-                padding: 5px;
+                padding: 20px 2px;
+            }
+            table tbody tr strong.wildcard1{
+                display: none;
+            }
+            table tbody tr.unapproved strong.wildcard1{
+                display: inline;
             }
             table tbody tr td:first-child{
                 border-left: none;
+            }
+            table tfoot{
+                display:table-footer-group
             }
             table tfoot tr td{
                 border: 1px solid black;
@@ -36,65 +69,112 @@
                 border-top: 2px solid black;
             }
             table tfoot tr td:first-child{
-                padding-left: 35px;
+                padding-left: 9mm;
+                text-align: left;
             }
-            table tfoot tr td:last-child-child{
+            table tfoot tr td:last-child{
                 text-align: right;
+            }
+            .signature-wrapper{
+                page-break-inside: avoid;
+                page-break-before: auto;
+                float: right;
+                width: 60mm;
+                max-width: 60mm;
+                padding: 5mm 0;
+            }
+            .signature-wrapper p span{
+                display: block;
+            }
+            .signature-wrapper .name{
+                padding-top: 20mm;
+                text-decoration: underline;
+                font-weight: bold;
+            }
+            .signature-wrapper .company_title{
+                font-weight: bold;
             }
         </style>
     </head>
     <body>
-        <div style="width: 100%; text-align: center; margin-top: 10px;">
-            <h3>
-                BILL OF QUANTITY (BOQ)<br><br>
-                Judul Tender
-            </h3>
+        <header>
+            <img src="public/assets/img/logo1.png" height="80mm">
+        </header>
+        <footer>
+            <p>
+                <?php if(!isset($param['approved'])): ?>
+                    Catatan: <br>
+                    <strong>*</strong> Item belum disetujui atau telah ditolak
+                <?php endif; ?>
+            </p>
+        </footer>
+        <div style="width: 100%; text-align: center;">
+            <h4>
+                BILL OF QUANTITY (BOQ)<hr>
+                <?= $tender['judul_tender'] ?>
+            </h4>
         </div>
-        <table width="100%"  style="border: 2px solid black;">
+        <table style="border: 2px solid black;">
             <thead>
                 <tr>
-                    <td width="10px">No</td>
-                    <td width="500px">Uraian</td>
-                    <td>Vol</td>
-                    <td>Sat</td>
-                    <td>Harga Material</td>
-                    <td>Harga Jasa</td>
-                    <td>Total</td>
+                    <td rowspan="2" width="5mm">No</td>
+                    <td rowspan="2" width="35mm">Uraian</td>
+                    <td rowspan="2" width="15mm">Volume</td>
+                    <td rowspan="2" width="10mm">Sat</td>
+                    <td colspan="2">Harga (Rp.)</td>
+                    <td rowspan="2" width="40mm">Total (Rp.)</td>
+                </tr>
+                <tr>
+                    <td width="25mm">Material</td>
+                    <td width="20mm">Jasa</td>
                 </tr>
             </thead>
             <tbody>
                 <?php $i = 0; ?>
                 <?php $total = 0; ?>
                 <?php foreach ($BOQS as $boq): ?>
-                    <tr>
+                    <?php $approval = json_decode($boq['approval'], true); ?>
+                    <tr class="<?= ($approval['direktur']['status'] == 'diterima' && $approval['manajer']['status'] == 'diterima' ? '' : 'unapproved') ?>">
                         <td class="numbering"><?= $i = $i+1 ?></td>
                         <td>
                             <strong><?= $boq['nama_vendor'] ?></strong><br>
-                            <?= $boq['nama_barang'] ?>
+                            <?= $boq['nama_barang'] ?><strong class="wildcard1">*</strong>
                         </td>
-                        <td class="numbering"><?= $boq['volume_barang'] ?></td>
-                        <td class="numbering"><?= $boq['ukuran_satuan'] ?></td>
-                        <td class="curency">Rp. <?= number_format($boq['harga_persatuan'], 2, ',', '.') ?></td>
-                        <td class="curency">Rp. <?= number_format($boq['harga_jasa'], 2, ',', '.') ?></td>
-                        <td class="curency">Rp. <?= number_format(($boq['harga_persatuan']*$boq['volume_barang'])+$boq['harga_jasa'], 2, ',', '.') ?></td>
+                        <td class="curency">
+                            <?= $boq['volume_barang'] ?>
+                        </td>
+                        <td class="numbering"> <?= $boq['ukuran_satuan'] ?></td>
+                        <td class="curency"><?= number_format($boq['harga_persatuan'], 2, ',', '.') ?></td>
+                        <td class="curency"><?= number_format($boq['harga_jasa'], 2, ',', '.') ?></td>
+                        <td class="curency"><?= number_format(($boq['harga_persatuan']*$boq['volume_barang'])+$boq['harga_jasa'], 2, ',', '.') ?></td>
                     </tr>
                     <?php $total = $total + ($boq['harga_persatuan']*$boq['volume_barang'])+$boq['harga_jasa'] ?>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="6">Jumlah</td>
-                    <td class="curency">Rp. <?= number_format($total, 2, ',', '.') ?></td>
+                    <td colspan="6">Jumlah (Dalam Rupiah)</td>
+                    <td class="curency"><?= number_format($total, 2, ',', '.') ?></td>
                 </tr>
                 <tr>
-                    <td colspan="6">PPN</td>
-                    <td class="curency">Rp. <?= number_format(ceil($total*0.1), 2, ',', '.') ?></td>
+                    <td colspan="6">PPN (Dalam Rupiah)</td>
+                    <td class="curency"><?= number_format(ceil($total*0.1), 2, ',', '.') ?></td>
                 </tr>
                 <tr>
-                    <td colspan="6">Total</td>
-                    <td class="curency">Rp. <?= number_format(ceil($total+($total*0.1)), 2, ',', '.') ?></td>
+                    <td colspan="6">Total (Dalam Rupiah)</td>
+                    <td class="curency"><?= number_format(ceil($total+($total*0.1)), 2, ',', '.') ?></td>
                 </tr>
             </tfoot>
         </table>
+        <?php if(isset($param['approved'])): ?>
+            <div class="signature-wrapper">
+                <p>
+                    <span class="date">Surabaya, <?= $this->indDateFull(date('d M Y')) ?></span>
+                    <span class="company_title">PT. Kencana Alam Putra</span>
+                    <span class="name"><?= $direktur['nama'] ?></span>
+                    <span class="title">Direktur</span>
+                </p>
+            </div>
+        <?php endif; ?>
     </body>
 </html>

@@ -140,7 +140,7 @@ class BOQTender extends \ryan\main{
                 'who'=>$this->userModels->getUserDetail($BOQ['id_user']),
                 'time'=>$BOQ['waktu']
             ];
-            $BOQ['total'] = $BOQ['harga_persatuan']*$BOQ['volume_barang'];
+            $BOQ['total'] = ($BOQ['harga_persatuan']*$BOQ['volume_barang'])+$BOQ['harga_jasa'];
             $BOQ['inputan_manajer'] = $this->BOQModels->getBOQManajer($BOQ['id_penawaran']);
             $BOQ['approval'] = json_decode($BOQ['approval'], true);
             if($BOQ['inputan_manajer']){
@@ -226,9 +226,30 @@ class BOQTender extends \ryan\main{
     }
 
     public function BOQ_printPreview(Request $req, Response $res, $args){
-        $boq = $this->BOQModels->getBOQByTender($args['id_tender']);
-        $req = $req->withAttribute ('BOQS', $boq);
-        return $this->view->render ("boq/print", $req->getAttributes ());
+        $boqs = $this->BOQModels->getBOQByTender($args['id_tender']);
+        $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+        $direktur = $this->userModels->getDirektur();
+        foreach($boqs as $key => $boq){
+            if(isset($_GET['approved'])){
+                $approval = json_decode($boq['approval'], true);
+                if($approval['direktur']['status'] != 'diterima' || $approval['manajer']['status'] != 'diterima'){
+                    unset($boqs[$key]);
+                }
+            }
+        }
+        $req = $req->withAttribute ('BOQS', $boqs);
+        $req = $req->withAttribute ('tender', $tender);
+        $req = $req->withAttribute ('direktur', $direktur);
+        $req = $req->withAttribute ('param', $_GET);
+//        return $this->view->render ("boq/print", $req->getAttributes ());
+        $this->pdf->loadHtml($this->view->getPlates()->render ("boq/print", $req->getAttributes()));
+        $this->pdf->setPaper('A4', 'landscape');
+        $this->pdf->render();
+        if(isset($args['download'])){
+            return $this->pdf->stream("BOQ".(isset($_GET['approved']) ? '-Approved-' : '-' ).date('d-n-Y-G-i-s-').bin2hex(random_bytes(5)).".pdf", array("Attachment" => true));
+        }else{
+            return $this->pdf->stream("BOQ".(isset($_GET['approved']) ? '-Approved-' : '-' ).date('d-n-Y-G-i-s-').bin2hex(random_bytes(5)).".pdf", array("Attachment" => false));
+        }
     }
 
 }

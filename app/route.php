@@ -67,7 +67,7 @@ $app->group('', function () {
         $this->post('/set/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_set')->setName('BOQTender_set');
         $this->get('/get/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_get')->setName('BOQTender_get');
         $this->post('/delete', \ryan\controllers\BOQTender::class . ':BOQ_delete')->setName('BOQTender_delete');
-        $this->get('/print-preview/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_printPreview')->setName('BOQTender_printPreview');
+        $this->get('/print-preview/{id_tender}[/{download}]', \ryan\controllers\BOQTender::class . ':BOQ_printPreview')->setName('BOQTender_print');
 
         $this->any('/approval', \ryan\controllers\BOQTender::class . ':BOQ_daftar')->setName('BOQTender_daftarApproval');
         $this->any('/approval/{id_tender}', \ryan\controllers\BOQTender::class . ':BOQ_detail_approval')->setName('BOQTender_detailApproval');

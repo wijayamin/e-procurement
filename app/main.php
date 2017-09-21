@@ -24,6 +24,7 @@
         protected $pdo;
         protected $mailer;
         protected $notFoundHandler;
+        protected $pdf;
 
         function __construct (Container $container) {
             $this->container = $container;
@@ -61,6 +62,8 @@
             $this->mailer->oauthClientSecret = $mailer_seting['oauthClientSecret'];
             $this->mailer->oauthRefreshToken = $mailer_seting['oauthRefreshToken'];
             $this->mailer->setFrom($mailer_seting['setFrom']['email'], $mailer_seting['setFrom']['title']);
+
+            $this->pdf = new \Dompdf\Dompdf();
         }
 
         public function __invoke ($req, $res, $next) {

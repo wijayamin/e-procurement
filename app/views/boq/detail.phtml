@@ -92,7 +92,7 @@ $this->start('contents');
                         <tr>
                             <th width="5%">No</th>
                             <th>Barang / Vendor</th>
-                            <th>Harga / Jumlah / Total / Jasa</th>
+                            <th>Harga / Jumlah / Jasa / Total</th>
                             <th class="text-right" width="20%">Diajukan Oleh</th>
                             <th>Status</th>
                             <th class="action"></th>
@@ -446,12 +446,12 @@ $this->start('js');
                             harga.money(data.harga_persatuan ,{ commas: false, symbol: "Rp." });
                             var total = $('<span>');
                             var jasa = $('<span>');
-                            total.money(data.harga_persatuan * data.volume_barang, { commas: false, symbol: "Rp." });
+                            total.money((data.harga_persatuan * data.volume_barang + data.harga_jasa), { commas: false, symbol: "Rp." });
                             jasa.money(data.harga_jasa, { commas: false, symbol: "Rp." });
                             return  '<span>' + harga.html() + '</span>' +
-                                    '<span class="cell-detail-description">' + data.volume_barang + ' ' + data.ukuran_satuan + '</span>' +
-                                    '<span>' + total.html() + '</span>' +
-                                    '<span class="cell-detail-description">' + (data.harga_jasa > 0 ? jasa.html() : 'Rp. ' + data.harga_jasa + '.00') + '</span>';
+                                    '<span class="cell-detail-description">' + data.volume_barang + ' ' + data.ukuran_satuan + '</span>'  +
+                                    '<span>' + (data.harga_jasa > 0 ? jasa.html() : 'Rp. ' + data.harga_jasa + '.00') + '</span>' +
+                                    '<span class="cell-detail-description">' + total.html() + '</span>';
                         },
                     },
                     {

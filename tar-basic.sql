@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 10, 2017 at 11:09 PM
+-- Generation Time: Sep 21, 2017 at 09:04 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -33,13 +33,6 @@ CREATE TABLE `dokumen_master_administrasi` (
   `DIUPLOAD_OLEH` int(11) DEFAULT NULL,
   `WAKTU` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `dokumen_master_administrasi`
---
-
-INSERT INTO `dokumen_master_administrasi` (`ID_DOKUMEN_MASTER`, `NAMA_DOKUMEN`, `FILE_DOKUMEN`, `DIUPLOAD_OLEH`, `WAKTU`) VALUES
-(4, 'NPWP|Nomor Pokok Wajib Pajak|NPWP Perusahaan|Nomor Pokok Wajib Pajak Perusahaan', 'SURAT PERMOHONAN amin_1500463477.pdf', 3, '2017-07-19 18:26:17');
 
 -- --------------------------------------------------------
 
@@ -104,6 +97,7 @@ CREATE TABLE `penawaran` (
   `NAMA_VENDOR` text,
   `NAMA_BARANG` text,
   `HARGA_PERSATUAN` float DEFAULT NULL,
+  `HARGA_JASA` float DEFAULT '0',
   `VOLUME_BARANG` float DEFAULT NULL,
   `UKURAN_SATUAN` text,
   `WAKTU` datetime DEFAULT NULL,
@@ -188,21 +182,6 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`ID_USER`, `USERNAME`, `PASSWORD`, `NAMA`, `ALAMAT`, `TANGGAL_LAHIR`, `EMAIL`, `TELEFON`, `JABATAN`, `PREVILEDGE`, `IMAGE`, `TOKEN`, `SMSCODE`, `STATUS`, `DELETED`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Saya Admin', 'jauh', '2017-03-01', 'ryanhadiw@gmail.com', '085863957221', 'Administrasi', 1, 'avatar.png', 'aaa', NULL, 1, 0),
-(2, 'direktur', '4fbfd324f5ffcdff5dbf6f019b02eca8', 'Saya Direktur', 'Jauh', '2017-03-22', 'direktur@gmail.com', '085863957221', 'Direktur', 2, 'avatar3.png', NULL, NULL, 1, 0),
-(3, 'manajer', '69b731ea8f289cf16a192ce78a37b4f0', 'Saya Manager Lho', 'jauh sekali', '2017-03-09', 'manajer@gmail.com', '085863957221', 'Manajer', 3, 'avatar2_1500901986.png', NULL, NULL, 1, 0),
-(4, 'unitkerja', 'c7751a072df5820a90a679d0fa4bcbe7', 'Saya Unit Kerja', 'jauh', '2014-11-22', 'unitkerja@gmail.com', '085863957221', 'Unit Kerja', 4, 'avatar1.png', NULL, NULL, 1, 0),
-(5, 'unitkerja1', 'b175330980714f7d312c18148dbab360', 'Saya unit kerja juga', 'lebih jauh', '2017-04-20', 'unitkerja1@gmail.com', '085863957221', 'Unit Kerja', 4, 'avatar6.png', NULL, NULL, 1, 0),
-(6, 'unitkerja2', 'b78fdad92d2c446b7990a5d0c1e4931b', 'Saya Unit Kerja 3', 'jauh', '2017-04-18', 'unitkerja3@gmail.com', '085863957221', 'Unit Kerja', 4, 'avatar5.png', NULL, NULL, 1, 1),
-(7, 'superadmin', '17c4520f6cfd1ab53d8745e84681eb49', 'Admin with Super Saiyan Mode', 'Surga', '2017-07-20', 'superadmin@gmail.com', '081252727622', 'Super Admin', 5, 'saiyan.png', NULL, NULL, 1, 0),
-(16, 'mientz', 'f04878fc9c0d6452eb8d6603371f2548', 'mientz', NULL, NULL, 'genthowijaya@gmail.com', '085863957221', 'Unit Kerja', 4, 'no-photo.jpg', '9adf20bfa7b423ba89d67dfe56876907', NULL, 1, 0),
-(17, 'lalala', 'f04878fc9c0d6452eb8d6603371f2548', 'lalala', NULL, NULL, 'drak_nes@yahoo.com', '081252727622', 'Admin', 1, 'no-photo.jpg', NULL, '30E3BF', 1, 1);
-
---
 -- Indexes for dumped tables
 --
 
@@ -279,22 +258,22 @@ ALTER TABLE `dokumen_master_administrasi`
 -- AUTO_INCREMENT for table `dokumen_tender`
 --
 ALTER TABLE `dokumen_tender`
-  MODIFY `ID_DOKUMEN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `ID_DOKUMEN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id_history` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
+  MODIFY `id_history` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
 --
 -- AUTO_INCREMENT for table `notifikasi`
 --
 ALTER TABLE `notifikasi`
-  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 --
 -- AUTO_INCREMENT for table `penawaran`
 --
 ALTER TABLE `penawaran`
-  MODIFY `ID_PENAWARAN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `ID_PENAWARAN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 --
 -- AUTO_INCREMENT for table `penyelenggara`
 --
@@ -304,7 +283,7 @@ ALTER TABLE `penyelenggara`
 -- AUTO_INCREMENT for table `tender`
 --
 ALTER TABLE `tender`
-  MODIFY `ID_TENDER` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `ID_TENDER` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT for table `unit_kerja`
 --
