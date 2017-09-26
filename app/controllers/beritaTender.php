@@ -57,6 +57,7 @@
                     'judul_tender' => $_POST[ 'judul_tender' ],
                     'link_website' => $_POST[ 'link_website' ],
                     'wilayah' => $_POST[ 'wilayah' ],
+                    'kualifikasi' => implode ('|', $_POST[ 'kualifikasi' ]),
                     'upload' => implode ('|', $_POST[ 'upload' ]),
                     'tgl_mulai' => $_POST[ 'tgl_mulai' ],
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
@@ -164,6 +165,7 @@
                     'id_penyelenggara' => $_POST[ 'id_penyelenggara' ],
                     'judul_tender' => $_POST[ 'judul_tender' ],
                     'link_website' => $_POST[ 'link_website' ],
+                    'kualifikasi' => implode ('|', $_POST[ 'kualifikasi' ]),
                     'wilayah' => $_POST[ 'wilayah' ],
                     'tgl_mulai' => $_POST[ 'tgl_mulai' ],
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
@@ -257,10 +259,10 @@
          */
         public function beritaTender_daftar (Req $req, Res $res, $args) {
             $route = $req->getAttribute('route');
-            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
-                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
-                return $penyelenggara[ 'nama_penyelenggara' ];
-            });
+//            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+//                $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
+//                return $penyelenggara[ 'nama_penyelenggara' ];
+//            });
             $beritaTender = $this->tenderModels->getBeritaTender ();
             $req = $req->withAttribute ('beritaTender', $beritaTender);
             $req = $req->withAttribute ('approval', $route->getName() == 'beritaTender_daftarApproval');
@@ -276,12 +278,12 @@
          */
         public function beritaTender_detail (Req $req, Res $res, $args) {
             $route = $req->getAttribute('route');
-            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
-                return $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara)[ 'nama_penyelenggara' ];
-            });
-            $this->view->registerFunction ('getUserUpload', function ($id_user) {
-                return $this->userModels->getUserDetail ($id_user);
-            });
+//            $this->view->registerFunction ('getNamaPenyelenggara', function ($id_penyelenggara) {
+//                return $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara)[ 'nama_penyelenggara' ];
+//            });
+//            $this->view->registerFunction ('getUserUpload', function ($id_user) {
+//                return $this->userModels->getUserDetail ($id_user);
+//            });
             $this->view->registerFunction ('getDirektur', function () {
                 return $this->userModels->getDirektur();
             });
@@ -352,6 +354,7 @@
                     case 'i_unit':
                     case 'd_unit':
                         $history['detail'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
+                        $history['extra'] = $this->unitkerjaModels->getUnitKerja($history['id_perubahan']);
                         break;
                     case 'i_dok':
                     case 'u_dok':
@@ -359,12 +362,14 @@
                     case 'd_dok':
                     case 'a_dok':
                         $history['detail'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
+                        $history['extra'] = $this->dokumenModels->getDokumenTender($history['id_perubahan']);
                         break;
                     case 'i_boq':
                     case 'e_boq':
                     case 'd_boq':
                     case 'a_boq':
                         $history['detail'] = $this->BOQModels->getBOQ('38');
+                        $history['extra'] = $this->BOQModels->getBOQ('38');
                         break;
                 }
             }

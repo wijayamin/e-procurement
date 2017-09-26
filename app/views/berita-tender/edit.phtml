@@ -82,6 +82,17 @@ $this->start ('contents');
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group  has-feedback">
+                        <label>Kualifikasi</label>
+                        <!--                        <input type="text" placeholder="Besar; Menengah; Kecil;" name="kualifikasi" class="form-control"  data-error="Wajib di isi" required>-->
+                        <select multiple="" class="kualifikasi" name="kualifikasi[]"  data-error="Wajib di isi" required>
+                            <?php $kualifikasi = explode('|', $tender['kualifikasi']) ?>s
+                            <?php foreach ($this->autocomplete('kualifikasi') as $val): ?>
+                                <option value="<?= $val ?>" <?= in_array($val, $kualifikasi) ? 'selected' : '' ?>><?= $val ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback">
                         <label>Link Website</label>
                         <input type="text" placeholder="http://www.example.com" name="link_website" class="form-control"  data-error="Wajib di isi" value="<?= $tender['link_website'] ?>" required>
                         <div class="help-block with-errors"></div>
@@ -149,6 +160,7 @@ $this->start ('js');
             classAddAfterOpen: 'modal-show',
         });
 
+        $(".kualifikasi").select2({tags: true, width: '100%'});
         $('form.tambah-penyelenggara').validator().on('submit', function (e) {
             if (e.isDefaultPrevented()) {
 

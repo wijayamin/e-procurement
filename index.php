@@ -47,6 +47,9 @@
         }
     });
 
+    require 'app/template_helper.php';
+    $container->view->loadExtension(new \ryan\template_helper($container));
+
     require 'app/route.php';
 
 //    $app->get ('/', function ($req, $res, $args) {

@@ -75,7 +75,7 @@
                                 <tr>
                                     <td class="icon" valign="top"><span class="mdi mdi-city-alt"></span></td>
                                     <td class="item" valign="top"><strong>Penyelenggara</strong></td>
-                                    <td><?= $this->getNamaPenyelenggara ($tender[ 'id_penyelenggara' ]) ?></td>
+                                    <td><?= $this->penyelenggara($tender['id_penyelenggara'], 'nama') ?></td>
                                 </tr>
                                 <tr>
                                     <td class="icon" valign="top"><span class="mdi mdi-pin"></span></td>
@@ -86,9 +86,18 @@
                                     <td class="icon" valign="top"><span class="mdi mdi-calendar-check"></span></td>
                                     <td class="item" valign="top"><strong>Waktu</strong></td>
                                     <td>
-                                        <span class="label label-default"><?= $this->indDate ($tender[ 'tgl_mulai' ]) ?></span>
+                                        <span class="label label-default"><?= $this->local_date ('fullDate_ID',$tender[ 'tgl_mulai' ]) ?></span>
                                         s/d
-                                        <span class="label label-default"><?= $this->indDate ($tender[ 'tgl_selesai' ]) ?></span>
+                                        <span class="label label-default"><?= $this->local_date ('fullDate_ID', $tender[ 'tgl_selesai' ]) ?></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="icon" valign="top"><span class="mdi mdi-calendar-check"></span></td>
+                                    <td class="item" valign="top"><strong>Kualifikasi</strong></td>
+                                    <td>
+                                        <?php foreach ($this->autocomplete('kualifikasi', ['id_tender'=>$tender['id_tender']]) as $kualifikasi): ?>
+                                            <span class="label label-default"><?= $kualifikasi ?></span>
+                                        <?php endforeach; ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -113,7 +122,7 @@
                             </p>
                             <br>
                             <ins><b><?= $this->getDirektur()['nama'] ?></b></ins><br>
-                            <span><?= $approve['direktur']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->indDate ($approve['direktur']['waktu']) ?></span><br>
+                            <span><?= $approve['direktur']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->local_date ('fullDate_ID', $approve['direktur']['waktu']) ?></span><br>
                         </div>
                         <div class="col-md-6" align="center">
                             <b>Manajer</b>
@@ -123,7 +132,7 @@
                             </p>
                             <br>
                             <ins><b><?= $this->getManajer()['nama'] ?></b></ins><br>
-                            <span><?= $approve['manajer']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->indDate ($approve['manajer']['waktu']) ?></span><br>
+                            <span><?= $approve['manajer']['waktu'] == '' ? 'Belum Melakukan Approval' : $this->local_date ('fullDate_ID', $approve['manajer']['waktu']) ?></span><br>
                         </div>
                     </div>
                 </div>
@@ -195,18 +204,18 @@
                                 <tr>
                                     <td width="35%"><b>Ditambahkan Oleh</b></td>
                                     <td class="user-avatar cell-detail user-info" colspan="3">
-                                        <img src="public/profile/<?= $this->getUserUpload ($tender[ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
-                                        <span><?= ($tender[ 'id_user' ] == $active_user_data['id_user'] ? 'Anda Sendiri' : $this->getUserUpload ($tender[ 'id_user' ])[ 'nama' ]) ?></span>
-                                        <span class="cell-detail-description"><?= $this->indDateTime ($tender[ 'tgl_upload' ]) ?></span>
+                                        <img src="public/profile/<?= $this->user_detail($tender[ 'id_user' ], 'image') ?>" alt="Avatar">
+                                        <span><?= $this->user_detail($tender[ 'id_user' ], 'nama', true) ?></span>
+                                        <span class="cell-detail-description"><?= $this->local_date ('fullDate_ID', $tender[ 'tgl_upload' ]) ?></span>
                                     </td>
                                 </tr>
                                 <?php if($tender['last_edit']): ?>
                                     <tr>
                                         <td width="35%"><b>Terakhir Diubah Oleh</b></td>
                                         <td class="user-avatar cell-detail user-info" colspan="3">
-                                            <img src="public/profile/<?= $this->getUserUpload ($tender['last_edit'][ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
-                                            <span><?= ($tender['last_edit'][ 'id_user' ] == $active_user_data['id_user'] ? 'Anda Sendiri' : $this->getUserUpload ($tender['last_edit'][ 'id_user' ])[ 'nama' ]) ?></span>
-                                            <span class="cell-detail-description"><?= $this->indDateTime ($tender['last_edit'][ 'waktu' ]) ?></span>
+                                            <img src="public/profile/<?= $this->user_detail ($tender['last_edit'][ 'id_user' ], 'image') ?>" alt="Avatar">
+                                            <span><?= $this->user_detail ($tender['last_edit'][ 'id_user' ], 'image', true) ?></span>
+                                            <span class="cell-detail-description"><?= $this->local_date ('fullDate_ID', $tender['last_edit'][ 'waktu' ]) ?></span>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -262,8 +271,8 @@
                                     <tr>
                                         <td><?= $key+1 ?></td>
                                         <td class="user-avatar">
-                                            <img src="public/profile/<?= $this->getUserUpload ($unit_kerja[ 'id_user' ])[ 'image' ] ?>" alt="Avatar">
-                                            <?= $this->getUserUpload ($unit_kerja[ 'id_user' ])[ 'nama' ] ?>
+                                            <img src="public/profile/<?= $this->user_detail ($unit_kerja[ 'id_user' ], 'image') ?>" alt="Avatar">
+                                            <?= $this->user_detail ($unit_kerja[ 'id_user' ], 'nama') ?>
                                         </td>
                                         <td><span class="label label-primary"><?= $unit_kerja['penugasan'] ?></span></td>
                                     </tr>

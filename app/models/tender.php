@@ -8,7 +8,6 @@
 
     namespace ryan\models;
 
-
     class tender extends \ryan\main {
 
         protected $container;
@@ -21,14 +20,15 @@
         public function addBeritaTender ($data) {
             $insert = $this->db->prepare ("
                 insert into 
-                tender(id_penyelenggara, id_user, judul_tender, link_website, wilayah, upload, tgl_mulai, tgl_selesai, tgl_upload, approval)
-                values(:id_penyelenggara, :id_user, :judul_tender, :link_website, :wilayah, :upload, :tgl_mulai, :tgl_selesai, :tgl_upload, :approval)
+                tender(id_penyelenggara, id_user, judul_tender, link_website, wilayah, kualifikasi, upload, tgl_mulai, tgl_selesai, tgl_upload, approval)
+                values(:id_penyelenggara, :id_user, :judul_tender, :link_website, :wilayah, :kualifikasi, :upload, :tgl_mulai, :tgl_selesai, :tgl_upload, :approval)
             ");
             $insert->bindParam(':id_penyelenggara', $data['id_penyelenggara']);
             $insert->bindParam(':id_user', $data['id_user']);
             $insert->bindParam(':judul_tender', $data['judul_tender']);
             $insert->bindParam(':link_website', $data['link_website']);
             $insert->bindParam(':wilayah', $data['wilayah']);
+            $insert->bindParam(':kualifikasi', $data['kualifikasi']);
             $insert->bindParam(':upload', $data['upload']);
             $insert->bindParam(':tgl_mulai', $data['tgl_mulai']);
             $insert->bindParam(':tgl_selesai', $data['tgl_selesai']);

@@ -28,10 +28,28 @@ $container['view'] = function ($container) {
 		$container->get('router'),
 		$container->get('request')->getUri()
 	));
-
+//	$view->loadExtension(new \ryan\template_helper($container));
 	$view->loadExtension(new League\Plates\Extension\URI($container->get('request')->getUri()->getPath()));
 
 	return $view;
+};
+
+$container['db'] = function ($container) {
+	$settings = $container['settings']['database'];
+	$db = new PDO("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);
+	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+	return $db;
+};
+
+$container['pdo'] = function ($container) {
+    $settings = $container['settings']['database'];
+    $pdo = new \Slim\PDO\Database("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    return $pdo;
 };
 
 $container['session'] = function ($c) {

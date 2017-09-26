@@ -51,13 +51,13 @@ $this->start ('contents');
                             <td class="cell-detail">
                                 <span><?= $tender['judul_tender'] ?></span>
                                 <span class="cell-detail-description">
-                                    <?= $this->indDate($tender['tgl_mulai']) ?>
+                                    <?= $this->local_date('fullDate_ID', $tender['tgl_mulai']) ?>
                                     &nbsp;s/d&nbsp;
-                                    <?= $this->indDate($tender['tgl_selesai']) ?>
+                                    <?= $this->local_date('fullDate_ID', $tender['tgl_selesai']) ?>
                                 </span>
                             </td>
                             <td class="cell-detail">
-                                <span><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></span>
+                                <span><?= $this->penyelenggara($tender['id_penyelenggara'], 'nama') ?></span>
                                 <span class="cell-detail-description">
                                     <?= $tender['wilayah'] ?>
                                 </span>

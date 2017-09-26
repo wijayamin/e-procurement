@@ -13,8 +13,8 @@
             <?php if($history['perubahan'] == 'i_tender'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Membuat berita tender ini
                             </p>
@@ -24,8 +24,8 @@
             <?php elseif($history['perubahan'] == 'e_tender'): ?>
                     <div class="timeline-content timeline-type comment">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengubah berita tender ini
                             </p>
@@ -35,8 +35,8 @@
             <?php elseif($history['perubahan'] == 'd_tender'): ?>
                     <div class="timeline-content timeline-type quote">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menghapus berita tender ini
                             </p>
@@ -46,8 +46,8 @@
             <?php elseif($history['perubahan'] == 'a_tender'): ?>
                     <div class="timeline-content timeline-type gallery">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Melakukan approval terhadap berita tender ini
                             </p>
@@ -69,8 +69,8 @@
             <?php elseif($history['perubahan'] == 'i_rks'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengupload dokumen RKS&nbsp;
                                 <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -83,8 +83,8 @@
             <?php elseif($history['perubahan'] == 'e_rks'): ?>
                     <div class="timeline-content timeline-type comment">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengganti dokumen RKS&nbsp;
                                 <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -97,8 +97,8 @@
             <?php elseif($history['perubahan'] == 'a_rks'): ?>
                     <div class="timeline-content timeline-type gallery">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Melakukan approval dokumen RKS&nbsp;
                                 <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -123,8 +123,8 @@
             <?php elseif($history['perubahan'] == 'i_acara'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengupload dokumen Berita Acara&nbsp;
                                 <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -137,8 +137,8 @@
             <?php elseif($history['perubahan'] == 'e_acara'): ?>
                     <div class="timeline-content timeline-type comment">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengganti dokumen Berita Acara&nbsp;
                                 <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -153,29 +153,67 @@
             <?php elseif($history['perubahan'] == 'i_unit'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menugaskan
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->getUserUpload($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
                                 dengan tugas
                                 <span class="text-primary"><?= $history['detail']['penugasan'] ?></span>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
+                        <div class="timeline-summary">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Nama</td>
+                                        <td>Penugasan</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="user-avatar">
+                                            <img src="public/profile/<?= $this->userDetailHelper($history['extra']['id_user'])['image'] ?>" alt="Avatar">
+                                            <?= $this->userDetailHelper($history['extra']['id_user'])['nama'] ?>
+                                        </td>
+                                        <td><?= $history['extra']['penugasan'] ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
             <?php elseif($history['perubahan'] == 'd_unit'): ?>
                     <div class="timeline-content timeline-type quote">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menghapus
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->getUserUpload($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
                                 dari tugas
                                 <span class="text-primary"><?= $history['detail']['penugasan'] ?></span>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
+                        </div>
+                        <div class="timeline-summary">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Nama</td>
+                                        <td>Penugasan</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="user-avatar">
+                                            <img src="public/profile/<?= $this->userDetailHelper($history['extra']['id_user'])['image'] ?>" alt="Avatar">
+                                            <?= $this->userDetailHelper($history['extra']['id_user'])['nama'] ?>
+                                        </td>
+                                        <td><?= $history['extra']['penugasan'] ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -184,11 +222,11 @@
             <?php elseif($history['perubahan'] == 'i_dok'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menambahkan dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->getUserUpload($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -196,8 +234,8 @@
             <?php elseif($history['perubahan'] == 'u_dok'): ?>
                     <div class="timeline-content timeline-type quote">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengupload
                                 <span class="text-primary"><?= $history['detail']['file_dokumen'] ?></span>
@@ -210,8 +248,8 @@
             <?php elseif($history['perubahan'] == 'e_dok'): ?>
                     <div class="timeline-content timeline-type comment">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengubah dokumen
                                 <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
@@ -222,11 +260,11 @@
             <?php elseif($history['perubahan'] == 'd_dok'): ?>
                     <div class="timeline-content timeline-type quote">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menghapus dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->getUserUpload($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -234,8 +272,8 @@
             <?php elseif($history['perubahan'] == 'a_dok'): ?>
                 <div class="timeline-content timeline-type gallery">
                     <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                    <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                    <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                    <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                    <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                         <p class="timeline-activity">
                             Melakukan approval dokumen RKS&nbsp;
                             <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -261,45 +299,81 @@
             <?php elseif($history['perubahan'] == 'i_boq'): ?>
                     <div class="timeline-content timeline-type file">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menambahkan penawaran BOQ
                                 <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_vendor'] ?> - <?= $history['detail']['nama_barang'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
+                        <div class="timeline-summary">
+                            <table class="table">
+                                <tr>
+                                    <td width="50%"><?= $history['extra']['nama_vendor'] ?></td>
+                                    <td width="50%"><?= $history['extra']['nama_barang'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%">Rp. <?= $history['extra']['harga_persatuan'] ?>/<?= $history['extra']['ukuran_satuan'] ?></td>
+                                    <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
             <?php elseif($history['perubahan'] == 'e_boq'): ?>
                     <div class="timeline-content timeline-type comment">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengubah penawaran BOQ
                                 <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_vendor'] ?> - <?= $history['detail']['nama_barang'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
+                        <div class="timeline-summary">
+                            <table class="table">
+                                <tr>
+                                    <td width="50%"><?= $history['extra']['nama_vendor'] ?></td>
+                                    <td width="50%"><?= $history['extra']['nama_barang'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%">Rp. <?= $history['extra']['harga_persatuan'] ?>/<?= $history['extra']['ukuran_satuan'] ?></td>
+                                    <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
             <?php elseif($history['perubahan'] == 'd_boq'): ?>
                     <div class="timeline-content timeline-type quote">
                         <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                        <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                        <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                        <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                        <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menghapus penawaran BOQ
                                 <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_vendor'] ?> - <?= $history['detail']['nama_barang'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
+                        <div class="timeline-summary">
+                            <table class="table">
+                                <tr>
+                                    <td width="50%"><?= $history['extra']['nama_vendor'] ?></td>
+                                    <td width="50%"><?= $history['extra']['nama_barang'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%">Rp. <?= $history['extra']['harga_persatuan'] ?>/<?= $history['extra']['ukuran_satuan'] ?></td>
+                                    <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
 
             <?php elseif($history['perubahan'] == 'a_boq'): ?>
                 <div class="timeline-content timeline-type gallery">
                     <div class="timeline-icon"><i class="icon mdi mdi-assignment"></i></div>
-                    <div class="timeline-avatar"><img src="public/profile/<?= $this->getUserUpload($history['id_user'])['image'] ?>" alt="Avatar" class="circle"></div>
-                    <div class="timeline-header"><span class="timeline-autor"><?= $this->getUserUpload($history['id_user'])['nama'] ?></span>
+                    <div class="timeline-avatar"><img src="public/profile/<?= $this->user_detail($history['id_user'], 'image') ?>" alt="Avatar" class="circle"></div>
+                    <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                         <p class="timeline-activity">
                             Melakukan approval penawaran BOQ&nbsp;
                             <a href="<?= $this->pathFor('rksAcara_detail', ['id_tender'=>$history['id_tender']]) ?>">
@@ -309,6 +383,16 @@
                         <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                     </div>
                     <div class="timeline-summary">
+                        <table class="table">
+                            <tr>
+                                <td width="50%"><?= $history['extra']['nama_vendor'] ?></td>
+                                <td width="50%"><?= $history['extra']['nama_barang'] ?></td>
+                            </tr>
+                            <tr>
+                                <td width="50%">Rp. <?= $history['extra']['harga_persatuan'] ?>/<?= $history['extra']['ukuran_satuan'] ?></td>
+                                <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
+                            </tr>
+                        </table>
                         <p>
                         <div class="btn-group btn-space">
                             <button type="button" class="btn btn-color <?= $history['meta'] == 'diterima' ? 'btn-success' : 'btn-danger' ?>">

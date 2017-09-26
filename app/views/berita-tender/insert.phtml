@@ -75,6 +75,16 @@ Tambah Berita Tender
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group  has-feedback">
+                        <label>Kualifikasi</label>
+<!--                        <input type="text" placeholder="Besar; Menengah; Kecil;" name="kualifikasi" class="form-control"  data-error="Wajib di isi" required>-->
+                        <select multiple="" class="kualifikasi" name="kualifikasi[]"  data-error="Wajib di isi" required>
+                            <?php foreach ($this->autocomplete('kualifikasi') as $kualifikasi): ?>
+                                <option value="<?= $kualifikasi ?>"><?= $kualifikasi ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group  has-feedback">
                         <label>Link Website</label>
                         <input type="text" placeholder="http://www.example.com" name="link_website" class="form-control"  data-error="Wajib di isi" required>
                         <div class="help-block with-errors"></div>
@@ -198,7 +208,7 @@ Tambah Berita Tender
         });
 
         //Select2
-
+        $(".kualifikasi").select2({tags: true, width: '100%'});
 
         //Select2 tags
     });

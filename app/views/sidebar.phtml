@@ -4,17 +4,17 @@
             <ul role="tablist" class="nav nav-tabs nav-justified">
                 <li role="presentation" class="active"><a href="#tab-notifikasi" aria-controls="tab-notifikasi" role="tab" data-toggle="tab">Notifikasi</a></li>
                 <li role="presentation"><a href="#tab-history" aria-controls="tab-history" role="tab" data-toggle="tab">History</a></li>
-                <li role="presentation"><a href="#tab-coba" aria-controls="tab-coba" role="tab" data-toggle="tab">History</a></li>
+
             </ul>
         </div>
         <div class="tab-panel">
             <div class="tab-content">
                 <div id="tab-notifikasi" role="tabpanel" class="tab-pane tab-todo active">
-                    <div class="todo-container be-notifications">
-                        <div class="list">
+                    <div class="todo-container  be-notifications">
+                        <div class="todo-wrapper">
                             <div class="be-scroller">
-                                <div class="content">
-                                    <ul>
+                                <div class="todo-content"  style="padding: 0px !important;">
+                                    <ul style="padding: 0px !important; line-height: 0px !important;">
                                         <?php for($i=0; $i<count($notifikasi); $i++): ?>
                                             <?php $user_detail = $this->getUserDetail($notifikasi[$i]['by_user']); ?>
                                             <li class="notification <?= ($notifikasi[$i]['status'] == null ? 'notification-unread' : '') ?>">
@@ -38,58 +38,8 @@
                         </div>
                     </div>
                 </div>
+                
                 <div id="tab-history" role="tabpanel" class="tab-pane tab-todo">
-                    <div class="todo-container">
-                        <div class="todo-wrapper">
-                            <div class="be-scroller">
-                                <div class="todo-content be-notifications" style="padding: 0px !important;">
-                                    <ul style="padding: 0px !important; line-height: 0px !important;">
-                                        <?php foreach ($histories as $history): ?>
-                                            <?php if($history['perubahan'] == 'i_tender'): ?>
-                                                <li class="notification">
-                                                    <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$history['id_tender']]) ?>">
-                                                        <div class="image"><img src="public/profile/<?= $this->userDetailHelper($history['id_user'])['image'] ?>" alt="Avatar"></div>
-                                                        <div class="notification-info">
-                                                            <div class="text">
-                                                                <span class="user-name"><?= $this->userDetailHelper($history['id_user'])['nama'] ?></span><br>
-                                                                Membuat berita tender <?= $history['detail']['judul_tender'] ?>
-                                                            </div>
-                                                            <span class="date"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            <?php elseif($history['perubahan'] == 'e_tender'): ?>
-                                                <li class="notification">
-                                                    <a href="<?= $this->pathFor('beritaTender_detail', ['id_tender'=>$history['id_tender']]) ?>">
-                                                        <div class="image"><img src="public/profile/<?= $this->userDetailHelper($history['id_user'])['image'] ?>" alt="Avatar"></div>
-                                                        <div class="notification-info">
-                                                            <div class="text">
-                                                                <span class="user-name"><?= $this->userDetailHelper($history['id_user'])['nama'] ?></span><br>
-                                                                <?= 'a' ?>
-                                                            </div>
-                                                            <span class="date"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-<!--                    <div class="todo-container be-notifications todo-container">-->
-<!--                        <div class="todo-wrapper">-->
-<!--                            <div class="be-scroller">-->
-<!--                                <div class="content">-->
-<!---->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-                </div>
-                <div id="tab-coba" role="tabpanel" class="tab-pane tab-todo">
                     <div class="todo-container" id="history-list">
                         <div class="bottom-input">
                             <input type="text" placeholder="Cari History" class="history-search" style="border-bottom: 1px solid #d5d8de">

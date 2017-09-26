@@ -11,40 +11,36 @@
     use \Slim\Container as Container;
     use \Slim\Http\Request as Req;
     use \Slim\Http\Response as Res;
-    use PDO;
 
     class main {
         protected $container;
+        /** @var \PDO $db */
         protected $db;
         protected $view;
+        /** @var \SlimSession\Helper $session */
         protected $session;
+        /** @var \Slim\Router $router */
         protected $router;
+        /** @var \Slim\Flash\Messages $flash */
         protected $flash;
         protected $uri;
+        /** @var \Slim\PDO\Database $pdo */
         protected $pdo;
+        /** @var \PHPMailerOAuth $mailer */
         protected $mailer;
         protected $notFoundHandler;
+        /** @var \Dompdf\Dompdf $mailer */
         protected $pdf;
 
         function __construct (Container $container) {
             $this->container = $container;
-//            $this->db = $container->db;
+            $this->db = $container->db;
+            $this->pdo = $container->pdo;
             $this->view = $container->view;
             $this->session = $container->session;
             $this->router = $container->router;
             $this->flash = $container->flash;
             $this->notFoundHandler = $container->notFoundHandler;
-
-            $settings = $container->get('settings')['database'];
-            $this->db = new PDO("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-            $this->pdo = new \Slim\PDO\Database("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             $mailer_seting = $container->get('settings')['mailer'];
             $this->mailer = new \PHPMailerOAuth();

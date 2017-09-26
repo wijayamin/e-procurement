@@ -42,13 +42,21 @@ $this->start('contents');
                     <div class="form-group form-group-sm">
                         <label class="control-label">Nama Penyelenggara</label>
                         <div class="well well-sm aside-well">
-                            <strong><?= $this->getNamaPenyelenggara($tender['id_penyelenggara']) ?></strong>
+                            <strong><?= $this->penyelenggara($tender['id_penyelenggara'], 'nama') ?></strong>
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
                         <label class="control-label">Lokasi Tender</label>
                         <div class="well well-sm aside-well">
                             <strong><?= $tender['wilayah'] ?></strong>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="control-label">Kualifikasi</label>
+                        <div class="well well-sm aside-well">
+                            <?php foreach ($this->autocomplete('kualifikasi', ['id_tender'=>$tender['id_tender']]) as $kualifikasi): ?>
+                                <span class="label label-default"><?= $kualifikasi ?></span>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <div class="form-group form-group-sm">
