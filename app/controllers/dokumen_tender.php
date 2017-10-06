@@ -199,6 +199,11 @@ class dokumen_tender extends \ryan\main {
             if($insert){
                 $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'u_dok', $insert);
                 $file->moveTo("public/content/dokumen/".$file_dokumen);
+                $tender = $this->tenderModels->getBeritaTender($id_tender);
+                $direktur = $this->userModels->getDirektur();
+                $this->sendSMS($direktur['telefon'], 'Dokumen "'.$nama_dokumen.'" telah ditambahkan untuk Berita tender "' . $tender['judul_tender'] . '"');
+                $manajer = $this->userModels->getManajer();
+                $this->sendSMS($manajer['telefon'], 'Dokumen "'.$nama_dokumen.'" telah ditambahkan untuk Berita tender "' . $tender['judul_tender'] . '"');
                 return $res->withJson([
                     "status"=>"success"
                 ]);

@@ -25,6 +25,7 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
             'Slim\\PDO\\' => 9,
             'Slim\\Flash\\' => 11,
             'Slim\\' => 5,
+            'Silalahi\\Slim\\' => 14,
         ),
         'P' => 
         array (
@@ -79,6 +80,10 @@ class ComposerStaticInit9855a66fce92b64858900eb50dab6062
         'Slim\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
+        'Silalahi\\Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/silalahi/slim-logger/src',
         ),
         'Psr\\Log\\' => 
         array (

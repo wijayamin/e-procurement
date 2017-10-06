@@ -172,6 +172,11 @@ class BOQTender extends \ryan\main{
         $insert = $this->BOQModels->setBOQ($data);
         if($insert){
             $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_boq', $insert);
+            $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
+            $direktur = $this->userModels->getDirektur();
+            $this->sendSMS($direktur['telefon'], 'BOQ  "' . $data['nama_vendor'] . ' - ' . $data['nama_barang'] . '" telah ditambahkan ke tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
+            $manajer = $this->userModels->getManajer();
+            $this->sendSMS($manajer['telefon'], 'BOQ  "' . $data['nama_vendor'] . ' - ' . $data['nama_barang'] . '" telah ditambahkan ke tender"' . $tender['judul_tender'] . '" telah dirubah. mohon melakukan approval ulang');
             return $res->withJson([
                 'status'=>'success'
             ]);

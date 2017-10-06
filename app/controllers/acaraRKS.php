@@ -103,6 +103,10 @@ class acaraRKS extends \ryan\main {
                     $manajer = $this->userModels->getManajer();
                     $this->sendSMS($manajer['telefon'], 'Dokumen RKS Berita tender "' . $tender['judul_tender'] . '" telah dirubah mohon melakukan approval ulang');
                 }else{
+                    $direktur = $this->userModels->getDirektur();
+                    $this->sendSMS($direktur['telefon'], 'Dokumen RKS Berita tender "' . $tender['judul_tender'] . '" telah ditambahkan.');
+                    $manajer = $this->userModels->getManajer();
+                    $this->sendSMS($manajer['telefon'], 'Dokumen RKS Berita tender "' . $tender['judul_tender'] . '" telah ditambahkan.');
                     $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_rks', $args['id_tender']);
                 }
             }else{

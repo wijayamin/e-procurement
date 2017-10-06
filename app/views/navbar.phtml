@@ -108,15 +108,14 @@
                                 </li>
 
                             <?php endif; ?>
-
-                            <li class="divider">
-                                <span class="label label-default">Pengaturan</span>
-                            </li>
-
-                            <li>
-                                <a href="<?= $this->pathFor('dokumenMaster_daftar') ?>"><i class="icon mdi mdi-file-text"></i><span>Dokumen Master Adm</span></a>
-                            </li>
-
+                            <?php if (in_array ($active_user_data[ 'previledge' ], ['1'])): ?>
+                                <li class="divider">
+                                    <span class="label label-default">Pengaturan</span>
+                                </li>
+                                <li>
+                                    <a href="<?= $this->pathFor('dokumenMaster_daftar') ?>"><i class="icon mdi mdi-file-text"></i><span>Dokumen Master Adm</span></a>
+                                </li>
+                            <?php endif; ?>
                         <?php else: ?>
                             <li class="<?=  (in_array ($active_user_data[ 'previledge' ], ['5']) ? '' : 'hidden') ?>">
                                 <a href="<?= $this->pathFor('users_daftar') ?>"><i class="icon mdi mdi-run"></i><span>Pengguna</span></a>

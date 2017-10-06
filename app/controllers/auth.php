@@ -187,7 +187,7 @@
 
         public function reSendVerificationSMS(Req $req, Res $res, $args){
             $smscode = strtoupper(bin2hex(openssl_random_pseudo_bytes(3)));
-            $user = $this->userModels->getUserByToken($args['token']);
+            $user = $this->userModels->getUserByToken($args['id_user']);
             $data = [
                 'smscode'=>$smscode
             ];
@@ -310,7 +310,7 @@
                     case 'd_boq':
                     case 'a_boq':
                         $history['detail'] = $this->tenderModels->getBeritaTender($history['id_tender']);
-                        $history['extra'] = $this->BOQModels->getBOQ('38');
+                        $history['extra'] = $this->BOQModels->getBOQ($history['id_perubahan']);
                         break;
                 }
             }

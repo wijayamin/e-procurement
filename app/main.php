@@ -31,6 +31,8 @@
         protected $notFoundHandler;
         /** @var \Dompdf\Dompdf $mailer */
         protected $pdf;
+        /** @var \Silalahi\Slim\Logger $logger */
+        protected $logger;
 
         function __construct (Container $container) {
             $this->container = $container;
@@ -41,6 +43,7 @@
             $this->router = $container->router;
             $this->flash = $container->flash;
             $this->notFoundHandler = $container->notFoundHandler;
+            $this->logger = $container->logger;
 
             $mailer_seting = $container->get('settings')['mailer'];
             $this->mailer = new \PHPMailerOAuth();
@@ -147,6 +150,7 @@
                 CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=' . $settings['username'] . '&pass=' . $settings['password'] . '&no=' . $nomor . '&isi=' . $pesan
             ));
             $response = curl_exec($curl);
+            $this->logger->write($response, \Silalahi\Slim\Logger::INFO);
             if(strpos($response, 'sukses') !== false){
                 return true;
             }else{

@@ -368,8 +368,8 @@
                     case 'e_boq':
                     case 'd_boq':
                     case 'a_boq':
-                        $history['detail'] = $this->BOQModels->getBOQ('38');
-                        $history['extra'] = $this->BOQModels->getBOQ('38');
+                        $history['detail'] = $this->BOQModels->getBOQ($history['id_perubahan']);
+                        $history['extra'] = $this->BOQModels->getBOQ($history['id_perubahan']);
                         break;
                 }
             }

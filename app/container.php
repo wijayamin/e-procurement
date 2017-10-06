@@ -68,3 +68,15 @@ $container['notFoundHandler'] = function ($container) {
 			->write($container->view->getPlates()->render("404"));
 	};
 };
+
+$container['logger'] = function($c) {
+    return new Silalahi\Slim\Logger(
+        [
+            'path' => '.',
+            'name' => 'sms_log_',
+            'name_format' => 'Y-m-d',
+            'extension' => '.txt'
+        ]
+    );
+};
+
