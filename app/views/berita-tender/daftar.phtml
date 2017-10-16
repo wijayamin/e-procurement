@@ -66,22 +66,22 @@ $this->start ('contents');
                                 <td class="milestone text-center">
                                     <span class="completed">
                                         Direktur<br>
-                                        <?php if ($approve['direktur']['status'] == ''): ?>
-                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
-                                        <?php elseif ($approve['direktur']['status'] == 'diterima'): ?>
+                                        <?php if ($approve['direktur']['status'] == 'diterima'): ?>
                                             <button type="button" class="btn btn-success btn-xs"><i class="icon mdi mdi-check-circle"></i></button>
-                                        <?php else: ?>
+                                        <?php elseif ($approve['direktur']['status'] == 'ditolak'): ?>
                                             <button type="button" class="btn btn-danger btn-xs"><i class="icon mdi mdi-close-circle-o"></i></button>
+                                        <?php else: ?>
+                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
                                         <?php endif; ?>
                                     </span>
                                     <span class="version">
                                         Manajer<br>
-                                        <?php if ($approve['manajer']['status'] == ''): ?>
-                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
-                                        <?php elseif ($approve['manajer']['status'] == 'diterima'): ?>
+                                        <?php if ($approve['manajer']['status'] == 'diterima'): ?>
                                             <button type="button" class="btn btn-success btn-xs"><i class="icon mdi mdi-check-circle"></i></button>
-                                        <?php else: ?>
+                                        <?php elseif ($approve['manajer']['status'] == 'ditolak'): ?>
                                             <button type="button" class="btn btn-danger btn-xs"><i class="icon mdi mdi-close-circle-o"></i></button>
+                                        <?php else: ?>
+                                            <button type="button" class="btn btn-default btn-xs"><i class="icon mdi mdi-circle-o"></i> </button>
                                         <?php endif; ?>
                                     </span>
                                 </td>

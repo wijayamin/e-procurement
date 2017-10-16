@@ -136,15 +136,15 @@ $this->start('contents');
                 <button type="button" data-dismiss="modal" aria-hidden="true" class="close modal-close"><span class="mdi mdi-close"></span></button>
                 <h3 class="modal-title">Custom Header Color</h3>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 0 !important;">
                 <!-- 16:9 aspect ratio -->
                 <div class="embed-responsive embed-responsive-16by9">
                     <div id="emebed-pdf" class="embed-responsive-item"></div>
                 </div>
+                <textarea class="form-control keterangan hidden" rows="3" placeholder="Tambahkan keterangan kenapa anda menolak"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-success modal-terima modal-close hidden">Approve</button>
-                <button type="button" data-dismiss="modal" class="btn btn-danger modal-tolak modal-close hidden">Tolak</button>
+                <button type="button" data-dismiss="modal" class="btn btn-success modal-approve modal-close">Approve</button>
                 <button type="button" data-dismiss="modal" class="btn btn-default modal-close">Batal</button>
             </div>
         </div>
@@ -256,14 +256,14 @@ $this->start('js');
                         render: function (data, type, row, meta) {
                             if (data.file_dokumen) {
                                 return  '<div class="btn-group btn-space btn-group-xs">'+
-                                    '   <button type="button" class="btn btn-color '+(data.approval.direktur.status == '' ? 'btn-default' : (data.approval.direktur.status == 'diterima' ? 'btn-success' : 'btn-danger'))+'">'+
-                                    '       <i class="icon mdi '+(data.approval.direktur.status == '' ? 'mdi-circle-o' : (data.approval.direktur.status == 'diterima' ? 'mdi-check-circle' : 'mdi-close"'))+'"></i>'+
+                                    '   <button type="button" class="btn btn-color '+(!data.approval.direktur.status ? 'btn-default' : (data.approval.direktur.status == 'diterima' ? 'btn-success' : 'btn-danger'))+'">'+
+                                    '       <i class="icon mdi '+(!data.approval.direktur.status ? 'mdi-circle-o' : (data.approval.direktur.status == 'diterima' ? 'mdi-check-circle' : 'mdi-close"'))+'"></i>'+
                                     '   </button>'+
                                     '   <button type="button" class="btn btn-default">Direktur</button>'+
                                     '</div>'+
                                     '<div class="btn-group btn-space btn-group-xs">'+
-                                    '   <button type="button" class="btn btn-color '+(data.approval.manajer.status == '' ? 'btn-default' : (data.approval.manajer.status == 'diterima' ? 'btn-success' : 'btn-danger'))+'">'+
-                                    '       <i class="icon mdi '+(data.approval.manajer.status == '' ? 'mdi-circle-o' : (data.approval.manajer.status == 'diterima' ? 'mdi-check-circle' : 'mdi-close"'))+'"></i>'+
+                                    '   <button type="button" class="btn btn-color '+(!data.approval.manajer.status ? 'btn-default' : (data.approval.manajer.status == 'diterima' ? 'btn-success' : 'btn-danger'))+'">'+
+                                    '       <i class="icon mdi '+(!data.approval.manajer.status ? 'mdi-circle-o' : (data.approval.manajer.status == 'diterima' ? 'mdi-check-circle' : 'mdi-close"'))+'"></i>'+
                                     '   </button>'+
                                     '   <button type="button" class="btn btn-default">Manajer</button>'+
                                     '</div>';
@@ -316,34 +316,62 @@ $this->start('js');
                             modal.removeClass('colored-header-danger');
                             modal.addClass('colored-header-success');
                             modal.find('h3.modal-title').html('Approve Dokumen <strong>'+nama_dokumen+'</strong>?');
-                            modal.find('.modal-terima').removeClass('hidden');
-                            modal.find('.modal-tolak').addClass('hidden');
+                            modal.find('.modal-approve').addClass('btn-success');
+                            modal.find('.modal-approve').removeClass('btn-danger');
+                            modal.find('.modal-approve').html('Setujui');
+                            modal.find('.keterangan').addClass('hidden');
                         }else{
                             modal.addClass('colored-header-danger');
                             modal.removeClass('colored-header-success');
                             modal.find('h3.modal-title').html('Tolak Dokumen <strong>'+nama_dokumen+'</strong>?');
-                            modal.find('.modal-terima').addClass('hidden');
-                            modal.find('.modal-tolak').removeClass('hidden');
+                            modal.find('.modal-approve').removeClass('btn-success');
+                            modal.find('.modal-approve').addClass('btn-danger');
+                            modal.find('.modal-approve').html('Tolak');
+                            modal.find('.keterangan').removeClass('hidden');
                         }
                         PDFObject.embed('public/content/dokumen/'+file_dokumen, modal.find('#emebed-pdf'), {height: "35rem"});
                     },
                     buttons: [
                         {
-                            class: 'modal-terima',
+                            class: 'modal-approve',
                             callback: function ( btn, modals, event ) {
                                 var modal = $(modals.modalEl);
-                                $.getJSON("<?= $this->pathFor('dokumenTender_Approval') ?>/"+id_dokumen+'/diterima', function(data){
-                                    if(data.status == "success"){
-                                        $.gritter.add({
-                                            title: 'Approval Dokumen',
-                                            text: 'Anda berhasil menyetujui dokumen <strong>'+nama_dokumen+'</strong>',
-                                            class_name: 'color success',
-                                            time: '5',
-                                        });
-                                        dokReq.ajax.reload();
-                                        return true;
-                                    }
-                                });
+                                var keterangan = modal.find('.keterangan').val();
+                                $.post(
+                                    '<?= $this->pathFor('dokumenTender_Approval') ?>',
+                                    {
+                                        id_dokumen:id_dokumen,
+                                        status:(type == 'terima' ? 'diterima' : 'ditolak'),
+                                        keterangan:keterangan
+                                    },
+                                    function(data){
+                                        if(data.status == 'success'){
+                                            $.gritter.add({
+                                                title: 'Approval Dokumen',
+                                                text: 'Anda berhasil menyetujui dokumen <strong>'+nama_dokumen+'</strong>',
+                                                class_name: 'color success',
+                                                time: '5',
+                                            });
+                                            dokReq.ajax.reload();
+                                            return true;
+                                        }
+                                    },
+                                    "json"
+                                );
+                                modal.find('.keterangan').val(null);
+                                return true;
+//                                $.getJSON("<?//= $this->pathFor('dokumenTender_Approval') ?>///"+id_dokumen+'/diterima', function(data){
+//                                    if(data.status == "success"){
+//                                        $.gritter.add({
+//                                            title: 'Approval Dokumen',
+//                                            text: 'Anda berhasil menyetujui dokumen <strong>'+nama_dokumen+'</strong>',
+//                                            class_name: 'color success',
+//                                            time: '5',
+//                                        });
+//                                        dokReq.ajax.reload();
+//                                        return true;
+//                                    }
+//                                });
                             }
                         },
                         {
@@ -381,9 +409,13 @@ $this->start('js');
                         data: null,
                         className:' cell-detail',
                         render: function (data, type, row, meta) {
-                            return  '<span>'+data.nama_dokumen+'</span>'+
-                                '<a href="public/content/dokumen/'+data.file_dokumen+'" target="_blank" class="cell-detail-description">'+data.file_dokumen.substr(0, 25)+'</a>';
-//                            return data.nama_dokumen;
+                            if(data.file_dokumen){
+                                return  '<span>'+data.nama_dokumen+'</span>'+
+                                    '<a href="public/content/dokumen/'+data.file_dokumen+'" target="_blank" class="cell-detail-description">'+data.file_dokumen.substr(0, 25)+'</a>';
+                            }else{
+                                return  '<span>'+data.nama_dokumen+'</span>'+
+                                    '<span class="cell-detail-description">Belum Diupload</span>';
+                            }
                         }
                     },
                     {
@@ -424,17 +456,21 @@ $this->start('js');
                         data: null,
                         className: "text-center",
                         render: function (data, type, row, meta) {
-                            return  '<div class="btn-group btn-space">' +
-                                '   <a href="public/content/dokumen/' + data.file_dokumen + '" target="_blank" class="btn btn-primary btn-lihat" data-toggle="tooltip" data-placement="top" data-original-title="Lihat Dokumen">' +
-                                '       <i class="icon mdi mdi-eye"></i>' +
-                                '   </a>' +
-                                '   <button type="button" class="btn btn-success btn-approve" '+(active_user.previledge == '3' && data.approval.manajer.status == 'diterima' ? 'disabled' : '')+(active_user.previledge == '2' && data.approval.direktur.status == 'diterima' ? 'disabled' : '')+' data-id="'+data.id_dokumen+'" data-dokumen="'+data.nama_dokumen+'" data-file="'+data.file_dokumen+'" data-type="terima" data-toggle="tooltip" data-placement="top" data-original-title="Setujui Dokumen">' +
-                                '       <i class="icon mdi mdi-check"></i>' +
-                                '   </button>' +
-                                '   <button type="button" class="btn btn-danger btn-approve" '+(active_user.previledge == '3' && data.approval.manajer.status == 'ditolak' ? 'disabled' : '')+(active_user.previledge == '2' && data.approval.direktur.status == 'ditolak' ? 'disabled' : '')+' data-id="'+data.id_dokumen+'" data-dokumen="'+data.nama_dokumen+'" data-file="'+data.file_dokumen+'" data-type="tolak" data-toggle="tooltip" data-placement="top" data-original-title="Tolak Dokumen">' +
-                                '       <i class="icon mdi mdi-close"></i>' +
-                                '   </button>' +
-                                '</div>';
+                            if (data.file_dokumen) {
+                                return  '<div class="btn-group btn-space">' +
+                                    '   <a href="public/content/dokumen/' + data.file_dokumen + '" target="_blank" class="btn btn-primary btn-lihat" data-toggle="tooltip" data-placement="top" data-original-title="Lihat Dokumen">' +
+                                    '       <i class="icon mdi mdi-eye"></i>' +
+                                    '   </a>' +
+                                    '   <button type="button" class="btn btn-success btn-approve" '+(active_user.previledge == '3' && data.approval.manajer.status == 'diterima' ? 'disabled' : '')+(active_user.previledge == '2' && data.approval.direktur.status == 'diterima' ? 'disabled' : '')+' data-id="'+data.id_dokumen+'" data-dokumen="'+data.nama_dokumen+'" data-file="'+data.file_dokumen+'" data-type="terima" data-toggle="tooltip" data-placement="top" data-original-title="Setujui Dokumen">' +
+                                    '       <i class="icon mdi mdi-check"></i>' +
+                                    '   </button>' +
+                                    '   <button type="button" class="btn btn-danger btn-approve" '+(active_user.previledge == '3' && data.approval.manajer.status == 'ditolak' ? 'disabled' : '')+(active_user.previledge == '2' && data.approval.direktur.status == 'ditolak' ? 'disabled' : '')+' data-id="'+data.id_dokumen+'" data-dokumen="'+data.nama_dokumen+'" data-file="'+data.file_dokumen+'" data-type="tolak" data-toggle="tooltip" data-placement="top" data-original-title="Tolak Dokumen">' +
+                                    '       <i class="icon mdi mdi-close"></i>' +
+                                    '   </button>' +
+                                    '</div>';
+                            } else {
+                                return "<small class='text-muted'>Belum Diupload</small>"
+                            }
                         }
                     },
                 ],
@@ -459,34 +495,50 @@ $this->start('js');
                             modal.removeClass('colored-header-danger');
                             modal.addClass('colored-header-success');
                             modal.find('h3.modal-title').html('Approve Dokumen <strong>'+nama_dokumen+'</strong>?');
-                            modal.find('.modal-terima').removeClass('hidden');
-                            modal.find('.modal-tolak').addClass('hidden');
+                            modal.find('.modal-approve').addClass('btn-success');
+                            modal.find('.modal-approve').removeClass('btn-danger');
+                            modal.find('.modal-approve').html('Setujui');
+                            modal.find('.keterangan').addClass('hidden');
                         }else{
                             modal.addClass('colored-header-danger');
                             modal.removeClass('colored-header-success');
                             modal.find('h3.modal-title').html('Tolak Dokumen <strong>'+nama_dokumen+'</strong>?');
-                            modal.find('.modal-terima').addClass('hidden');
-                            modal.find('.modal-tolak').removeClass('hidden');
+                            modal.find('.modal-approve').removeClass('btn-success');
+                            modal.find('.modal-approve').addClass('btn-danger');
+                            modal.find('.modal-approve').html('Tolak');
+                            modal.find('.keterangan').removeClass('hidden');
                         }
                         PDFObject.embed('public/content/dokumen/'+file_dokumen, modal.find('#emebed-pdf'), {height: "35rem"});
                     },
                     buttons: [
                         {
-                            class: 'modal-terima',
+                            class: 'modal-approve',
                             callback: function ( btn, modals, event ) {
                                 var modal = $(modals.modalEl);
-                                $.getJSON("<?= $this->pathFor('dokumenTender_Approval') ?>/"+id_dokumen+'/diterima', function(data){
-                                    if(data.status == "success"){
-                                        $.gritter.add({
-                                            title: 'Approval Dokumen',
-                                            text: 'Anda berhasil menyetujui dokumen <strong>'+nama_dokumen+'</strong>',
-                                            class_name: 'color success',
-                                            time: '5',
-                                        });
-                                        dokOpt.ajax.reload();
-                                        return true;
-                                    }
-                                });
+                                var keterangan = modal.find('.keterangan').val();
+                                $.post(
+                                    '<?= $this->pathFor('dokumenTender_Approval') ?>',
+                                    {
+                                        id_dokumen:id_dokumen,
+                                        status:(type == 'terima' ? 'diterima' : 'ditolak'),
+                                        keterangan:keterangan
+                                    },
+                                    function(data){
+                                        if(data.status == 'success'){
+                                            $.gritter.add({
+                                                title: 'Approval Dokumen',
+                                                text: 'Anda berhasil menyetujui dokumen <strong>'+nama_dokumen+'</strong>',
+                                                class_name: 'color success',
+                                                time: '5',
+                                            });
+                                            dokReq.ajax.reload();
+                                            return true;
+                                        }
+                                    },
+                                    "json"
+                                );
+                                modal.find('.keterangan').val(null);
+                                return true;
                             }
                         },
                         {

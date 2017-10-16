@@ -63,23 +63,13 @@ $this->start ('contents');
                                     <?= $tender['wilayah'] ?>
                                 </span>
                             </td>
-                            <?php if($approval): ?>
-                                <td class="milestone">
-                                    <span class="completed">&nbsp;</span>
-                                    <span class="version"><?= $this->countDokumen($tender['id_tender'])['done'] ?> dari <?= $this->countDokumen($tender['id_tender'])['total'] ?> Dokumen</span>
-                                    <div class="progress">
-                                        <div style="width: <?= $this->countDokumen($tender['id_tender'])['done']/$this->countDokumen($tender['id_tender'])['total']*100 ?>%" class="progress-bar progress-bar-primary"></div>
-                                    </div>
-                                </td>
-                            <?php else: ?>
-                                <td class="milestone">
-                                    <span class="completed">&nbsp;</span>
-                                    <span class="version"><?= $this->countDokumen($tender['id_tender'])['done'] ?> dari <?= $this->countDokumen($tender['id_tender'])['total'] ?> Dokumen</span>
-                                    <div class="progress">
-                                        <div style="width: <?= $this->countDokumen($tender['id_tender'])['done']/$this->countDokumen($tender['id_tender'])['total']*100 ?>%" class="progress-bar progress-bar-primary"></div>
-                                    </div>
-                                </td>
-                            <?php endif; ?>
+                            <td class="milestone">
+                                <span class="completed">&nbsp;</span>
+                                <span class="version"><?= $this->dokumen_count($tender['id_tender'])[($approval ? 'approved' : 'uploaded')] ?> dari <?= $this->dokumen_count($tender['id_tender'])['total'] ?> Dokumen</span>
+                                <div class="progress">
+                                    <div style="width: <?= $this->dokumen_count($tender['id_tender'])[($approval ? 'approved' : 'uploaded')]/$this->dokumen_count($tender['id_tender'])['total']*100 ?>%" class="progress-bar progress-bar-primary"></div>
+                                </div>
+                            </td>
                             <td class="actions">
                                 <?php if( $approval ): ?>
                                     <a href="<?= $this->pathFor('dokumenTender_detailApproval' , ['id_tender'=>$tender['id_tender']]) ?>" class="btn btn-space btn-primary"><i class="icon icon-left mdi mdi-check-circle" style="color:#fff;"></i> Approval</a>

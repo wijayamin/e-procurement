@@ -142,19 +142,23 @@
         }
 
         public function sendSMS($nomor, $messages){
-            $curl = curl_init();
-            $pesan = urlencode($messages);
             $settings = $this->container->get('settings')['sms'];
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=' . $settings['username'] . '&pass=' . $settings['password'] . '&no=' . $nomor . '&isi=' . $pesan
-            ));
-            $response = curl_exec($curl);
-            $this->logger->write($response, \Silalahi\Slim\Logger::INFO);
-            if(strpos($response, 'sukses') !== false){
-                return true;
+            if($settings['enabled']){
+                $curl = curl_init();
+                $pesan = urlencode($messages);
+                curl_setopt_array($curl, array(
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_URL => 'http://www.freesms4us.com/kirimsms.php?user=' . $settings['username'] . '&pass=' . $settings['password'] . '&no=' . $nomor . '&isi=' . $pesan
+                ));
+                $response = curl_exec($curl);
+                $this->logger->write($response, \Silalahi\Slim\Logger::INFO);
+                if(strpos($response, 'sukses') !== false){
+                    return true;
+                }else{
+                    return $response;
+                }
             }else{
-                return $response;
+                return true;
             }
         }
 

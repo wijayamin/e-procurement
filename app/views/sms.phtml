@@ -103,7 +103,7 @@
                     });
                     $('input[name="smscode"]').val(smscode);
                 });
-                function btnReSend() {
+                function sendSMS(){
                     var seconds = 30;
                     $('.btn-resend').attr('disabled', 'disabled');
                     var interval = setInterval(function () {
@@ -115,12 +115,8 @@
                             clearInterval(interval);
                         }
                     }, 1000);
-                }
-                btnReSend();
-                $('.btn-resend').on('click', function () {
                     $.getJSON('<?= $this->pathFor('reSendVerificationSMS', ['id_user'=>$id_user, 'telefon'=>$telefon]) ?>', function (res) {
                         if(res.status == 'success'){
-                            btnReSend();
                             $.gritter.add({
                                 title: 'Berhasil!',
                                 text: 'SMS berhasil terkirim',
@@ -128,6 +124,10 @@
                             });
                         }
                     })
+                }
+                sendSMS();
+                $('.btn-resend').on('click', function () {
+                    sendSMS();
                 })
             });
         </script>

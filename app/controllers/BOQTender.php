@@ -110,22 +110,15 @@ class BOQTender extends \ryan\main{
         foreach ($_POST['data'] as $pdata) {
             $data = $this->BOQModels->getBOQ($pdata['id_penawaran']);
             $dataApproval = json_decode($data["approval"], true);
-            if ($req->getAttribute('active_user_data')['previledge'] == "2") {
-                $dataApproval["direktur"] = [
-                    "status" => $_POST["status"],
-                    "waktu"  => date("Y-m-d H:i:s"),
-                ];
-            } elseif ($req->getAttribute('active_user_data')['previledge'] == "3") {
-                $dataApproval["manajer"] = [
-                    "status" => $_POST["status"],
-                    "waktu"  => date("Y-m-d H:i:s"),
-                ];
-            }
+            $who = $req->getAttribute('active_user_data')['previledge'] == "2" ? 'direktur' : 'manajer';
+            $dataApproval[$who]['status'] = $_POST["status"];
+            $dataApproval[$who]['waktu'] = $_POST["status"];
+            $dataApproval[$who]['keterangan'] = $_POST["keterangan"];
             $approval = [
                 "approval" => json_encode($dataApproval),
             ];
             if ($this->BOQModels->setBOQ($approval, $pdata['id_penawaran'])) {
-                $this->historyModels->add_history($pdata['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_boq', $pdata['id_penawaran'], $_POST["status"]);
+                $this->historyModels->add_history($pdata['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_boq', $pdata['id_penawaran'], json_encode($dataApproval[$who]));
                 $result['status'] = 'success';
             }
         }
@@ -159,16 +152,7 @@ class BOQTender extends \ryan\main{
         $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $data['id_tender'] = $args['id_tender'];
         $data['waktu'] = date ("Y-m-d H:i:s");
-        $data['approval']=json_encode([
-           'direktur'=>[
-               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date("Y-m-d H:i:s") : '')
-           ],
-           'manajer'=>[
-               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date("Y-m-d H:i:s") : '')
-           ]
-        ]);
+        $data['approval']=$req->getAttribute('autoApprovalEncoded');
         $insert = $this->BOQModels->setBOQ($data);
         if($insert){
             $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'i_boq', $insert);
@@ -190,16 +174,7 @@ class BOQTender extends \ryan\main{
         $data['id_user'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
         $data['id_tender'] = $args['id_tender'];
         $data['waktu'] = date ("Y-m-d H:i:s");
-        $data['approval']=json_encode([
-           'direktur'=>[
-               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date("Y-m-d H:i:s") : '')
-           ],
-           'manajer'=>[
-               'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-               'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date("Y-m-d H:i:s") : '')
-           ]
-        ]);
+        $data['approval']=$req->getAttribute('autoApprovalEncoded');
         if($this->BOQModels->setBOQ($data, $id_penawran)){
             $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_boq', $id_penawran);
             $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [

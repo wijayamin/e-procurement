@@ -75,16 +75,9 @@ class acaraRKS extends \ryan\main {
         $tender[$args['type']]['file'] = $filename;
         $tender[$args['type']]['waktu'] = date ("Y-m-d H:i:s");
         $tender[$args['type']]['user_id'] = $req->getAttribute ('active_user_data')[ 'id_user' ];
-        $tender[$args['type']]['approval'] = [
-            "direktur"=>[
-                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-            ],
-            "manajer"=>[
-                'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-            ]
-        ];
+        if($args['type'] == 'rks'){
+            $tender[$args['type']]['approval'] = $req->getAttribute('blankApproval');
+        }
         $data = [
             $args['type']=>json_encode($tender[$args['type']])
         ];
@@ -132,13 +125,12 @@ class acaraRKS extends \ryan\main {
         $tender['rks'] = json_decode($tender['rks'], true);
         $tender['rks']['approval'][$_POST['who']]['status'] = $_POST['status'];
         $tender['rks']['approval'][$_POST['who']]['waktu'] = date("Y-m-d H:i:s");
-        $tender['berita_acara'] = json_decode($tender['berita_acara'], true);
+        $tender['rks']['approval'][$_POST['who']]['keterangan'] = ($_POST['status'] == 'ditolak' ? $_POST['keterangan'] : null);
         $data = [
-            'rks'=>json_encode($tender['rks']),
-            'berita_acara'=>json_encode($tender['berita_acara'])
+            'rks'=>json_encode($tender['rks'])
         ];
         if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
-            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_rks', $args['id_tender'], $_POST['status']);
+            $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_rks', $args['id_tender'], json_encode($tender['rks']['approval'][$_POST['who']]));
             return $res->withJson([
                 "status"=>"success"
             ]);

@@ -154,6 +154,7 @@ $this->start('contents');
                     </div>
                 </div>
                 <div class="tempat-table" style="overflow:scroll;height:200px;width:100%;overflow:auto"></div>
+                <textarea class="form-control keterangan hidden" rows="3" placeholder="Tambahkan keterangan kenapa anda menolak"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn modal-close modal-ok">Setujui</button>
@@ -235,16 +236,6 @@ $this->start('js');
                             data: null,
                             render: function (data, type, row, meta) {
                                 delete data.rowData;
-//                                var datas =  {
-//                                    id_penawaran:data.id_penawaran,
-//                                    nama_vendor:data.nama_vendor,
-//                                    nama_barang:data.nama_barang,
-//                                    harga_persatuan:data.harga_persatuan,
-//                                    volume_barang:data.volume_barang,
-//                                    ukuran_satuan:data.ukuran_satuan,
-//                                    pegawai:data.pegawai,
-//                                    total:data.total,
-//                                }
                                 return  '<div class="be-checkbox be-checkbox-sm">'+
                                     '   <input id="check'+data.id_penawaran+'" class="mass-check" type="checkbox" value=\''+JSON.stringify(data)+'\'>'+
                                     '   <label for="check'+data.id_penawaran+'"></label>'+
@@ -369,19 +360,22 @@ $this->start('js');
             });
             $('#approval-terima').niftyModal({
                 beforeOpen: function( modal ){
+                    $(modal.modalEl).find('.keterangan').val(null);
                     if(type == 'diterima'){
                         $(modal.modalEl).removeClass('colored-header-danger');
                         $(modal.modalEl).addClass('colored-header-success');
                         $(modal.modalEl).find('.modal-title').html('Setujui BOQ di bawah ini ?');
                         $(modal.modalEl).find('.modal-ok').html('Setujui');
-                        $(modal.modalEl).find('.modal-ok').removeClass('btn-danger')
-                        $(modal.modalEl).find('.modal-ok').addClass('btn-success')
+                        $(modal.modalEl).find('.modal-ok').removeClass('btn-danger');
+                        $(modal.modalEl).find('.modal-ok').addClass('btn-success');
+                        $(modal.modalEl).find('.keterangan').addClass('hidden');
                     }else{
                         $(modal.modalEl).removeClass('colored-header-success');
                         $(modal.modalEl).addClass('colored-header-danger');
                         $(modal.modalEl).find('.modal-title').html('Tolak BOQ di bawah ini ?');
                         $(modal.modalEl).find('.modal-ok').html('Tolak');
-                        $(modal.modalEl).find('.modal-ok').removeClass('btn-success')
+                        $(modal.modalEl).find('.modal-ok').removeClass('btn-success');
+                        $(modal.modalEl).find('.keterangan').removeClass('hidden');
                         $(modal.modalEl).find('.modal-ok').addClass('btn-danger')
                     }
                     if(typeof isManajer === 'undefined'){
@@ -394,7 +388,8 @@ $this->start('js');
                     {
                         class: 'modal-ok',
                         callback: function ( btn, modal, event ) {
-                            $.post("<?= $this->pathFor("BOQTender_approval") ?>", {data:rowData.rowData, status:type}, function(data){
+                            var keterangan =  $(modal.modalEl).find('.keterangan').val();
+                            $.post("<?= $this->pathFor("BOQTender_approval") ?>", {data:rowData.rowData, status:type, keterangan:keterangan}, function(data){
                                 populateTable(true);
                             }, 'json')
                         }

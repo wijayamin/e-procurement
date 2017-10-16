@@ -112,6 +112,34 @@
                     'notifikasi'=>$notificationData,
                     'histories'=>$this->histories_helper()
                 ]);
+                $autoApproval = [
+                    'direktur'=>[
+                        'status'=>($userData[ 'previledge' ] == '2' ? 'diterima' : null),
+                        'waktu'=>($userData[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : null),
+                        'keterangan'=>null
+                    ],
+                    'manajer'=>[
+                        'status'=>($userData[ 'previledge' ] == '3' ? 'diterima' : null),
+                        'waktu'=>($userData[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : null),
+                        'keterangan'=>null
+                    ]
+                ];
+                $blankApproval = [
+                    'direktur'=>[
+                        'status'=>null,
+                        'waktu'=>null,
+                        'keterangan'=>null
+                    ],
+                    'manajer'=>[
+                        'status'=>null,
+                        'waktu'=>null,
+                        'keterangan'=>null
+                    ]
+                ];
+                $req = $req->withAttribute('autoApprovalEncoded', json_encode($autoApproval));
+                $req = $req->withAttribute('autoApproval', $autoApproval);
+                $req = $req->withAttribute('blankApprovalEncoded', json_encode($blankApproval));
+                $req = $req->withAttribute('blankApproval', $blankApproval);
                 $res = $next($req, $res);
                 return $res;
             }
@@ -187,11 +215,10 @@
 
         public function reSendVerificationSMS(Req $req, Res $res, $args){
             $smscode = strtoupper(bin2hex(openssl_random_pseudo_bytes(3)));
-            $user = $this->userModels->getUserByToken($args['id_user']);
             $data = [
                 'smscode'=>$smscode
             ];
-            if($this->userModels->setUser($data, $user['id_user'])){
+            if($this->userModels->setUser($data, $args['id_user'])){
                 $sms = $this->sendSMS($args['telefon'], 'Harap masukkan kode '. $smscode . ' di aplikasi E-Admin Tender');
                 if($sms === true){
                     return $res->withJson([

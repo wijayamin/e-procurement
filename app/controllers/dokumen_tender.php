@@ -40,10 +40,6 @@ class dokumen_tender extends \ryan\main {
                 $penyelenggara = $this->penyelenggaraModels->getPenyelenggara ($id_penyelenggara);
                 return $penyelenggara[ 'nama_penyelenggara' ];
             });
-            $this->view->registerFunction ('countDokumen', function ($id_tender) {
-                $count = $this->dokumenModels->countDokumenTender($id_tender, 1);
-                return $count;
-            });
             $beritaTender = $this->tenderModels->getBeritaTenderApprovedRKS ();
             $req = $req->withAttribute ('beritaTender', $beritaTender);
             $req = $req->withAttribute ('approval', $route->getName() == 'dokumenTender_daftarApproval');
@@ -95,20 +91,17 @@ class dokumen_tender extends \ryan\main {
     
     
     public function approvalTenderDokumen(Request $req, Response $res, $args){
-        $select = $this->dokumenModels->getDokumenTender($args['id_dokumen']);
+        $select = $this->dokumenModels->getDokumenTender($_POST['id_dokumen']);
         $approval = json_decode($select['approval'], true);
-        if($req->getAttribute('active_user_data')['previledge'] == "3"){
-            $approval['manajer']['status']=$args['status'];
-            $approval['manajer']['waktu']=date("Y-m-d H:i:s");
-        }elseif($req->getAttribute('active_user_data')['previledge'] == "2"){
-            $approval['direktur']['status']=$args['status'];
-            $approval['direktur']['waktu']=date("Y-m-d H:i:s");
-        }
+        $who = $req->getAttribute('active_user_data')['previledge'] == "3" ? 'manajer' : 'direktur';
+        $approval[$who]['status']=$_POST['status'];
+        $approval[$who]['waktu']=date("Y-m-d H:i:s");
+        $approval[$who]['keterangan']=$_POST['keterangan'];
         $update = [
             'approval'=>json_encode($approval)
         ];
-        if($this->dokumenModels->setDokumenTender($update, $args['id_dokumen'])){
-            $this->historyModels->add_history($select['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_dok', $args['id_dokumen'], $args['status']);
+        if($this->dokumenModels->setDokumenTender($update, $_POST['id_dokumen'])){
+            $this->historyModels->add_history($select['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_dok', $_POST['id_dokumen'], json_encode($approval[$who]));
             return $res->withJson([
                 'status'=>'success'
             ]);
@@ -179,16 +172,7 @@ class dokumen_tender extends \ryan\main {
             'id_tender' => $id_tender, 'nama_dokumen' => $nama_dokumen, 'tgl_upload' => date ("Y-m-d H:i:s"),
             "pengupload" => $req->getAttribute ('active_user_data')[ 'id_user' ],
             'dokumen_syarat' => $dokumen_syarat,
-            "approval" => json_encode([
-                "direktur"=>[
-                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-                ],
-                "manajer"=>[
-                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-                ]
-            ])
+            "approval" => $req->getAttribute('autoApprovalEncoded')
         ];
         if(sizeof($files)){
             $file = $files['file_dokumen'];
@@ -226,16 +210,7 @@ class dokumen_tender extends \ryan\main {
         $files = $req->getUploadedFiles();
         $data = [
             'nama_dokumen' => $nama_dokumen,
-            "approval" => json_encode([
-                "direktur"=>[
-                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-                ],
-                "manajer"=>[
-                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-                ]
-            ])
+            "approval" => $req->getAttribute('autoApprovalEncoded')
         ];
         if(sizeof($files)){
             $file = $files['file_dokumen'];

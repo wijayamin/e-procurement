@@ -21,13 +21,12 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <div class="btn-group btn-group-xs btn-space">
-                            <?php if($history['meta'] == 'diterima'): ?>
-                                <button type="button" class="btn btn-success"><i class="icon mdi mdi-check-circle"></i></button>
-                            <?php else: ?>
-                                <button type="button" class="btn btn-danger"><i class="icon mdi mdi-close-circle-o"></i></button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-default"><?= ucfirst($history['meta']) ?></button>
+                        <?php $d_tender_meta = json_decode($history['meta'], true); ?>
+                        <div role="alert" class="alert <?= $d_tender_meta['status'] == 'diterima' ? 'alert-success' : 'alert-danger' ?> alert-icon alert-icon-border alert-dismissible">
+                            <div class="icon"><span class="mdi <?= $d_tender_meta['status'] == 'diterima' ? 'mdi-check' : 'mdi-close-circle-o' ?>"></span></div>
+                            <div class="message">
+                                <strong><?= ucfirst($d_tender_meta['status']) ?></strong><br><?= $d_tender_meta['keterangan'] ?>
+                            </div>
                         </div>
                     </td>
                 </tr>

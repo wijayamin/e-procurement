@@ -54,14 +54,13 @@
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
                         <div class="timeline-summary">
-                                <p>
-                                <div class="btn-group btn-space">
-                                    <button type="button" class="btn btn-color <?= $history['meta'] == 'diterima' ? 'btn-success' : 'btn-danger' ?>">
-                                        <i class="icon mdi <?= $history['meta'] == 'diterima' ? 'mdi-check-circle' : 'mdi-close-circle' ?>"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default"><?= ucfirst ($history['meta']) ?></button>
+                            <?php $a_tender_meta = json_decode($history['meta'], true); ?>
+                            <div role="alert" class="alert <?= $a_tender_meta['status'] == 'diterima' ? 'alert-success' : 'alert-danger' ?> alert-icon alert-icon-border alert-dismissible">
+                                <div class="icon"><span class="mdi <?= $a_tender_meta['status'] == 'diterima' ? 'mdi-check' : 'mdi-close-circle-o' ?>"></span></div>
+                                <div class="message">
+                                    <strong><?= ucfirst($a_tender_meta['status']) ?></strong><br><?= $a_tender_meta['keterangan'] ?>
                                 </div>
-                            </p>
+                            </div>
                         </div>
                     </div>
 
@@ -108,14 +107,13 @@
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
                         <div class="timeline-summary">
-                            <p>
-                                <div class="btn-group btn-space">
-                                    <button type="button" class="btn btn-color <?= $history['meta'] == 'diterima' ? 'btn-success' : 'btn-danger' ?>">
-                                        <i class="icon mdi <?= $history['meta'] == 'diterima' ? 'mdi-check-circle' : 'mdi-close-circle' ?>"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-default"><?= ucfirst ($history['meta']) ?></button>
+                            <?php $r_tender_meta = json_decode($history['meta'], true); ?>
+                            <div role="alert" class="alert <?= $r_tender_meta['status'] == 'diterima' ? 'alert-success' : 'alert-danger' ?> alert-icon alert-icon-border alert-dismissible">
+                                <div class="icon"><span class="mdi <?= $r_tender_meta['status'] == 'diterima' ? 'mdi-check' : 'mdi-close-circle-o' ?>"></span></div>
+                                <div class="message">
+                                    <strong><?= ucfirst($r_tender_meta['status']) ?></strong><br><?= $r_tender_meta['keterangan'] ?>
                                 </div>
-                            </p>
+                            </div>
                         </div>
                     </div>
 
@@ -226,7 +224,7 @@
                         <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menambahkan dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('dokumenTender_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -240,7 +238,7 @@
                                 Mengupload
                                 <span class="text-primary"><?= $history['detail']['file_dokumen'] ?></span>
                                 sebagai dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
+                                <a href="<?= $this->pathFor('dokumenTender_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -252,7 +250,7 @@
                         <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Mengubah dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
+                                <a href="<?= $this->pathFor('dokumenTender_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $history['detail']['nama_dokumen'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -264,7 +262,7 @@
                         <div class="timeline-header"><span class="timeline-autor"><?= $this->user_detail($history['id_user'], 'nama') ?></span>
                             <p class="timeline-activity">
                                 Menghapus dokumen
-                                <a href="<?= $this->pathFor('unitKerja_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
+                                <a href="<?= $this->pathFor('dokumenTender_detail', ['id_tender'=>$history['id_tender']]) ?>"><?= $this->user_detail($history['detail']['id_user'])['nama'] ?></a>
                             </p>
                             <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                         </div>
@@ -283,14 +281,13 @@
                         <span class="timeline-time"><?= $this->timeElapsed($history['waktu']) ?> - <?= $this->indDateTime($history['waktu']) ?></span>
                     </div>
                     <div class="timeline-summary">
-                        <p>
-                        <div class="btn-group btn-space">
-                            <button type="button" class="btn btn-color <?= $history['meta'] == 'diterima' ? 'btn-success' : 'btn-danger' ?>">
-                                <i class="icon mdi <?= $history['meta'] == 'diterima' ? 'mdi-check-circle' : 'mdi-close-circle' ?>"></i>
-                            </button>
-                            <button type="button" class="btn btn-default"><?= ucfirst ($history['meta']) ?></button>
+                        <?php $d_tender_meta = json_decode($history['meta'], true); ?>
+                        <div role="alert" class="alert <?= $d_tender_meta['status'] == 'diterima' ? 'alert-success' : 'alert-danger' ?> alert-icon alert-icon-border alert-dismissible">
+                            <div class="icon"><span class="mdi <?= $d_tender_meta['status'] == 'diterima' ? 'mdi-check' : 'mdi-close-circle-o' ?>"></span></div>
+                            <div class="message">
+                                <strong><?= ucfirst($d_tender_meta['status']) ?></strong><br><?= $d_tender_meta['keterangan'] ?>
+                            </div>
                         </div>
-                        </p>
                     </div>
                 </div>
 
@@ -393,14 +390,13 @@
                                 <td width="50%"><?= $history['extra']['volume_barang'] ?><?= $history['extra']['ukuran_satuan'] ?></td>
                             </tr>
                         </table>
-                        <p>
-                        <div class="btn-group btn-space">
-                            <button type="button" class="btn btn-color <?= $history['meta'] == 'diterima' ? 'btn-success' : 'btn-danger' ?>">
-                                <i class="icon mdi <?= $history['meta'] == 'diterima' ? 'mdi-check-circle' : 'mdi-close-circle' ?>"></i>
-                            </button>
-                            <button type="button" class="btn btn-default"><?= ucfirst ($history['meta']) ?></button>
+                        <?php $b_tender_meta = json_decode($history['meta'], true); ?>
+                        <div role="alert" class="alert <?= $b_tender_meta['status'] == 'diterima' ? 'alert-success' : 'alert-danger' ?> alert-icon alert-icon-border alert-dismissible">
+                            <div class="icon"><span class="mdi <?= $b_tender_meta['status'] == 'diterima' ? 'mdi-check' : 'mdi-close-circle-o' ?>"></span></div>
+                            <div class="message">
+                                <strong><?= ucfirst($b_tender_meta['status']) ?></strong><br><?= $b_tender_meta['keterangan'] ?>
+                            </div>
                         </div>
-                        </p>
                     </div>
                 </div>
 

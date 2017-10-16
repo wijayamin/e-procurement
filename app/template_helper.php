@@ -47,9 +47,13 @@ class template_helper implements ExtensionInterface {
 
     public function register(Engine $engine){
         $engine->registerFunction('autocomplete', [$this, 'autocomplete']);
-        $engine->registerFunction('penyelenggara', [$this, 'penyelenggara']);
-        $engine->registerFunction('user_detail', [$this, 'user_detail']);
         $engine->registerFunction('local_date', [$this, 'local_date']);
+
+        $engine->registerFunction('penyelenggara', [$this, 'penyelenggara']);
+
+        $engine->registerFunction('user_detail', [$this, 'user_detail']);
+
+        $engine->registerFunction('dokumen_count', [$this, 'dokumen_count']);
     }
 
     public function local_date($type, $val = null){
@@ -91,6 +95,11 @@ class template_helper implements ExtensionInterface {
         }
     }
 
+    /**
+     * @param      $id_penyelenggara
+     * @param null $type
+     * @return array|mixed
+     */
     public function penyelenggara($id_penyelenggara,  $type = null){
         switch ($type){
             case 'nama':
@@ -120,6 +129,25 @@ class template_helper implements ExtensionInterface {
                 return $this->userModels->getUserDetail($id_user);
                 break;
         }
+    }
+
+    public function dokumen_count($id_tender, $type = null){
+        $dokumen = $this->dokumenModels->getDokumenByTender($id_tender);
+        $count = [
+            'total' => sizeof($dokumen),
+            'uploaded' => 0,
+            'approved' => 0
+        ];
+        foreach ($dokumen as $dok){
+            if($dok['file_dokumen']){
+                $count['uploaded']++;
+            }
+            $appr = json_decode($dok['approval'], true);
+            if($appr['direktur']['status'] && $appr['manajer']['status']){
+                $count['uploaded']++;
+            }
+        }
+        return $count;
     }
 
 }

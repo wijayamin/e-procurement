@@ -282,10 +282,6 @@
                     </div>
                 </div>
                 <?= $this->insert('berita-tender/history', ['histories'=>$tender['history'], 'full'=>false]) ?>
-                <ul class="timeline timeline-variant mod">
-                    <li class="timeline-month"><span>History Perubahan</span></li>
-
-                </ul>
             </div>
             <div class="col-md-12 <?= $tender['deleted'] ? 'hidden' : '' ?>">
                 <div class="panel panel-border-color panel-border-color-danger">
@@ -315,6 +311,7 @@
                         <div class="mod-icon"><span class="modal-main-icon mdi mdi-check"></span></div>
                         <h3>Awesome!</h3>
                         <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Fusce ultrices euismod lobortis.</p>
+                        <textarea class="form-control keterangan hidden" rows="3" placeholder="Tambahkan keterangan kenapa anda menolak"></textarea>
                         <div class="xs-mt-50">
                             <button type="button" data-dismiss="modal" class="btn btn-space btn-action">Proceed</button>
                             <button type="button" data-dismiss="modal" class="btn btn-space btn-default">Batal</button>
@@ -322,103 +319,6 @@
                     </div>
                 </div>
                 <div class="modal-footer"></div>
-            </div>
-        </div>
-    </div>
-    <div id="form-unitkerja" tabindex="-1" role="dialog" class="modal fade colored-header colored-header-primary">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><span class="mdi mdi-close"></span></button>
-                    <h3 class="modal-title">Form Input BOQ</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Vendor</label>
-                                <input type="text" placeholder="PT. XYZ" id="modal-vendor" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Nama Barang</label>
-                                <input type="text" placeholder="GWS 55m" id="modal-barang" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="form-group">
-                                <label>Harga Barang Satuan</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="basic-addon1">Rp</span>
-                                    <input type="number" class="form-control" id="modal-harga">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Jumlah</label>
-                                <input type="number" class="form-control" id="modal-volume">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label>Ukuran Satuan</label>
-                                <select multiple="" id="modal-satuan">
-                                    <optgroup label="Panjang">
-                                        <option value="mm">mm</option>
-                                        <option value="cm">cm</option>
-                                        <option value="m">m</option>
-                                        <option value="km">km</option>
-                                        <option value="inch">inch(&ldquo;)</option>
-                                        <option value="feet">feet</option>
-                                        <option value="mile">mile</option>
-                                    </optgroup>
-                                    <optgroup label="Luas">
-                                        <option value="mm&sup2;">mm&sup2;</option>
-                                        <option value="cm&sup2;">cm&sup2;</option>
-                                        <option value="m&sup2;">m&sup2;</option>
-                                        <option value="km&sup2;">km&sup2;</option>
-                                    </optgroup>
-                                    <optgroup label="Volume">
-                                        <option value="mm&sup3;">mm&sup3;</option>
-                                        <option value="cm&sup3;">cm&sup3;</option>
-                                        <option value="m&sup3;">m&sup3;</option>
-                                        <option value="km&sup3;">km&sup3;</option>
-                                    </optgroup>
-                                    <optgroup label="Berat">
-                                        <option value="g">g</option>
-                                        <option value="ons">ons</option>
-                                        <option value="kg">kg</option>
-                                        <option value="pound">pound</option>
-                                    </optgroup>
-                                    <optgroup label="Volume Cairan">
-                                        <option value="cc">cc</option>
-                                        <option value="ml">ml</option>
-                                        <option value="l">l</option>
-                                        <option value="galon">galon</option>
-                                    </optgroup>
-                                    <optgroup label="Unit">
-                                        <option value="Unit">Unit</option>
-                                        <option value="pcs">pcs</option>
-                                        <option value="lot">lot</option>
-                                        <option value="dus">dus</option>
-                                        <option value="kotak">kotak</option>
-                                        <option value="rol">rol</option>
-                                        <option value="kodi">kodi</option>
-                                        <option value="rim">rim</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary form-unitkerja-simpan">Tambahkan</button>
-                    <button type="button" data-dismiss="modal" class="btn btn-default md-close">Batal</button>
-                </div>
             </div>
         </div>
     </div>
@@ -490,6 +390,7 @@
                     modal.find('.mod-icon').removeClass('text-danger');
                     modal.find('.btn-action').addClass('btn-success');
                     modal.find('.btn-action').removeClass('btn-danger');
+                    modal.find('.keterangan').addClass('hidden');
                     modal.find('.btn-action').html('Setujui');
                 }
                 if(modData.type == 'ditolak'){
@@ -497,6 +398,7 @@
                     modal.find('.mod-icon').removeClass('text-success');
                     modal.find('.mod-icon').addClass('text-danger');
                     modal.find('.btn-action').removeClass('btn-success');
+                    modal.find('.keterangan').removeClass('hidden');
                     modal.find('.btn-action').addClass('btn-danger');
                     modal.find('.btn-action').html('Tolak');
                 }
@@ -507,11 +409,13 @@
                     }else if(active_user.previledge == '3'){
                         who = 'manajer'
                     }
+                    var keterangan = modal.find('.keterangan').val();
                     $.post(
                         '<?= $this->pathFor('beritaTender_approval', ['id_tender'=>$tender['id_tender']]) ?>',
                         {
                             who:who,
-                            status:modData.type
+                            status:modData.type,
+                            keterangan:keterangan
                         },
                         function(data){
                             if(data.status == 'success'){

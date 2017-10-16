@@ -52,7 +52,7 @@ $this->start ('contents');
                             </td>
                             <td class="milestone"><span class="completed"><?= ceil($this->getProgress($tender['id_tender'])['progress']) ?>%</span><span class="version"><?= $this->getProgress($tender['id_tender'])['process'] ?></span>
                                 <div class="progress">
-                                    <div style="width: <?= $this->getProgress($tender['id_tender'])['progress'] ?>%" class="progress-bar progress-bar-primary"></div>
+                                    <div style="width: <?= $this->getProgress($tender['id_tender'])['progress'] ?>%" class="progress-bar <?= $this->getProgress($tender['id_tender'])['is_tolak'] ? 'progress-bar-danger' : 'progress-bar-primary' ?>"></div>
                                 </div>
                             </td>
                             <td class="actions">

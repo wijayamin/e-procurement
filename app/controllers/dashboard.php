@@ -57,17 +57,17 @@
                 $process = '';
                 $tender = $this->tenderModels->getBeritaTender($id_tender);
                 $tender_approval = json_decode($tender['approval'], true);
-                if($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
-                    $process = 'Menuggu Dokumen';
+                if($tender_approval['direktur']['status'] && $tender_approval['manajer']['status']){
+                    $process = 'Menunggu Dokumen';
                     $progress = 50;
-                }elseif($tender_approval['direktur']['status'] == '' && $tender_approval['manajer']['status'] == ''){
-                    $process = 'Menuggu Approval';
+                }elseif(!$tender_approval['direktur']['status'] && !$tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval';
                     $progress = 0;
-                }elseif($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] != 'diterima'){
-                    $process = 'Menuggu Approval Manajer';
+                }elseif($tender_approval['direktur']['status'] && !$tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval ManajerA';
                     $progress = 25;
-                }elseif($tender_approval['direktur']['status'] != 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
-                    $process = 'Menuggu Approval Direktur';
+                }elseif(!$tender_approval['direktur']['status'] && $tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval Direktur';
                     $progress = 25;
                 }
                 $count_dokumen = $this->dokumenModels->countDokumenReqDetail($id_tender);
@@ -96,17 +96,17 @@
                 $process = '';
                 $tender = $this->tenderModels->getBeritaTender($id_tender);
                 $tender_approval = json_decode($tender['approval'], true);
-                if($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
-                    $process = 'Menuggu Dokumen';
+                if($tender_approval['direktur']['status'] && $tender_approval['manajer']['status']){
+                    $process = 'Menunggu Dokumen';
                     $progress = 50;
-                }elseif($tender_approval['direktur']['status'] == '' && $tender_approval['manajer']['status'] == ''){
-                    $process = 'Menuggu Approval';
+                }elseif(!$tender_approval['direktur']['status'] && !$tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval';
                     $progress = 0;
-                }elseif($tender_approval['direktur']['status'] == 'diterima' && $tender_approval['manajer']['status'] != 'diterima'){
-                    $process = 'Menuggu Approval Manajer';
+                }elseif($tender_approval['direktur']['status'] && !$tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval ManajerA';
                     $progress = 25;
-                }elseif($tender_approval['direktur']['status'] != 'diterima' && $tender_approval['manajer']['status'] == 'diterima'){
-                    $process = 'Menuggu Approval Direktur';
+                }elseif(!$tender_approval['direktur']['status'] && $tender_approval['manajer']['status']){
+                    $process = 'Menunggu Approval Direktur';
                     $progress = 25;
                 }
                 $count_dokumen = $this->dokumenModels->countDokumenReqDetail($id_tender);
@@ -115,10 +115,25 @@
                 if($progress == 100){
                     $process = 'Semua Proses Selesai';
                 }
-                return [
-                    'process'=>$process,
-                    'progress'=>$progress
-                ];
+                if($tender_approval['direktur']['status'] == 'ditolak'){
+                    return [
+                        'process'  => 'Direktur Menolak Tender Ini',
+                        'progress' => 100,
+                        'is_tolak' => true
+                    ];
+                }elseif($tender_approval['manajer']['status'] == 'ditolak'){
+                    return [
+                        'process'  => 'Manajer Menolak Tender Ini',
+                        'progress' => 100,
+                        'is_tolak' => true
+                    ];
+                }else {
+                    return [
+                        'process'  => $process,
+                        'progress' => $progress,
+                        'is_tolak' => false
+                    ];
+                }
             });
             $beritaTender = $this->tenderModels->getBeritaTender ();
             $req = $req->withAttribute ('beritaTender', $beritaTender);

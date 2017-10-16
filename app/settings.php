@@ -3,7 +3,7 @@ return [
 'settings' => [
         "database" => [
             "host" => "localhost",
-            "database_name" => "tar",
+            "database_name" => "tar-test",
             "user" => "root",
             "pass" => ""
         ],
@@ -29,7 +29,8 @@ return [
         "server" => "192.168.100.8",
         "sms" => [
             'username'=>'ryanhadiw',
-            'password'=>'ryan721995'
+            'password'=>'ryan721995',
+            'enabled'=>false
         ],
         "views"=>"views",
         'whoops.editor' => 'sublime',

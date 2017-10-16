@@ -62,43 +62,15 @@
                     'tgl_mulai' => $_POST[ 'tgl_mulai' ],
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
                     'tgl_upload' => date ("Y-m-d H:i:s"),
-                    'approval'=>json_encode([
-                        'direktur'=>[
-                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-                        ],
-                        'manajer'=>[
-                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-                        ]
-                    ]),
+                    'approval'=>$req->getAttribute('autoApprovalEncoded'),
                     'berita_acara'=>json_encode([
-                        'file'=>'',
-                        'waktu'=>'',
-                        'approval'=>[
-                            'direktur'=>[
-                                'status'=>'',
-                                'waktu'=>''
-                            ],
-                            'manajer'=>[
-                                'status'=>'',
-                                'waktu'=>''
-                            ]
-                        ]
+                        'file'=>null,
+                        'waktu'=>null
                     ]),
                     'rks'=>json_encode([
-                        'file'=>'',
-                        'waktu'=>'',
-                        'approval'=>[
-                            'direktur'=>[
-                                'status'=>'',
-                                'waktu'=>''
-                            ],
-                            'manajer'=>[
-                                'status'=>'',
-                                'waktu'=>''
-                            ]
-                        ]
+                        'file'=>null,
+                        'waktu'=>null,
+                        'approval'=>$req->getAttribute('blankApproval')
                     ])
                 ];
                 $insert = $this->tenderModels->addBeritaTender ($data);
@@ -108,24 +80,15 @@
                         $dataDok = [
                             'id_tender'=>$insert,
                             'nama_dokumen'=>$dokumen,
-                            'dokumen_syarat'=>'1'
+                            'dokumen_syarat'=>'1',
+                            'approval'=>$req->getAttribute('blankApprovalEncoded')
                         ];
                         $dokMaster = $this->dokumenMasterModels->searchDokumenMaster($dokumen);
-                        
                         if($dokMaster){
                             $dataDok['file_dokumen'] = $dokMaster['file_dokumen'];
                             $dataDok['tgl_upload'] = $dokMaster['waktu'];
                             $dataDok['pengupload'] = $dokMaster['diupload_oleh'];
-                            $dataDok['approval'] = json_encode([
-                                'direktur'=>[
-                                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-                                ],
-                                'manajer'=>[
-                                    'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                                    'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-                                ]
-                            ]);
+                            $dataDok['approval'] = $req->getAttribute('autoApprovalEncoded');
                         }
                         $insertDok = $this->dokumenModels->setDokumenTender($dataDok);
                     }
@@ -161,6 +124,7 @@
             } else {
                 $tender = $this->tenderModels->getBeritaTender($args['id_tender']);
                 $tender['rks'] = json_decode($tender['rks'], true);
+                $tender['rks']['approval'] = $req->getAttribute('blankApproval');
                 $data = [
                     'id_penyelenggara' => $_POST[ 'id_penyelenggara' ],
                     'judul_tender' => $_POST[ 'judul_tender' ],
@@ -169,51 +133,16 @@
                     'wilayah' => $_POST[ 'wilayah' ],
                     'tgl_mulai' => $_POST[ 'tgl_mulai' ],
                     'tgl_selesai' => $_POST[ 'tgl_selesai' ],
-                    'approval'=>json_encode([
-                        'direktur'=>[
-                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? 'diterima' : ''),
-                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '2' ? date ("Y-m-d H:i:s") : '')
-                        ],
-                        'manajer'=>[
-                            'status'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? 'diterima' : ''),
-                            'waktu'=>($req->getAttribute ('active_user_data')[ 'previledge' ] == '3' ? date ("Y-m-d H:i:s") : '')
-                        ]
-                    ]),
+                    'approval'=>$req->getAttribute('autoApprovalEncoded'),
+                    'rks'=>json_encode($tender['rks'])
                 ];
-                if($tender['rks'] and array_key_exists('file', $tender['rks'])){
-                    $tender['rks']['approval'] = [
-                        'direktur'=>[
-                            'status'=>'',
-                            'waktu'=>''
-                        ],
-                        'manajer'=>[
-                            'status'=>'',
-                            'waktu'=>''
-                        ]
-                    ];
-                    $data['rks'] = json_encode($tender['rks']);
-                }
                 if($this->tenderModels->setBeritaTender($data, $args['id_tender'])){
                     $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'e_tender', $args['id_tender']);
                     foreach($this->BOQModels->getBOQByTender($args['id_tender']) as $boq){
-                        $this->BOQModels->setBOQ(['approval'=>''], $boq['id_penawaran']);
-                        echo 'lala';
+                        $this->BOQModels->setBOQ(['approval'=>$req->getAttribute('blankApproval')], $boq['id_penawaran']);
                     }
                     foreach ($this->dokumenModels->getDokumenByTender($args['id_tender']) as $dok){
-                        echo 'lala';
-                        if($dok['approval']){
-                            $approval = json_encode([
-                                'direktur'=>[
-                                    'status'=>'',
-                                    'waktu'=>''
-                                ],
-                                'manajer'=>[
-                                    'status'=>'',
-                                    'waktu'=>''
-                                ]
-                            ]);
-                            $this->dokumenModels->setDokumenTender(['approval'=>$approval], $dok['id_dokumen']);
-                        }
+                        $this->dokumenModels->setDokumenTender(['approval'=>$req->getAttribute('blankApproval')], $dok['id_dokumen']);
                     }
                     $this->notifikasiModels->sendNotificationByPreviledge(['2', '3'], [
                         "by_user" => $req->getAttribute ('active_user_data')[ 'id_user' ],
@@ -314,11 +243,12 @@
             $tender['approval'] = json_decode($tender['approval'], true);
             $tender['approval'][$_POST['who']]['status'] = $_POST['status'];
             $tender['approval'][$_POST['who']]['waktu'] = date("Y-m-d H:i:s");
+            $tender['approval'][$_POST['who']]['keterangan'] = ($_POST['status'] == 'ditolak' ? $_POST['keterangan'] : null);
             $data = [
                 'approval'=>json_encode($tender['approval'])
             ];
             if($this->tenderModels->updateBeritaTender($args['id_tender'], $data)){
-                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_tender', $args['id_tender'], $_POST['status']);
+                $this->historyModels->add_history($args['id_tender'], $req->getAttribute ('active_user_data')[ 'id_user' ], 'a_tender', $args['id_tender'], json_encode($tender['approval'][$_POST['who']]));
                 return $res->withJson([
                     "status"=>"success"
                 ]);

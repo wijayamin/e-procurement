@@ -92,7 +92,7 @@ $app->group('', function () {
         
         $this->any('/approval', \ryan\controllers\dokumen_tender::class . ':daftarBeritaTender')->setName('dokumenTender_daftarApproval');
         $this->any('/approval/{id_tender:[0-9]+}', \ryan\controllers\dokumen_tender::class . ':detailTenderDokumenApproval')->setName('dokumenTender_detailApproval');
-        $this->get('/approve[/{id_dokumen:[0-9]+}[/{status}]]', \ryan\controllers\dokumen_tender::class . ':approvalTenderDokumen')->setName('dokumenTender_Approval');
+        $this->post('/approve', \ryan\controllers\dokumen_tender::class . ':approvalTenderDokumen')->setName('dokumenTender_Approval');
     });
 
     $this->group('/dokumen-master', function(){
