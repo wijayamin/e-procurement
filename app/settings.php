@@ -12,7 +12,7 @@ return [
         'displayErrorDetails' => true,
         'mailer' => [
             'setFrom' => [
-                'email' => 'kartunamapal@gmail.com',
+                'email' => 'lol@email.com',
                 'title' => 'PT. Kencana Alam Putra(No Reply)'
             ],
             'Host' => 'smtp.gmail.com',
