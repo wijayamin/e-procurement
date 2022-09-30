@@ -10,7 +10,7 @@
         "phpmailer/phpmailer": "v6.1.6",
         "league/oauth2-client": "2.2.1",
         "league/oauth2-google": "^2.0",
-        "dompdf/dompdf": "^0.8.0"
+        "dompdf/dompdf": "^2.0.1"
     },
     "require-dev": {
         "silalahi/slim-logger": "dev-master"
